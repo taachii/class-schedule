@@ -59,7 +59,6 @@ export const useScheduleStore = create<ScheduleStore>()(
   semesters: [],
   subjects: [],
   eventTypes: [],
-  eventTypes: [],
   activeYearNumber: null,
   activeSemesterId: null,
   activeGroup: 'GS1',
