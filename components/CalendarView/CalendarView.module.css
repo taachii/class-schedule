@@ -255,6 +255,37 @@
     min-width: 160px;
     font-size: 1rem;
   }
+  
+  /* Make calendar fit on mobile */
+  .gridWrapper {
+    border-radius: var(--radius-md);
+  }
+  .grid {
+    min-width: 100%;
+    grid-auto-rows: 90px;
+  }
+  .headerCell {
+    font-size: 0.6rem;
+    padding: 8px 2px;
+    letter-spacing: normal;
+  }
+  .day {
+    padding: 4px;
+  }
+  .dayNum {
+    font-size: 0.65rem;
+    width: 20px;
+    height: 20px;
+    margin-bottom: 6px;
+  }
+  .events {
+    gap: 2px;
+  }
+  .eventChip {
+    font-size: 0.6rem;
+    padding: 2px 4px;
+    border-left-width: 2px;
+  }
   /* Mobile Modal - Bottom Sheet Style */
   .modalOverlay {
     align-items: flex-end;

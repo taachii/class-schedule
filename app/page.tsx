@@ -3,7 +3,6 @@
 import { useEffect } from 'react';
 import { useScheduleStore } from '@/store/scheduleStore';
 import Header from '@/components/Header/Header';
-import GroupTabs from '@/components/GroupTabs/GroupTabs';
 import SubjectFilters from '@/components/SubjectFilters/SubjectFilters';
 import CalendarView from '@/components/CalendarView/CalendarView';
 import EventModal from '@/components/EventModal/EventModal';
@@ -18,7 +17,6 @@ export default function SchedulePage() {
   return (
     <>
       <Header />
-      <GroupTabs />
       <main className="main-content">
         <SubjectFilters />
         {isLoading && (

@@ -4,7 +4,7 @@ import { useScheduleStore } from '@/store/scheduleStore';
 import styles from './Header.module.css';
 
 export default function Header() {
-  const { semesters, activeSemesterId, setActiveSemester } =
+  const { semesters, activeSemesterId, setActiveSemester, activeGroup, setActiveGroup } =
     useScheduleStore();
 
   const activeSemester = semesters.find(s => s.id === activeSemesterId);
@@ -35,6 +35,18 @@ export default function Header() {
         </div>
 
         <div className={styles.controls}>
+          <select
+            className={styles.semesterSelect}
+            value={activeGroup ?? ''}
+            onChange={e => setActiveGroup(e.target.value)}
+            aria-label="Wybór grupy"
+          >
+            {[...Array(12)].map((_, i) => (
+              <option key={`GS${i + 1}`} value={`GS${i + 1}`}>GS {i + 1}</option>
+            ))}
+            <option value="GW">GW (Wykłady)</option>
+          </select>
+
           {/* Semester selector (shown when multiple semesters available) */}
           {semesters.length > 1 && (
             <select
