@@ -4,7 +4,7 @@ import { useScheduleStore } from '@/store/scheduleStore';
 import styles from './Header.module.css';
 
 export default function Header() {
-  const { semesters, activeSemesterId, setActiveSemester, activeGroup, setActiveGroup } =
+  const { semesters, activeSemesterId, setActiveSemester, activeGroup, setActiveGroup, activeYearNumber, setActiveYearNumber } =
     useScheduleStore();
 
   const activeSemester = semesters.find(s => s.id === activeSemesterId);
@@ -28,13 +28,21 @@ export default function Header() {
           <div className={styles.brandText}>
             <h1 className={styles.title}>Plan Zajęć</h1>
             <p className={styles.subtitle}>
-              I Rok Lekarski · SUM Zabrze
+              {activeYearNumber ? `${['I', 'II', 'III', 'IV', 'V', 'VI'][activeYearNumber - 1]} Rok Lekarski` : 'Kierunek Lekarski'}
               {activeSemester ? ` · ${activeSemester.label}` : ''}
             </p>
           </div>
         </div>
 
         <div className={styles.controls}>
+          <button 
+            className={styles.homeBtn} 
+            onClick={() => setActiveYearNumber(null)}
+            aria-label="Zmień rocznik"
+          >
+            🏠
+          </button>
+          
           <select
             className={`${styles.semesterSelect} ${styles.groupSelectMobile}`}
             value={activeGroup ?? ''}

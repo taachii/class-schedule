@@ -1,8 +1,9 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 import type { Subject, ScheduleEvent, Semester, EventType, GroupKey, EnrichedEvent } from '@/types/schedule';
 import { fetchEventsForGroup, fetchSubjects, fetchSemesters, fetchEventTypes } from '@/lib/supabase/queries';
 
-const YEAR_NUMBER = 1; // I Rok Lekarski — expand later for other years
+// Replaced by dynamic year selection
 
 interface ScheduleStore {
   // ── Reference data ──────────────────────────────────────────
@@ -11,6 +12,7 @@ interface ScheduleStore {
   eventTypes: EventType[];
 
   // ── Active filters / navigation ──────────────────────────────
+  activeYearNumber: number | null;
   activeSemesterId: number | null;
   activeGroup: GroupKey;
   currentYear: number;
@@ -27,6 +29,7 @@ interface ScheduleStore {
 
   // ── Actions ──────────────────────────────────────────────────
   initialize: () => Promise<void>;
+  setActiveYearNumber: (year: number | null) => void;
   setActiveGroup: (group: GroupKey) => void;
   setMonth: (year: number, month: number) => void;
   toggleSubject: (key: string) => void;
@@ -49,11 +52,15 @@ function enrichEvents(events: ScheduleEvent[], subjects: Subject[]): EnrichedEve
   });
 }
 
-export const useScheduleStore = create<ScheduleStore>((set, get) => ({
+export const useScheduleStore = create<ScheduleStore>()(
+  persist(
+    (set, get) => ({
   // ── Initial state ────────────────────────────────────────────
   semesters: [],
   subjects: [],
   eventTypes: [],
+  eventTypes: [],
+  activeYearNumber: null,
   activeSemesterId: null,
   activeGroup: 'GS1',
   currentYear: new Date().getFullYear(),
@@ -66,10 +73,13 @@ export const useScheduleStore = create<ScheduleStore>((set, get) => ({
 
   // ── initialize ───────────────────────────────────────────────
   initialize: async () => {
+    const { activeYearNumber } = get();
+    if (activeYearNumber === null) return;
+    
     set({ isLoading: true, error: null });
     try {
       const [semesters, eventTypes] = await Promise.all([
-        fetchSemesters(YEAR_NUMBER),
+        fetchSemesters(activeYearNumber),
         fetchEventTypes(),
       ]);
 
@@ -100,6 +110,14 @@ export const useScheduleStore = create<ScheduleStore>((set, get) => ({
       });
     } catch (err: any) {
       set({ error: err.message ?? 'Błąd pobierania danych', isLoading: false });
+    }
+  },
+
+  // ── setActiveYearNumber ────────────────────────────────────────
+  setActiveYearNumber: (year: number | null) => {
+    set({ activeYearNumber: year });
+    if (year !== null) {
+      get().initialize();
     }
   },
 
@@ -154,5 +172,12 @@ export const useScheduleStore = create<ScheduleStore>((set, get) => ({
 
   clearSubjectFilters: () => set({
     activeSubjectKeys: new Set(),
+  }),
+}), {
+  name: 'class-schedule-storage',
+  partialize: (state) => ({
+    activeYearNumber: state.activeYearNumber,
+    activeSemesterId: state.activeSemesterId,
+    activeGroup: state.activeGroup,
   }),
 }));
