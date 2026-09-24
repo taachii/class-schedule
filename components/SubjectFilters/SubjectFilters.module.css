@@ -107,15 +107,23 @@
   align-items: center;
 }
 
-@media (max-width: 600px) {
-  .inner {
-    padding: 0 16px;
+@media (max-width: 768px) {
+  .filterBar {
+    margin: 16px 12px;
   }
-  .label {
+  .inner {
+    gap: 8px;
+  }
+  .chips {
+    order: 1;
     width: 100%;
-    margin-bottom: 2px;
+    flex: none;
+    margin-bottom: 4px;
   }
   .reset {
-    margin-left: auto;
+    order: 2;
+    flex: 1;
+    text-align: center;
+    justify-content: center;
   }
 }
