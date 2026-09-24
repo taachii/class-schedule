@@ -16,7 +16,7 @@ const GROUPS = [
   { key: 'GS10', label: 'GS 10' },
   { key: 'GS11', label: 'GS 11' },
   { key: 'GS12', label: 'GS 12' },
-  { key: 'GW', label: 'GW (Wykłady)', isSpecial: true },
+  { key: 'GW', label: 'GW', isSpecial: true },
 ];
 
 export default function GroupTabs() {

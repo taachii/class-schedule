@@ -19,6 +19,7 @@
 
 .tabs {
   display: flex;
+  justify-content: center;
   gap: 2px;
   padding: 8px 0;
   white-space: nowrap;

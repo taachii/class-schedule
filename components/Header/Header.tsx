@@ -44,7 +44,7 @@ export default function Header() {
             {[...Array(12)].map((_, i) => (
               <option key={`GS${i + 1}`} value={`GS${i + 1}`}>GS {i + 1}</option>
             ))}
-            <option value="GW">GW (Wykłady)</option>
+            <option value="GW">GW</option>
           </select>
 
           {/* Semester selector (shown when multiple semesters available) */}
