@@ -13,7 +13,6 @@ interface ScheduleStore {
   // ── Active filters / navigation ──────────────────────────────
   activeSemesterId: number | null;
   activeGroup: GroupKey;
-  activeView: ViewMode;
   currentYear: number;
   currentMonth: number; // 0-indexed (0 = January)
   activeSubjectKeys: Set<string>;
@@ -29,7 +28,6 @@ interface ScheduleStore {
   // ── Actions ──────────────────────────────────────────────────
   initialize: () => Promise<void>;
   setActiveGroup: (group: GroupKey) => void;
-  setActiveView: (view: ViewMode) => void;
   setMonth: (year: number, month: number) => void;
   toggleSubject: (key: string) => void;
   resetSubjectFilters: () => void;
@@ -58,7 +56,6 @@ export const useScheduleStore = create<ScheduleStore>((set, get) => ({
   eventTypes: [],
   activeSemesterId: null,
   activeGroup: 'GS1',
-  activeView: 'calendar',
   currentYear: new Date().getFullYear(),
   currentMonth: new Date().getMonth(),
   activeSubjectKeys: new Set(),
@@ -141,8 +138,6 @@ export const useScheduleStore = create<ScheduleStore>((set, get) => ({
       set({ error: err.message, isLoading: false });
     }
   },
-
-  setActiveView: (view) => set({ activeView: view }),
 
   setMonth: (year, month) => set({ currentYear: year, currentMonth: month }),
 

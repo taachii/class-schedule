@@ -8,7 +8,6 @@ export const metadata: Metadata = {
   title: 'Plan Zajęć – I Rok Lekarski | SUM Zabrze 2026/2027',
   description:
     'Harmonogram zajęć dla I roku kierunku lekarskiego, Wydział Nauk Medycznych w Zabrzu, Śląski Uniwersytet Medyczny, semestr zimowy 2026/2027.',
-  manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',

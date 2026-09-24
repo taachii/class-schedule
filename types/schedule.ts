@@ -52,8 +52,6 @@ export interface EnrichedEvent extends ScheduleEvent {
   timeEndShort: string;   // 'HH:MM'
 }
 
-export type ViewMode = 'calendar' | 'list';
-
 // Group identifier used in tabs
 export type GroupKey = string; // 'GS1'...'GS12' | 'GW'
 

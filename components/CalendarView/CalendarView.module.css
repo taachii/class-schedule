@@ -99,7 +99,7 @@
 }
 
 .day.today {
-  background: var(--bg-overlay);
+  background: transparent;
 }
 
 .day.weekend .dayNum { color: #f87171; }
@@ -108,11 +108,19 @@
   font-size: 0.78rem;
   font-weight: 600;
   color: var(--text-muted);
-  margin-bottom: 4px;
+  margin-bottom: 12px;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
 }
 
 .today .dayNum {
-  color: var(--accent);
+  background: linear-gradient(135deg, #4f8ef7, #7c3aed);
+  color: white;
+  font-weight: 700;
 }
 
 /* Events */

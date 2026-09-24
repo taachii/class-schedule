@@ -6,11 +6,10 @@ import Header from '@/components/Header/Header';
 import GroupTabs from '@/components/GroupTabs/GroupTabs';
 import SubjectFilters from '@/components/SubjectFilters/SubjectFilters';
 import CalendarView from '@/components/CalendarView/CalendarView';
-import ListView from '@/components/ListView/ListView';
 import EventModal from '@/components/EventModal/EventModal';
 
 export default function SchedulePage() {
-  const { initialize, isLoading, error, activeView } = useScheduleStore();
+  const { initialize, isLoading, error } = useScheduleStore();
 
   useEffect(() => {
     initialize();
@@ -34,9 +33,7 @@ export default function SchedulePage() {
           </div>
         )}
         {!isLoading && !error && (
-          <>
-            {activeView === 'calendar' ? <CalendarView /> : <ListView />}
-          </>
+          <CalendarView />
         )}
       </main>
       <EventModal />
