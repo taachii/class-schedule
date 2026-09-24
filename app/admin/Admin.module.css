@@ -67,6 +67,21 @@
   gap: 20px;
 }
 
+.loginBox {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+  max-width: 400px;
+  margin: 40px auto;
+  text-align: center;
+}
+
+.loginBox h2 {
+  font-size: 1.5rem;
+  margin-bottom: 8px;
+}
+
 .row > div {
   flex: 1;
 }

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import type { Semester, Subject, EventType } from '@/types/schedule';
-import { addEventAction } from './actions';
+import { addEventAction, verifyPasswordAction } from './actions';
 import styles from './Admin.module.css';
 
 interface Props {
@@ -12,10 +12,12 @@ interface Props {
 }
 
 export default function AdminForm({ semesters, subjects, eventTypes }: Props) {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [password, setPassword] = useState('');
+  const [loginError, setLoginError] = useState('');
+
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState<{type: 'success' | 'error', message: string} | null>(null);
-  
-  const [password, setPassword] = useState('');
   
   // Form state
   const [formData, setFormData] = useState({
@@ -32,9 +34,21 @@ export default function AdminForm({ semesters, subjects, eventTypes }: Props) {
   const [seminarGroups, setSeminarGroups] = useState<string[]>([]);
   const [exerciseGroups, setExerciseGroups] = useState<string[]>([]);
 
-  // Helpers to generate GS and GC checkboxes
   const gsList = ['GW', ...Array.from({length: 12}, (_, i) => `GS${i+1}`)];
   const gcList = Array.from({length: 24}, (_, i) => `GC${i+1}`);
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setLoginError('');
+    const isValid = await verifyPasswordAction(password);
+    setLoading(false);
+    if (isValid) {
+      setIsAuthenticated(true);
+    } else {
+      setLoginError('Nieprawidłowe hasło');
+    }
+  };
 
   const handleGroupToggle = (group: string, list: string[], setList: (l: string[]) => void) => {
     if (list.includes(group)) {
@@ -46,11 +60,6 @@ export default function AdminForm({ semesters, subjects, eventTypes }: Props) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!password) {
-      setStatus({ type: 'error', message: 'Wprowadź hasło administratora.' });
-      return;
-    }
-
     setLoading(true);
     setStatus(null);
 
@@ -66,9 +75,6 @@ export default function AdminForm({ semesters, subjects, eventTypes }: Props) {
     setLoading(false);
     if (res.success) {
       setStatus({ type: 'success', message: 'Dodano zajęcia pomyślnie!' });
-      // Nie resetujemy daty i przedmiotu by ułatwić masowe wprowadzanie!
-      // setSeminarGroups([]);
-      // setExerciseGroups([]);
     } else {
       setStatus({ type: 'error', message: res.error || 'Wystąpił błąd' });
     }
@@ -78,6 +84,27 @@ export default function AdminForm({ semesters, subjects, eventTypes }: Props) {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
+
+  if (!isAuthenticated) {
+    return (
+      <form onSubmit={handleLogin} className={styles.loginBox}>
+        <h2>Zaloguj się</h2>
+        <p style={{ color: 'var(--text-muted)' }}>Podaj hasło administratora, aby uzyskać dostęp.</p>
+        <input 
+          type="password" 
+          value={password} 
+          onChange={e => setPassword(e.target.value)} 
+          className={styles.input} 
+          placeholder="Hasło..." 
+          required 
+        />
+        <button type="submit" className={styles.submitBtn} disabled={loading}>
+          {loading ? 'Weryfikacja...' : 'Zaloguj'}
+        </button>
+        {loginError && <div className={`${styles.statusMessage} ${styles.statusError}`}>{loginError}</div>}
+      </form>
+    );
+  }
 
   return (
     <form onSubmit={handleSubmit}>
@@ -160,15 +187,9 @@ export default function AdminForm({ semesters, subjects, eventTypes }: Props) {
         </div>
       </div>
 
-      <div className={styles.row}>
-        <div className={styles.formGroup}>
-          <label className={styles.label}>Sala (opcjonalnie)</label>
-          <input type="text" name="location" value={formData.location} onChange={handleChange} className={styles.input} />
-        </div>
-        <div className={styles.formGroup}>
-          <label className={styles.label}>Hasło Admina</label>
-          <input type="password" value={password} onChange={e => setPassword(e.target.value)} className={styles.input} required placeholder="Wymagane do zapisu" />
-        </div>
+      <div className={styles.formGroup}>
+        <label className={styles.label}>Sala (opcjonalnie)</label>
+        <input type="text" name="location" value={formData.location} onChange={handleChange} className={styles.input} />
       </div>
 
       <button type="submit" className={styles.submitBtn} disabled={loading}>

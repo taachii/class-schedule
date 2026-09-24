@@ -38,3 +38,8 @@ export async function addEventAction(eventData: any, password: string) {
 
   return { success: true, data };
 }
+
+export async function verifyPasswordAction(password: string) {
+  const adminPassword = process.env.ADMIN_PASSWORD || 'secret';
+  return password === adminPassword;
+}
