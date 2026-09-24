@@ -13,26 +13,32 @@
   max-width: 1400px;
   margin: 0 auto;
   padding: 14px 24px;
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  display: flex;
   align-items: center;
-  gap: 16px;
+  justify-content: center;
+  position: relative;
+  min-height: 72px;
 }
 
 .left {
+  position: absolute;
+  left: 24px;
   display: flex;
-  justify-content: flex-start;
+  align-items: center;
 }
 
 .center {
   display: flex;
   justify-content: center;
   text-align: center;
+  padding: 0 80px;
 }
 
 .right {
+  position: absolute;
+  right: 24px;
   display: flex;
-  justify-content: flex-end;
+  align-items: center;
 }
 
 .backBtn {
@@ -131,7 +137,12 @@
 @media (max-width: 1024px) {
   .inner {
     padding: 10px 16px;
+    min-height: 64px;
   }
+  
+  .left { left: 16px; }
+  .right { right: 16px; }
+  .center { padding: 0 60px; }
   
   .title {
     font-size: 1.15rem;
