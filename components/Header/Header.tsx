@@ -4,7 +4,7 @@ import { useScheduleStore } from '@/store/scheduleStore';
 import styles from './Header.module.css';
 
 export default function Header() {
-  const { semesters, activeSemesterId, activeGroup, setActiveGroup, activeYearNumber, setActiveYearNumber } =
+  const { semesters, activeSemesterId, activeGroup, setActiveGroup, activeYearNumber, setActiveYearNumber, isAdmin } =
     useScheduleStore();
 
   const activeSemester = semesters.find(s => s.id === activeSemesterId);
@@ -32,7 +32,10 @@ export default function Header() {
 
         <div className={styles.center}>
           <div className={styles.brandText}>
-            <h1 className={styles.title}>Plan Zajęć</h1>
+            <h1 className={styles.title}>
+              Plan Zajęć
+              {isAdmin && <span style={{ color: '#ef4444' }}> - Tryb Edycji</span>}
+            </h1>
             <p className={styles.subtitle}>
               {activeYearNumber ? `${['I', 'II', 'III', 'IV', 'V', 'VI'][activeYearNumber - 1]} Rok` : ''}
               {activeSemester ? `${activeYearNumber ? ' - ' : ''}${activeSemester.label}` : ''}
