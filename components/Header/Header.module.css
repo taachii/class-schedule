@@ -12,17 +12,17 @@
 .inner {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 14px 24px;
+  padding: 24px 32px;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
-  min-height: 72px;
+  min-height: 88px;
 }
 
 .left {
   position: absolute;
-  left: 24px;
+  left: 32px;
   display: flex;
   align-items: center;
 }
@@ -36,7 +36,7 @@
 
 .right {
   position: absolute;
-  right: 24px;
+  right: 32px;
   display: flex;
   align-items: center;
 }
@@ -63,12 +63,12 @@
 .brandText { 
   display: flex; 
   flex-direction: column; 
-  gap: 2px; 
+  gap: 4px; 
   align-items: center;
 }
 
 .title {
-  font-size: 1.4rem;
+  font-size: 1.7rem;
   font-weight: 700;
   background: linear-gradient(135deg, var(--brand-start), var(--brand-end));
   -webkit-background-clip: text;
@@ -78,7 +78,7 @@
 }
 
 .subtitle {
-  font-size: 0.85rem;
+  font-size: 0.95rem;
   color: var(--text-muted);
   font-weight: 400;
 }
