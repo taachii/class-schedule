@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { Subject, ScheduleEvent, Semester, EventType, ViewMode, GroupKey, EnrichedEvent } from '@/types/schedule';
+import type { Subject, ScheduleEvent, Semester, EventType, GroupKey, EnrichedEvent } from '@/types/schedule';
 import { fetchEventsForGroup, fetchSubjects, fetchSemesters, fetchEventTypes } from '@/lib/supabase/queries';
 
 const YEAR_NUMBER = 1; // I Rok Lekarski — expand later for other years
