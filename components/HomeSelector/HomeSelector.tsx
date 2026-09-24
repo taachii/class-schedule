@@ -46,7 +46,7 @@ export default function HomeSelector() {
             </svg>
           </div>
           <p className={styles.subtitle}>Wydział Nauk Medycznych w Zabrzu</p>
-          <h1 className={styles.title}>Wybierz swój plan</h1>
+          <h1 className={styles.title}>Plany zajęć dla kierunku lekarskiego</h1>
         </div>
 
         <div className={styles.grid}>
