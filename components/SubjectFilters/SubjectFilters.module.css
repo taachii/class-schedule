@@ -1,5 +1,5 @@
 .filterBar {
-  max-width: 850px;
+  max-width: 1200px;
   width: calc(100% - 48px);
   margin: 16px auto;
   background: var(--bg-elevated);
