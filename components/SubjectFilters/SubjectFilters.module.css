@@ -1,5 +1,6 @@
 .filterBar {
-  max-width: 1400px;
+  max-width: 850px;
+  width: calc(100% - 48px);
   margin: 16px auto;
   background: var(--bg-elevated);
   border: 1px solid var(--border);
@@ -109,7 +110,8 @@
 
 @media (max-width: 768px) {
   .filterBar {
-    margin: 16px 12px;
+    margin: 16px auto;
+    width: calc(100% - 24px);
   }
   .inner {
     gap: 8px;
