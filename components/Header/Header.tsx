@@ -34,8 +34,8 @@ export default function Header() {
           <div className={styles.brandText}>
             <h1 className={styles.title}>Plan Zajęć</h1>
             <p className={styles.subtitle}>
-              {activeYearNumber ? `${['I', 'II', 'III', 'IV', 'V', 'VI'][activeYearNumber - 1]} Rok Lekarski` : 'Kierunek Lekarski'}
-              {activeSemester ? ` - ${activeSemester.label}` : ''}
+              {activeYearNumber ? `${['I', 'II', 'III', 'IV', 'V', 'VI'][activeYearNumber - 1]} Rok` : ''}
+              {activeSemester ? `${activeYearNumber ? ' - ' : ''}${activeSemester.label}` : ''}
             </p>
           </div>
         </div>
