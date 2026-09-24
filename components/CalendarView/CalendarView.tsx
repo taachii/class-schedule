@@ -97,6 +97,7 @@ export default function CalendarView({ onEventClick }: CalendarViewProps) {
           isOther ? styles.otherMonth : '',
           isToday ? styles.today : '',
           isWeekend ? styles.weekend : '',
+          isAdmin ? styles.adminDayClickable : ''
         ].filter(Boolean).join(' ')}
         onClick={() => { if (isAdmin) setAdminAddDate(dateStr); }}
       >
