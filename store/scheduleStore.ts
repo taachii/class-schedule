@@ -28,8 +28,8 @@ interface ScheduleStore {
   enrichedEvents: EnrichedEvent[];
 
   // ── Actions ──────────────────────────────────────────────────
-  initialize: () => Promise<void>;
-  setActiveYearNumber: (year: number | null) => void;
+  initialize: (forcedSemesterId?: number) => Promise<void>;
+  setActiveYearNumber: (year: number | null, semesterId?: number) => void;
   setActiveGroup: (group: GroupKey) => void;
   setMonth: (year: number, month: number) => void;
   toggleSubject: (key: string) => void;
@@ -71,7 +71,7 @@ export const useScheduleStore = create<ScheduleStore>()(
   enrichedEvents: [],
 
   // ── initialize ───────────────────────────────────────────────
-  initialize: async () => {
+  initialize: async (forcedSemesterId?: number) => {
     const { activeYearNumber } = get();
     if (activeYearNumber === null) return;
     
@@ -92,7 +92,7 @@ export const useScheduleStore = create<ScheduleStore>()(
         return now.getMonth() >= 1 && now.getMonth() <= 5;
       }) ?? semesters[0];
 
-      const semesterId = currentSemester?.id ?? semesters[0]?.id;
+      const semesterId = forcedSemesterId ?? currentSemester?.id ?? semesters[0]?.id;
       const subjects = semesterId ? await fetchSubjects(semesterId) : [];
       const events = semesterId ? await fetchEventsForGroup(semesterId, 'GS1') : [];
       const enrichedEvents = enrichEvents(events, subjects);
@@ -113,10 +113,10 @@ export const useScheduleStore = create<ScheduleStore>()(
   },
 
   // ── setActiveYearNumber ────────────────────────────────────────
-  setActiveYearNumber: (year: number | null) => {
+  setActiveYearNumber: (year: number | null, semesterId?: number) => {
     set({ activeYearNumber: year });
     if (year !== null) {
-      get().initialize();
+      get().initialize(semesterId);
     }
   },
 
