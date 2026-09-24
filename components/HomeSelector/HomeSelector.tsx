@@ -1,13 +1,29 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { useScheduleStore } from '@/store/scheduleStore';
+import { fetchAllSemesters } from '@/lib/supabase/queries';
+import type { Semester } from '@/types/schedule';
 import styles from './HomeSelector.module.css';
 
-const START_YEAR = 2026;
 const ROMAN_NUMERALS = ['I', 'II', 'III', 'IV', 'V', 'VI'];
 
 export default function HomeSelector() {
   const { setActiveYearNumber } = useScheduleStore();
+  const [allSemesters, setAllSemesters] = useState<Semester[]>([]);
+  const [expandedYear, setExpandedYear] = useState<number | null>(null);
+
+  useEffect(() => {
+    fetchAllSemesters().then(setAllSemesters).catch(console.error);
+  }, []);
+
+  const handleYearClick = (year: number) => {
+    setExpandedYear(expandedYear === year ? null : year);
+  };
+
+  const handleSemesterSelect = (year: number, semesterId: number) => {
+    setActiveYearNumber(year, semesterId);
+  };
 
   return (
     <div className={styles.wrapper}>
@@ -31,17 +47,46 @@ export default function HomeSelector() {
 
         <div className={styles.grid}>
           {[1, 2, 3, 4, 5, 6].map((year) => {
+            const isExpanded = expandedYear === year;
+            const winterSemester = allSemesters.find(s => s.year_number === year && s.semester_no === 1);
+            const summerSemester = allSemesters.find(s => s.year_number === year && s.semester_no === 2);
+
             return (
-              <button
-                key={year}
-                className={styles.card}
-                onClick={() => setActiveYearNumber(year)}
-              >
-                <div className={styles.cardContent}>
-                  <h2 className={styles.yearTitle}>{ROMAN_NUMERALS[year - 1]} Rok</h2>
-                </div>
-                <div className={styles.cardArrow}>&rarr;</div>
-              </button>
+              <div key={year} className={styles.cardWrapper}>
+                <button
+                  className={`${styles.card} ${isExpanded ? styles.expandedCard : ''}`}
+                  onClick={() => handleYearClick(year)}
+                >
+                  <div className={styles.cardContent}>
+                    <h2 className={styles.yearTitle}>{ROMAN_NUMERALS[year - 1]} Rok</h2>
+                  </div>
+                  <div className={`${styles.cardArrow} ${isExpanded ? styles.rotatedArrow : ''}`}>
+                    &darr;
+                  </div>
+                </button>
+
+                {isExpanded && (
+                  <div className={styles.accordionContent}>
+                    <button
+                      className={`${styles.semesterBtn} ${!winterSemester ? styles.disabledBtn : ''}`}
+                      disabled={!winterSemester}
+                      onClick={() => winterSemester && handleSemesterSelect(year, winterSemester.id)}
+                    >
+                      <span className={styles.semesterName}>Semestr Zimowy</span>
+                      {!winterSemester && <span className={styles.badge}>Brak</span>}
+                    </button>
+                    
+                    <button
+                      className={`${styles.semesterBtn} ${!summerSemester ? styles.disabledBtn : ''}`}
+                      disabled={!summerSemester}
+                      onClick={() => summerSemester && handleSemesterSelect(year, summerSemester.id)}
+                    >
+                      <span className={styles.semesterName}>Semestr Letni</span>
+                      {!summerSemester && <span className={styles.badge}>Brak</span>}
+                    </button>
+                  </div>
+                )}
+              </div>
             );
           })}
         </div>
