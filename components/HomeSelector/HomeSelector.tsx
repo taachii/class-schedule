@@ -54,7 +54,7 @@ export default function HomeSelector() {
             const isExpanded = expandedYear === year;
             const winterSemester = allSemesters.find(s => s.year_number === year && s.semester_no === 1);
             // Tymczasowo wymuszamy brak semestru letniego (zgodnie z prośbą)
-            const summerSemester = null; // allSemesters.find(s => s.year_number === year && s.semester_no === 2);
+            const summerSemester = null as Semester | null; // allSemesters.find(s => s.year_number === year && s.semester_no === 2);
 
             const hasAnySemesters = allSemesters.some(s => s.year_number === year);
 
