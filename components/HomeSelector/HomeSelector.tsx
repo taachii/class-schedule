@@ -30,15 +30,13 @@ export default function HomeSelector() {
       <div className={styles.container}>
         <div className={styles.header}>
           <div className={styles.logoIcon}>
-            <svg width="48" height="48" viewBox="0 0 36 36" fill="none">
-              <rect width="36" height="36" rx="10" fill="url(#logoGradHome)" />
-              <path d="M18 8v20M8 18h20" stroke="white" strokeWidth="3" strokeLinecap="round" />
-              <defs>
-                <linearGradient id="logoGradHome" x1="0" y1="0" x2="36" y2="36" gradientUnits="userSpaceOnUse">
-                  <stop stopColor="#4f8ef7" />
-                  <stop offset="1" stopColor="#7c3aed" />
-                </linearGradient>
-              </defs>
+            <svg width="240" viewBox="0 15 245 50" fill="none" stroke="#ec4899" strokeWidth="6" strokeLinecap="butt">
+              <path d="M 15 40 A 18 18 0 0 0 51 40" />
+              <path d="M 35 40 A 18 18 0 0 1 71 40" />
+              <path d="M 85 22 V 40 A 18 18 0 0 0 121 40 V 22" />
+              <path d="M 135 58 V 40 A 18 18 0 0 1 171 40 V 58" />
+              <path d="M 171 40 A 18 18 0 0 1 207 40 V 58" />
+              <path d="M 218 50 H 232 M 225 43 V 57" strokeWidth="5" />
             </svg>
           </div>
           <h1 className={styles.title}>Wybierz swój plan</h1>
