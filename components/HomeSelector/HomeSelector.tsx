@@ -30,7 +30,13 @@ export default function HomeSelector() {
       <div className={styles.container}>
         <div className={styles.header}>
           <div className={styles.logoIcon}>
-            <svg width="240" viewBox="0 15 230 60" fill="none" stroke="#ec4899" strokeWidth="6" strokeLinecap="butt">
+            <svg width="240" viewBox="0 15 230 60" fill="none" stroke="url(#sumGradient)" strokeWidth="6" strokeLinecap="butt">
+              <defs>
+                <linearGradient id="sumGradient" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stopColor="#ec4899" />
+                  <stop offset="100%" stopColor="#7c3aed" />
+                </linearGradient>
+              </defs>
               <path d="M 15 40 A 18 18 0 0 0 51 40" />
               <path d="M 35 40 A 18 18 0 0 1 71 40" />
               <path d="M 85 22 V 40 A 18 18 0 0 0 121 40 V 22" />
