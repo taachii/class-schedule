@@ -7,13 +7,20 @@ import GroupTabs from '@/components/GroupTabs/GroupTabs';
 import SubjectFilters from '@/components/SubjectFilters/SubjectFilters';
 import CalendarView from '@/components/CalendarView/CalendarView';
 import EventModal from '@/components/EventModal/EventModal';
+import HomeSelector from '@/components/HomeSelector/HomeSelector';
 
 export default function SchedulePage() {
-  const { initialize, isLoading, error } = useScheduleStore();
+  const { activeYearNumber, initialize, isLoading, error } = useScheduleStore();
 
   useEffect(() => {
-    initialize();
-  }, [initialize]);
+    if (activeYearNumber !== null) {
+      initialize();
+    }
+  }, [initialize, activeYearNumber]);
+
+  if (activeYearNumber === null) {
+    return <HomeSelector />;
+  }
 
   return (
     <>

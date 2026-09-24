@@ -1,0 +1,121 @@
+.wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  background: var(--bg-base);
+}
+
+.container {
+  width: 100%;
+  max-width: 800px;
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 12px;
+}
+
+.logoIcon {
+  margin-bottom: 8px;
+  filter: drop-shadow(0 0 16px rgba(79, 142, 247, 0.4));
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+  100% { transform: translateY(0px); }
+}
+
+.title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--brand-start), var(--brand-end));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.02em;
+}
+
+.subtitle {
+  font-size: 1rem;
+  color: var(--text-muted);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  color: var(--text-primary);
+}
+
+.card:hover {
+  transform: translateY(-4px) scale(1.02);
+  background: var(--bg-elevated);
+  border-color: var(--accent);
+  box-shadow: 0 12px 24px -8px rgba(124, 58, 237, 0.25);
+}
+
+.cardContent {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.yearTitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.cohortText {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.cardArrow {
+  font-size: 1.5rem;
+  color: var(--text-muted);
+  transition: all var(--transition);
+  opacity: 0.5;
+}
+
+.card:hover .cardArrow {
+  color: var(--accent);
+  opacity: 1;
+  transform: translateX(4px);
+}
+
+@media (max-width: 600px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+  .wrapper {
+    padding: 32px 16px;
+    align-items: flex-start;
+  }
+  .title {
+    font-size: 1.75rem;
+  }
+}
