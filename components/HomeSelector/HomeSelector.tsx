@@ -45,8 +45,8 @@ export default function HomeSelector() {
               <path d="M 207 50 V 66 M 199 58 H 215" strokeWidth="4" />
             </svg>
           </div>
-          <h1 className={styles.title}>Wybierz swój plan</h1>
           <p className={styles.subtitle}>Wydział Nauk Medycznych w Zabrzu</p>
+          <h1 className={styles.title}>Wybierz swój plan</h1>
         </div>
 
         <div className={styles.grid}>
