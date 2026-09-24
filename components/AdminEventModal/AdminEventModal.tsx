@@ -55,6 +55,7 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
 
     const payload = {
       ...formData,
+      location: formData.location || null,
       semester_id: parseInt(formData.semester_id),
       seminar_groups: seminarGroups,
       exercise_groups: exerciseGroups,
@@ -95,6 +96,9 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
+
+  const selectedSubject = subjects.find(s => s.key === formData.subject_key);
+  const defaultLocation = selectedSubject?.location || 'Brak domyślnej lokalizacji';
 
   return (
     <div className={styles.overlay} onClick={onClose}>
@@ -164,8 +168,8 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
 
           <div className={styles.row}>
             <div>
-              <label className={styles.label}>Sala (opcjonalnie)</label>
-              <input type="text" name="location" value={formData.location} onChange={handleChange} className={styles.input} />
+              <label className={styles.label}>Lokalizacja (zostaw puste by użyć domyślnej)</label>
+              <input type="text" name="location" value={formData.location} onChange={handleChange} className={styles.input} placeholder={defaultLocation} />
             </div>
           </div>
 
