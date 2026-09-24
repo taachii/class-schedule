@@ -18,7 +18,9 @@ export default function SubjectFilters() {
   return (
     <div className={styles.filterBar}>
       <div className={styles.inner}>
-        <span className={styles.label}>Filtruj przedmioty:</span>
+        <button className={styles.reset} onClick={clearSubjectFilters}>
+          Ukryj wszystko
+        </button>
         <div className={styles.chips} role="group" aria-label="Filtry przedmiotów">
           {subjects.map(s => {
             const isActive = activeSubjectKeys.has(s.key);
@@ -38,14 +40,9 @@ export default function SubjectFilters() {
             );
           })}
         </div>
-        <div className={styles.controls}>
-          <button className={styles.reset} onClick={resetSubjectFilters}>
-            Pokaż wszystko
-          </button>
-          <button className={styles.reset} onClick={clearSubjectFilters}>
-            Ukryj wszystko
-          </button>
-        </div>
+        <button className={styles.reset} onClick={resetSubjectFilters}>
+          Pokaż wszystko
+        </button>
       </div>
     </div>
   );

@@ -10,20 +10,18 @@
 .inner {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 12px;
   flex-wrap: wrap;
 }
 
 .label {
-  font-size: 0.78rem;
-  font-weight: 600;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  display: none;
 }
 
 .chips {
   display: flex;
+  justify-content: center;
   gap: 6px;
   flex-wrap: wrap;
   flex: 1;
