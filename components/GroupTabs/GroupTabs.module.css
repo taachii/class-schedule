@@ -64,7 +64,7 @@
   color: #c4b5fd;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .nav {
     display: none;
   }
