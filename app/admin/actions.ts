@@ -39,6 +39,46 @@ export async function addEventAction(eventData: any, password: string) {
   return { success: true, data };
 }
 
+export async function deleteEventAction(id: string, password: string) {
+  const adminPassword = process.env.ADMIN_PASSWORD || 'secret';
+  if (password !== adminPassword) {
+    return { success: false, error: 'Nieprawidłowe hasło administratora.' };
+  }
+
+  const { error } = await supabaseAdmin.from('events').delete().eq('id', id);
+
+  if (error) {
+    console.error('Błąd usuwania zajęć:', error);
+    return { success: false, error: error.message };
+  }
+
+  return { success: true };
+}
+
+export async function updateEventAction(id: string, eventData: any, password: string) {
+  const adminPassword = process.env.ADMIN_PASSWORD || 'secret';
+  if (password !== adminPassword) {
+    return { success: false, error: 'Nieprawidłowe hasło administratora.' };
+  }
+
+  const formatTime = (t: string) => (t.length === 5 ? `${t}:00` : t);
+
+  const updatedEvent = {
+    ...eventData,
+    time_start: formatTime(eventData.time_start),
+    time_end: formatTime(eventData.time_end),
+  };
+
+  const { data, error } = await supabaseAdmin.from('events').update(updatedEvent).eq('id', id);
+
+  if (error) {
+    console.error('Błąd edycji zajęć:', error);
+    return { success: false, error: error.message };
+  }
+
+  return { success: true, data };
+}
+
 export async function verifyPasswordAction(password: string) {
   const adminPassword = process.env.ADMIN_PASSWORD || 'secret';
   return password === adminPassword;

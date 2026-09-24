@@ -36,6 +36,12 @@ interface ScheduleStore {
   resetSubjectFilters: () => void;
   clearSubjectFilters: () => void;
   setActiveSemester: (semesterId: number) => void;
+
+  // ── Admin ────────────────────────────────────────────────────
+  isAdmin: boolean;
+  adminPassword: string | null;
+  setAdminAuth: (password: string) => void;
+  logoutAdmin: () => void;
 }
 
 function enrichEvents(events: ScheduleEvent[], subjects: Subject[]): EnrichedEvent[] {
@@ -172,6 +178,12 @@ export const useScheduleStore = create<ScheduleStore>()(
   clearSubjectFilters: () => set({
     activeSubjectKeys: new Set(),
   }),
+
+  // ── Admin ────────────────────────────────────────────────────
+  isAdmin: false,
+  adminPassword: null,
+  setAdminAuth: (password) => set({ isAdmin: true, adminPassword: password }),
+  logoutAdmin: () => set({ isAdmin: false, adminPassword: null }),
 }), {
   name: 'class-schedule-storage',
   partialize: (state) => ({
