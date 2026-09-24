@@ -28,6 +28,11 @@
   animation: float 3s ease-in-out infinite;
 }
 
+.logoIcon svg {
+  width: 340px;
+  height: auto;
+}
+
 @keyframes float {
   0% { transform: translateY(0px); }
   50% { transform: translateY(-8px); }
@@ -42,11 +47,11 @@
   -webkit-text-fill-color: transparent;
   background-clip: text;
   letter-spacing: -0.02em;
-  margin-top: 32px;
+  margin-top: 64px;
 }
 
 .subtitle {
-  font-size: 1rem;
+  font-size: 1.25rem;
   font-weight: 500;
   color: #ec4899;
   letter-spacing: 0.02em;
@@ -185,5 +190,11 @@
   .title {
     font-size: 1.75rem;
     margin-top: 64px;
+  }
+  .logoIcon svg {
+    width: 240px;
+  }
+  .subtitle {
+    font-size: 1rem;
   }
 }
