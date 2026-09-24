@@ -287,6 +287,9 @@
     padding: 2px 4px;
     border-left-width: 2px;
   }
+  .chipTime {
+    display: none;
+  }
   /* Mobile Modal - Bottom Sheet Style */
   .modalOverlay {
     align-items: flex-end;
