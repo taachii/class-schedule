@@ -90,8 +90,9 @@
 }
 .day:nth-child(7n) { border-right: none; }
 .day::-webkit-scrollbar { display: none; }
-
-.day:hover { background: var(--bg-overlay); }
+.day:hover { 
+  /* background: var(--bg-overlay); removed per request */
+}
 
 .day.otherMonth .dayNum,
 .day.otherMonth .events { 
