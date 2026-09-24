@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useScheduleStore } from '@/store/scheduleStore';
 import type { EnrichedEvent } from '@/types/schedule';
+import AdminEventModal from '../AdminEventModal/AdminEventModal';
 import styles from './CalendarView.module.css';
 
 const MONTH_NAMES_PL = [
@@ -20,8 +21,9 @@ interface CalendarViewProps {
 }
 
 export default function CalendarView({ onEventClick }: CalendarViewProps) {
-  const { enrichedEvents, activeSubjectKeys, currentYear, currentMonth, setMonth } = useScheduleStore();
+  const { enrichedEvents, activeSubjectKeys, currentYear, currentMonth, setMonth, isAdmin, initialize } = useScheduleStore();
   const [selectedEvent, setSelectedEvent] = useState<EnrichedEvent | null>(null);
+  const [adminAddDate, setAdminAddDate] = useState<string | null>(null);
 
   const filtered = enrichedEvents.filter(ev => activeSubjectKeys.has(ev.subject_key));
 
@@ -96,6 +98,7 @@ export default function CalendarView({ onEventClick }: CalendarViewProps) {
           isToday ? styles.today : '',
           isWeekend ? styles.weekend : '',
         ].filter(Boolean).join(' ')}
+        onClick={() => { if (isAdmin) setAdminAddDate(dateStr); }}
       >
         <div className={styles.dayNum}>{day}</div>
         <div className={styles.events}>
@@ -105,7 +108,7 @@ export default function CalendarView({ onEventClick }: CalendarViewProps) {
               className={styles.eventChip}
               style={{ '--ev-color': ev.subject.color } as React.CSSProperties}
               title={`${ev.subject.label} (${ev.timeStartShort}–${ev.timeEndShort})`}
-              onClick={() => setSelectedEvent(ev)}
+              onClick={(e) => { e.stopPropagation(); setSelectedEvent(ev); }}
             >
                 <span className={styles.chipTime}>{ev.timeStartShort} </span>
                 <span className={styles.chipText}>{ev.subject.short_label} [{ev.type}]</span>
@@ -143,8 +146,26 @@ export default function CalendarView({ onEventClick }: CalendarViewProps) {
         </div>
       </div>
 
-      {/* Inline modal */}
-      {selectedEvent && (
+      {/* Admin Add Modal */}
+      {isAdmin && adminAddDate && (
+        <AdminEventModal 
+          initialDate={adminAddDate} 
+          onClose={() => setAdminAddDate(null)} 
+          onSuccess={() => { setAdminAddDate(null); initialize(); }} 
+        />
+      )}
+
+      {/* Admin Edit Modal */}
+      {isAdmin && selectedEvent && (
+        <AdminEventModal 
+          initialEvent={selectedEvent} 
+          onClose={() => setSelectedEvent(null)} 
+          onSuccess={() => { setSelectedEvent(null); initialize(); }} 
+        />
+      )}
+
+      {/* User View Modal */}
+      {!isAdmin && selectedEvent && (
         <EventDetailModal event={selectedEvent} onClose={() => setSelectedEvent(null)} />
       )}
     </div>
