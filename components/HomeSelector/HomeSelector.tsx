@@ -31,8 +31,6 @@ export default function HomeSelector() {
 
         <div className={styles.grid}>
           {[1, 2, 3, 4, 5, 6].map((year) => {
-            const cohortStart = START_YEAR - year + 1;
-            const cohortLabel = `${cohortStart}/${cohortStart + 1}`;
             return (
               <button
                 key={year}
@@ -41,7 +39,6 @@ export default function HomeSelector() {
               >
                 <div className={styles.cardContent}>
                   <h2 className={styles.yearTitle}>{ROMAN_NUMERALS[year - 1]} Rok</h2>
-                  <p className={styles.cohortText}>Rocznik {cohortLabel}</p>
                 </div>
                 <div className={styles.cardArrow}>&rarr;</div>
               </button>
