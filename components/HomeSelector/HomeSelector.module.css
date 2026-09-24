@@ -47,7 +47,9 @@
 
 .subtitle {
   font-size: 1rem;
-  color: var(--text-muted);
+  font-weight: 500;
+  color: #c084fc;
+  letter-spacing: 0.02em;
 }
 
 .grid {
