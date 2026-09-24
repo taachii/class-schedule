@@ -55,18 +55,23 @@ export default function HomeSelector() {
             const winterSemester = allSemesters.find(s => s.year_number === year && s.semester_no === 1);
             const summerSemester = allSemesters.find(s => s.year_number === year && s.semester_no === 2);
 
+            const hasAnySemesters = allSemesters.some(s => s.year_number === year);
+
             return (
               <div key={year} className={styles.cardWrapper}>
                 <button
-                  className={`${styles.card} ${isExpanded ? styles.expandedCard : ''}`}
+                  className={`${styles.card} ${isExpanded ? styles.expandedCard : ''} ${!hasAnySemesters ? styles.disabledCard : ''}`}
                   onClick={() => handleYearClick(year)}
+                  disabled={!hasAnySemesters}
                 >
                   <div className={styles.cardContent}>
                     <h2 className={styles.yearTitle}>{ROMAN_NUMERALS[year - 1]} Rok</h2>
                   </div>
-                  <div className={`${styles.cardArrow} ${isExpanded ? styles.rotatedArrow : ''}`}>
-                    &darr;
-                  </div>
+                  {hasAnySemesters && (
+                    <div className={`${styles.cardArrow} ${isExpanded ? styles.rotatedArrow : ''}`}>
+                      &darr;
+                    </div>
+                  )}
                 </button>
 
                 {isExpanded && (
