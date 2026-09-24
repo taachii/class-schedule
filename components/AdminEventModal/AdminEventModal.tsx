@@ -55,7 +55,7 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
 
     const payload = {
       ...formData,
-      location: formData.location || null,
+      location: formData.location || (formData.type === 'W' ? 'MS Teams - online' : null),
       semester_id: parseInt(formData.semester_id),
       seminar_groups: seminarGroups,
       exercise_groups: exerciseGroups,
@@ -98,7 +98,9 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
   };
 
   const selectedSubject = subjects.find(s => s.key === formData.subject_key);
-  const defaultLocation = selectedSubject?.location || 'Brak domyślnej lokalizacji';
+  const defaultLocation = formData.type === 'W' 
+    ? 'MS Teams - online' 
+    : (selectedSubject?.location || 'Brak domyślnej lokalizacji');
 
   return (
     <div className={styles.overlay} onClick={onClose}>
