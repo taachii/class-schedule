@@ -12,7 +12,7 @@
   max-width: 800px;
   display: flex;
   flex-direction: column;
-  gap: 48px;
+  gap: 24px;
 }
 
 .header {
@@ -20,11 +20,10 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: 12px;
+  gap: 4px;
 }
 
 .logoIcon {
-  margin-bottom: 8px;
   filter: drop-shadow(0 0 24px rgba(217, 70, 239, 0.45));
   animation: float 3s ease-in-out infinite;
 }
@@ -43,6 +42,7 @@
   -webkit-text-fill-color: transparent;
   background-clip: text;
   letter-spacing: -0.02em;
+  margin-top: 32px;
 }
 
 .subtitle {
@@ -50,6 +50,7 @@
   font-weight: 500;
   color: #ec4899;
   letter-spacing: 0.02em;
+  text-shadow: 0 0 24px rgba(217, 70, 239, 0.45);
 }
 
 .grid {
