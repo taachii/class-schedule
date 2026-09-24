@@ -179,10 +179,11 @@
     font-size: 0.9rem;
   }
   .wrapper {
-    padding: 32px 16px;
+    padding: 80px 16px 32px;
     align-items: flex-start;
   }
   .title {
     font-size: 1.75rem;
+    margin-top: 64px;
   }
 }
