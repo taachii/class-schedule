@@ -78,3 +78,17 @@ export async function fetchEventsForGroup(
   if (error) throw error;
   return data ?? [];
 }
+
+/**
+ * Fetch all available semesters in the system.
+ */
+export async function fetchAllSemesters(): Promise<Semester[]> {
+  const { data, error } = await supabase
+    .from('semesters')
+    .select('*')
+    .order('year_number', { ascending: true })
+    .order('semester_no', { ascending: true });
+
+  if (error) throw error;
+  return data ?? [];
+}
