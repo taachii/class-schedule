@@ -90,9 +90,14 @@
   background: var(--bg-elevated);
 }
 
-.card:hover {
+.card:hover:not(.disabledCard) {
   background: var(--bg-elevated);
   border-color: var(--accent);
+}
+
+.disabledCard {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
 .cardContent {
