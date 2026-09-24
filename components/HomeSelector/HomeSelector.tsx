@@ -35,8 +35,8 @@ export default function HomeSelector() {
               <path d="M 35 40 A 18 18 0 0 1 71 40" />
               <path d="M 85 22 V 40 A 18 18 0 0 0 121 40 V 22" />
               <path d="M 135 58 V 40 A 18 18 0 0 1 171 40 V 58" />
-              <path d="M 171 40 A 18 18 0 0 1 207 40 V 67" />
-              <path d="M 196 56 H 218" />
+              <path d="M 171 40 A 18 18 0 0 1 207 40" />
+              <path d="M 207 50 V 66 M 199 58 H 215" />
             </svg>
           </div>
           <h1 className={styles.title}>Wybierz swój plan</h1>
