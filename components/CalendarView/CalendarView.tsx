@@ -107,7 +107,8 @@ export default function CalendarView({ onEventClick }: CalendarViewProps) {
               title={`${ev.subject.label} (${ev.timeStartShort}–${ev.timeEndShort})`}
               onClick={() => setSelectedEvent(ev)}
             >
-              {ev.timeStartShort} {ev.subject.short_label} [{ev.type}]
+                <span className={styles.chipTime}>{ev.timeStartShort} </span>
+                <span className={styles.chipText}>{ev.subject.short_label} [{ev.type}]</span>
             </div>
           ))}
         </div>

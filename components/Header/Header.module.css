@@ -130,30 +130,31 @@
 
 @media (max-width: 1024px) {
   .inner {
-    flex-direction: column;
-    align-items: stretch;
-    padding: 12px 16px;
-    gap: 12px;
+    padding: 10px 16px;
   }
-  .brand {
-    justify-content: center;
+  
+  .title {
+    font-size: 1.15rem;
   }
-  .controls {
-    justify-content: space-between;
+
+  .subtitle {
+    font-size: 0.7rem;
   }
-  .viewToggle {
-    flex: 1;
-    justify-content: space-around;
+
+  .backBtn {
+    width: 36px;
+    height: 36px;
   }
-  .viewBtn {
-    flex: 1;
-    justify-content: center;
+
+  .backBtn svg {
+    width: 20px;
+    height: 20px;
   }
-  .semesterSelect {
-    flex: 1;
-  }
+
   .groupSelectMobile {
     display: block;
-    flex: 1;
+    padding: 6px 8px;
+    font-size: 0.75rem;
+    max-width: 70px;
   }
 }
