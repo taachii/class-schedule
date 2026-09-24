@@ -36,7 +36,7 @@ export default function Header() {
 
         <div className={styles.controls}>
           <select
-            className={styles.semesterSelect}
+            className={`${styles.semesterSelect} ${styles.groupSelectMobile}`}
             value={activeGroup ?? ''}
             onChange={e => setActiveGroup(e.target.value)}
             aria-label="Wybór grupy"

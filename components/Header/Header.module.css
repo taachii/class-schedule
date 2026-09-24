@@ -101,7 +101,11 @@
   box-shadow: 0 2px 8px rgba(79,142,247,0.3);
 }
 
-@media (max-width: 600px) {
+.groupSelectMobile {
+  display: none;
+}
+
+@media (max-width: 768px) {
   .inner {
     flex-direction: column;
     align-items: stretch;
@@ -123,6 +127,10 @@
     justify-content: center;
   }
   .semesterSelect {
+    flex: 1;
+  }
+  .groupSelectMobile {
+    display: block;
     flex: 1;
   }
 }
