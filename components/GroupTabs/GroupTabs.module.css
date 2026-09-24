@@ -20,13 +20,13 @@
 .tabs {
   display: flex;
   justify-content: center;
-  gap: 2px;
-  padding: 8px 0;
+  gap: 4px;
+  padding: 16px 0;
   white-space: nowrap;
 }
 
 .tab {
-  padding: 7px 16px;
+  padding: 10px 20px;
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   background: transparent;
