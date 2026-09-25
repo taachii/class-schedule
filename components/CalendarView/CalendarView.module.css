@@ -132,6 +132,10 @@
   border-radius: 50%;
 }
 
+.dayNum[title] {
+  cursor: help;
+}
+
 .today .dayNum {
   background: linear-gradient(135deg, #4f8ef7, #7c3aed);
   color: white;
