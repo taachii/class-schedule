@@ -173,6 +173,7 @@
     display: block;
     padding: 6px 8px;
     font-size: 0.75rem;
-    max-width: 70px;
+    max-width: 100px;
+    margin: 6px auto -2px;
   }
 }
