@@ -202,10 +202,22 @@ export default function DailyTimelineModal({ dateStr, events, onClose }: DailyTi
                         </div>
                         <h3 className={styles.eventName}>{ev.subject.label}</h3>
                         <div className={styles.eventMeta}>
+                          {ev.subject.department && (
+                            <span className={styles.metaItem}>
+                              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                              {ev.subject.department}
+                            </span>
+                          )}
                           {ev.resolvedLocation && (
                             <span className={styles.metaItem}>
                               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
                               {ev.resolvedLocation}
+                            </span>
+                          )}
+                          {ev.professor && (
+                            <span className={styles.metaItem}>
+                              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                              {ev.professor}
                             </span>
                           )}
                           {ev.subject.contact && (

@@ -29,6 +29,7 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
     time_start: initialEvent ? initialEvent.time_start.slice(0, 5) : '08:00',
     time_end: initialEvent ? initialEvent.time_end.slice(0, 5) : '09:30',
     location: initialEvent?.location || '',
+    professor: initialEvent?.professor || '',
     notes: initialEvent?.notes || '',
   });
 
@@ -172,6 +173,10 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
             <div>
               <label className={styles.label}>Lokalizacja (zostaw puste by użyć domyślnej)</label>
               <input type="text" name="location" value={formData.location} onChange={handleChange} className={styles.input} placeholder={defaultLocation} />
+            </div>
+            <div>
+              <label className={styles.label}>Prowadzący</label>
+              <input type="text" name="professor" value={formData.professor} onChange={handleChange} className={styles.input} placeholder="Imię i nazwisko prowadzącego" />
             </div>
           </div>
 
