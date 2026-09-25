@@ -39,7 +39,16 @@ export async function GET(request: Request) {
     if (isLectureGroup) {
       query = query.contains('seminar_groups', ['GW']);
     } else {
-      query = query.or(`seminar_groups.cs.{"GW"},seminar_groups.cs.{"${group}"}`);
+      const gsNumber = parseInt(group.replace('GS', ''));
+      if (!isNaN(gsNumber)) {
+        const gc1 = `GC${gsNumber * 2 - 1}`;
+        const gc2 = `GC${gsNumber * 2}`;
+        query = query.or(
+          `seminar_groups.cs.{"GW"},seminar_groups.cs.{"${group}"},exercise_groups.cs.{"${gc1}"},exercise_groups.cs.{"${gc2}"}`
+        );
+      } else {
+        query = query.or(`seminar_groups.cs.{"GW"},seminar_groups.cs.{"${group}"}`);
+      }
     }
 
     const { data: eventsData, error: evError } = await query;
