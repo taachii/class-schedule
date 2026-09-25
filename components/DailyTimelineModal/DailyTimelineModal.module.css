@@ -269,7 +269,7 @@
 }
 .metaItem {
   display: inline-flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 4px;
   font-size: 0.76rem;
   color: rgba(255, 255, 255, 0.7);
@@ -278,6 +278,7 @@
 .metaItem svg {
   flex-shrink: 0;
   opacity: 0.85;
+  margin-top: 2px;
 }
 
 /* ─── Current time line ─── */
