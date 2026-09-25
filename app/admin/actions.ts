@@ -9,11 +9,15 @@ function getSupabaseAdmin() {
   return createClient(url, key);
 }
 
+async function verifyAdminPassword(password: string) {
+  const supabaseAdmin = getSupabaseAdmin();
+  const { data } = await supabaseAdmin.from('admin_keys').select('id').eq('pass_key', password).single();
+  return !!data;
+}
+
 export async function addEventAction(eventData: any, password: string) {
-  // Proste zabezpieczenie hasłem (odczytywane ze zmiennych środowiskowych)
-  const adminPassword = process.env.ADMIN_PASSWORD || 'secret';
-  
-  if (password !== adminPassword) {
+  const isValid = await verifyAdminPassword(password);
+  if (!isValid) {
     return { success: false, error: 'Nieprawidłowe hasło administratora.' };
   }
 
@@ -41,8 +45,8 @@ export async function addEventAction(eventData: any, password: string) {
 }
 
 export async function deleteEventAction(id: string, password: string) {
-  const adminPassword = process.env.ADMIN_PASSWORD || 'secret';
-  if (password !== adminPassword) {
+  const isValid = await verifyAdminPassword(password);
+  if (!isValid) {
     return { success: false, error: 'Nieprawidłowe hasło administratora.' };
   }
 
@@ -58,8 +62,8 @@ export async function deleteEventAction(id: string, password: string) {
 }
 
 export async function updateEventAction(id: string, eventData: any, password: string) {
-  const adminPassword = process.env.ADMIN_PASSWORD || 'secret';
-  if (password !== adminPassword) {
+  const isValid = await verifyAdminPassword(password);
+  if (!isValid) {
     return { success: false, error: 'Nieprawidłowe hasło administratora.' };
   }
 
@@ -83,6 +87,5 @@ export async function updateEventAction(id: string, eventData: any, password: st
 }
 
 export async function verifyPasswordAction(password: string) {
-  const adminPassword = process.env.ADMIN_PASSWORD || 'secret';
-  return password === adminPassword;
+  return await verifyAdminPassword(password);
 }
