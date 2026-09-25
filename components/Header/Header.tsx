@@ -20,6 +20,14 @@ export default function Header() {
     <>
       <header className={styles.header}>
         <div className={styles.inner}>
+          <svg style={{ width: 0, height: 0, position: 'absolute' }} aria-hidden="true">
+            <defs>
+              <linearGradient id="backGrad" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
+                <stop stopColor="#4f8ef7" />
+                <stop offset="1" stopColor="#7c3aed" />
+              </linearGradient>
+            </defs>
+          </svg>
           <div className={styles.left}>
             {(!adminRole || adminRole.type === 'master') && (
               <button
@@ -29,12 +37,6 @@ export default function Header() {
                 title="Wróć do wyboru planu"
               >
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="url(#backGrad)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                  <defs>
-                    <linearGradient id="backGrad" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
-                      <stop stopColor="#4f8ef7" />
-                      <stop offset="1" stopColor="#7c3aed" />
-                    </linearGradient>
-                  </defs>
                   <path d="M19 12H5M12 19l-7-7 7-7" />
                 </svg>
               </button>
