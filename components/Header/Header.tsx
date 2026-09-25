@@ -20,6 +20,7 @@ export default function Header() {
             className={styles.backBtn} 
             onClick={() => setActiveYearNumber(null)}
             aria-label="Wróć"
+            title="Wróć do wyboru roku"
           >
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="url(#backGrad)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
               <defs>
@@ -62,6 +63,7 @@ export default function Header() {
             className={styles.backBtn} 
             onClick={() => setIsInfoOpen(true)}
             aria-label="Informacje o roku akademickim"
+            title="Organizacja roku akademickiego"
             style={{ marginLeft: '12px' }}
           >
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="url(#infoGrad)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
