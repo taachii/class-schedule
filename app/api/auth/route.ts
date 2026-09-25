@@ -1,5 +1,11 @@
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase/client';
+import { createClient } from '@supabase/supabase-js';
+
+function getSupabaseAdmin() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const key = process.env.SUPABASE_SERVICE_KEY!;
+  return createClient(url, key);
+}
 
 export async function POST(request: Request) {
   try {
@@ -9,8 +15,9 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Hasło jest wymagane.' }, { status: 400 });
     }
 
+    const supabaseAdmin = getSupabaseAdmin();
     // We fetch the matching admin key
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('admin_keys')
       .select('*')
       .eq('pass_key', password)
