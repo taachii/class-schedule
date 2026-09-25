@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { EnrichedEvent } from '@/types/schedule';
 import { useScheduleStore } from '@/store/scheduleStore';
 import styles from './DailyTimelineModal.module.css';
@@ -9,12 +9,25 @@ interface DailyTimelineModalProps {
   onClose: () => void;
 }
 
-const PIXELS_PER_MINUTE = 1.8;
-const PIXELS_PER_HOUR = 60 * PIXELS_PER_MINUTE;
+function useIsMobile(breakpoint = 768) {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth <= breakpoint);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, [breakpoint]);
+  return isMobile;
+}
 
 export default function DailyTimelineModal({ dateStr, events, onClose }: DailyTimelineModalProps) {
   const bodyRef = useRef<HTMLDivElement>(null);
   const { eventTypes } = useScheduleStore();
+  const isMobile = useIsMobile();
+
+  // More space per minute on mobile so short events aren't crushed
+  const PIXELS_PER_MINUTE = isMobile ? 2.6 : 1.8;
+  const PIXELS_PER_HOUR = 60 * PIXELS_PER_MINUTE;
 
   useEffect(() => {
     document.body.style.overflow = 'hidden';
@@ -42,7 +55,7 @@ export default function DailyTimelineModal({ dateStr, events, onClose }: DailyTi
   const getTypeLabel = (code: string) =>
     eventTypes.find(t => t.code === code)?.label ?? code;
 
-  // Timeline range: 1h before first event to 1h after last, clamped 7–22
+  // Timeline range: 1h before first event to 1h after last, clamped 6–23
   const rawMin = events.length > 0
     ? Math.min(...events.map(e => parseInt(e.time_start.split(':')[0])))
     : 8;
@@ -61,10 +74,12 @@ export default function DailyTimelineModal({ dateStr, events, onClose }: DailyTi
     const [eH, eM] = ev.time_end.split(':').map(Number);
     const topMin = (sH - minHour) * 60 + sM;
     const durMin = (eH - minHour) * 60 + eM - topMin;
+    const height = durMin * PIXELS_PER_MINUTE;
     return {
       top: `${topMin * PIXELS_PER_MINUTE}px`,
-      height: `${Math.max(durMin * PIXELS_PER_MINUTE, 48)}px`,
+      height: `${Math.max(height, 56)}px`,
       '--ev-color': ev.subject.color,
+      '--block-height': `${Math.max(height, 56)}`,
     } as React.CSSProperties;
   };
 
