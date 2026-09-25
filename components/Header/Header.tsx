@@ -67,13 +67,7 @@ export default function Header() {
             aria-label="Dodaj do kalendarza"
             title="Dodaj do kalendarza (WebCal / ICS)"
           >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="url(#calGrad)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-              <defs>
-                <linearGradient id="calGrad" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
-                  <stop stopColor="#10b981" />
-                  <stop offset="1" stopColor="#3b82f6" />
-                </linearGradient>
-              </defs>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="url(#backGrad)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
               <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
               <line x1="16" y1="2" x2="16" y2="6"></line>
               <line x1="8" y1="2" x2="8" y2="6"></line>
@@ -88,13 +82,7 @@ export default function Header() {
             title="Organizacja roku akademickiego"
             style={{ marginLeft: '12px' }}
           >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="url(#infoGrad)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-              <defs>
-                <linearGradient id="infoGrad" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
-                  <stop stopColor="#ef4444" />
-                  <stop offset="1" stopColor="#f59e0b" />
-                </linearGradient>
-              </defs>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="url(#backGrad)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="12" cy="12" r="10"></circle>
               <line x1="12" y1="16" x2="12" y2="12"></line>
               <line x1="12" y1="8" x2="12.01" y2="8"></line>
