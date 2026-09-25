@@ -82,10 +82,11 @@ export default function Header() {
                 onChange={e => setActiveGroup(e.target.value)}
                 aria-label="Wybór grupy"
               >
-                {[...Array(12)].map((_, i) => {
-                  const val = `GS${i + 1}`;
+                {[...Array(activeSemester?.gs_count ?? 12)].map((_, i) => {
+                  const prefix = activeSemester?.gs_prefix ?? 'GS';
+                  const val = `${prefix}${i + 1}`;
                   const isDisabled = adminRole?.type === 'moderator' && adminRole.group !== val;
-                  return <option key={val} value={val} disabled={isDisabled}>GS {i + 1}</option>;
+                  return <option key={val} value={val} disabled={isDisabled}>{prefix} {i + 1}</option>;
                 })}
                 <option value="GW" disabled={adminRole?.type === 'moderator'}>GW</option>
               </select>
