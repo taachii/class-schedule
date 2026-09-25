@@ -7,7 +7,7 @@ import { verifyPasswordAction } from './actions';
 import styles from './Admin.module.css';
 
 export default function AdminPage() {
-  const { adminRole, setAdminAuth } = useScheduleStore();
+  const { adminRole, setAdminAuth, setActiveYearNumber, setActiveGroup } = useScheduleStore();
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [loginError, setLoginError] = useState('');
@@ -29,6 +29,12 @@ export default function AdminPage() {
       
       if (res.ok && data.role) {
         setAdminAuth(data.role, password);
+        if (data.role.year) {
+          setActiveYearNumber(data.role.year);
+        }
+        if (data.role.group) {
+          setActiveGroup(data.role.group);
+        }
       } else {
         setLoginError(data.error || 'Nieprawidłowe hasło');
       }

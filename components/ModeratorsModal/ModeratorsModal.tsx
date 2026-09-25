@@ -5,7 +5,8 @@ interface Moderator {
   id: string;
   name: string | null;
   email: string | null;
-  assigned_group: string;
+  role: string;
+  assigned_group: string | null;
   assigned_year: number;
 }
 
@@ -31,20 +32,20 @@ export default function ModeratorsModal({ onClose }: ModeratorsModalProps) {
       .catch(() => setLoading(false));
   }, []);
 
-  const handleReset = async (id: string) => {
-    const pwd = newPasswords[id];
-    if (!pwd) return;
+  const handleGenerateCode = async (id: string, role: string) => {
+    const randomCode = role === 'admin' 
+      ? `ROK-ADMIN-${Math.random().toString(36).substring(2, 8).toUpperCase()}`
+      : `MOD-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
 
     setResettingId(id);
     try {
       const res = await fetch('/api/admin/moderators', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, newPassword: pwd }),
+        body: JSON.stringify({ id, newPassword: randomCode }),
       });
       if (res.ok) {
-        alert('Hasło zostało pomyślnie zmienione!');
-        setNewPasswords(prev => ({ ...prev, [id]: '' }));
+        setNewPasswords(prev => ({ ...prev, [id]: randomCode }));
       } else {
         const data = await res.json();
         alert('Błąd: ' + data.error);
@@ -78,27 +79,29 @@ export default function ModeratorsModal({ onClose }: ModeratorsModalProps) {
                 <div className={styles.modInfo}>
                   <div className={styles.modName}>
                     {mod.name || 'Brak imienia'} 
-                    <span className={styles.modBadge}>{mod.assigned_group}</span>
+                    <span className={styles.modBadge} style={mod.role === 'admin' ? { background: 'rgba(239, 68, 68, 0.15)', color: '#ef4444' } : {}}>
+                      {mod.role === 'admin' ? `Admin Roku` : mod.assigned_group}
+                    </span>
                   </div>
                   <div className={styles.modDetails}>
                     {mod.email || 'Brak emaila'} • Rok {mod.assigned_year}
                   </div>
                 </div>
                 <div className={styles.resetForm}>
-                  <input 
-                    type="text" 
-                    placeholder="Nowe hasło..." 
-                    className={styles.input}
-                    value={newPasswords[mod.id] || ''}
-                    onChange={e => setNewPasswords(prev => ({ ...prev, [mod.id]: e.target.value }))}
-                  />
-                  <button 
-                    className={styles.resetBtn} 
-                    onClick={() => handleReset(mod.id)}
-                    disabled={resettingId === mod.id || !newPasswords[mod.id]}
-                  >
-                    Resetuj
-                  </button>
+                  {newPasswords[mod.id] ? (
+                    <div style={{ background: '#111', padding: '6px 12px', borderRadius: '6px', border: '1px solid #333', fontFamily: 'monospace', color: '#10b981', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      {newPasswords[mod.id]}
+                      <button onClick={() => navigator.clipboard.writeText(newPasswords[mod.id])} style={{ background: 'transparent', border: 'none', color: '#888', cursor: 'pointer' }} title="Kopiuj">📋</button>
+                    </div>
+                  ) : (
+                    <button 
+                      className={styles.resetBtn} 
+                      onClick={() => handleGenerateCode(mod.id, mod.role as string)}
+                      disabled={resettingId === mod.id}
+                    >
+                      {resettingId === mod.id ? 'Generowanie...' : 'Generuj nowy kod'}
+                    </button>
+                  )}
                 </div>
               </div>
             ))

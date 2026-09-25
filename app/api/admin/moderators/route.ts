@@ -10,8 +10,9 @@ export async function GET(request: Request) {
     // Only fetch moderators
     const { data, error } = await supabaseAdmin
       .from('admin_keys')
-      .select('id, name, email, assigned_group, assigned_year')
-      .eq('role', 'moderator')
+      .select('id, name, email, role, assigned_group, assigned_year')
+      .in('role', ['admin', 'moderator'])
+      .order('assigned_year', { ascending: true })
       .order('assigned_group', { ascending: true });
 
     if (error) {
@@ -36,7 +37,7 @@ export async function POST(request: Request) {
       .from('admin_keys')
       .update({ pass_key: newPassword })
       .eq('id', id)
-      .eq('role', 'moderator'); // only allow resetting moderator passwords
+      .in('role', ['admin', 'moderator']);
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });

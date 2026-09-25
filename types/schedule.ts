@@ -64,7 +64,7 @@ export interface GroupTab {
   type: 'seminar' | 'lecture';
 }
 
-export type AdminRoleType = 'master' | 'moderator';
+export type AdminRoleType = 'master' | 'admin' | 'moderator';
 
 export interface AdminRole {
   type: AdminRoleType;
