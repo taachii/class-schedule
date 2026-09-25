@@ -44,21 +44,21 @@ export default function Header() {
               {activeYearNumber ? `${['I', 'II', 'III', 'IV', 'V', 'VI'][activeYearNumber - 1]} Rok` : ''}
               {activeSemester ? `${activeYearNumber ? ' - ' : ''}${activeSemester.label}` : ''}
             </p>
+            <select
+              className={`${styles.semesterSelect} ${styles.groupSelectMobile}`}
+              value={activeGroup ?? ''}
+              onChange={e => setActiveGroup(e.target.value)}
+              aria-label="Wybór grupy"
+            >
+              {[...Array(12)].map((_, i) => (
+                <option key={`GS${i + 1}`} value={`GS${i + 1}`}>GS {i + 1}</option>
+              ))}
+              <option value="GW">GW</option>
+            </select>
           </div>
         </div>
 
         <div className={styles.right}>
-          <select
-            className={`${styles.semesterSelect} ${styles.groupSelectMobile}`}
-            value={activeGroup ?? ''}
-            onChange={e => setActiveGroup(e.target.value)}
-            aria-label="Wybór grupy"
-          >
-            {[...Array(12)].map((_, i) => (
-              <option key={`GS${i + 1}`} value={`GS${i + 1}`}>GS {i + 1}</option>
-            ))}
-            <option value="GW">GW</option>
-          </select>
           <button
             className={styles.backBtn}
             onClick={() => setIsInfoOpen(true)}
