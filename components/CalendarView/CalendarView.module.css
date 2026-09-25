@@ -95,7 +95,7 @@
 .period_teaching {
   background: transparent; /* domyślne zajęcia */
 }
-.period_holiday {
+.period_holiday, .period_break, .period_summer_holidays {
   background: rgba(34, 197, 94, 0.04);
 }
 .period_exam {
@@ -103,9 +103,6 @@
 }
 .period_makeup_exam {
   background: rgba(245, 158, 11, 0.04);
-}
-.period_break, .period_summer_holidays {
-  background: rgba(255, 255, 255, 0.02);
 }
 
 .day.otherMonth .dayNum,
