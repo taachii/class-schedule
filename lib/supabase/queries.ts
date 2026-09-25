@@ -65,12 +65,21 @@ export async function fetchEventsForGroup(
     // GW tab: only show events that are explicitly for all (GW in seminar_groups)
     query = query.contains('seminar_groups', ['GW']);
   } else {
-    // Seminar group tab: show GW lectures + all events for this GS group.
-    // Both seminars AND exercises have the correct GS keys in seminar_groups
-    // (set by the import script), so a single OR condition suffices.
-    query = query.or(
-      `seminar_groups.cs.{"GW"},seminar_groups.cs.{"${groupKey}"}`
-    );
+    // Determine which GC groups belong to this GS group
+    // e.g. GS1 -> GC1, GC2
+    const gsNumber = parseInt(groupKey.replace('GS', ''));
+    if (!isNaN(gsNumber)) {
+      const gc1 = `GC${gsNumber * 2 - 1}`;
+      const gc2 = `GC${gsNumber * 2}`;
+      
+      query = query.or(
+        `seminar_groups.cs.{"GW"},seminar_groups.cs.{"${groupKey}"},exercise_groups.cs.{"${gc1}"},exercise_groups.cs.{"${gc2}"}`
+      );
+    } else {
+      query = query.or(
+        `seminar_groups.cs.{"GW"},seminar_groups.cs.{"${groupKey}"}`
+      );
+    }
   }
 
   const { data, error } = await query.order('date').order('time_start');

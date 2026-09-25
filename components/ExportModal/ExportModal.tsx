@@ -44,7 +44,7 @@ export default function ExportModal({ onClose }: ExportModalProps) {
         
         <div className={styles.body}>
           <div className={styles.section}>
-            <h3>📱 iPhone / iOS / macOS</h3>
+            <h3>📱 Apple Calendar (domyślny iOS/macOS)</h3>
             <p>Kliknij poniższy przycisk, aby dodać dynamiczną subskrypcję do Kalendarza Apple. Plan będzie aktualizował się sam, gdy tylko zajdą zmiany!</p>
             <a href={webcalUrl} className={styles.primaryBtn}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
@@ -53,13 +53,13 @@ export default function ExportModal({ onClose }: ExportModalProps) {
           </div>
 
           <div className={styles.section}>
-            <h3>🤖 Google Calendar / Android</h3>
-            <p>Aby dodać plan do kalendarza Google i mieć go zawsze pod ręką (oraz automatycznie aktualizowany):</p>
+            <h3>🌐 Google Calendar (wszystkie systemy)</h3>
+            <p>Z tego sposobu mogą skorzystać użytkownicy Androida, jak i posiadacze sprzętu Apple, którzy preferują aplikację Google Calendar:</p>
             <ol className={styles.steps}>
               <li>Skopiuj poniższy link subskrypcji.</li>
-              <li>Otwórz Google Calendar w przeglądarce na komputerze (nie w aplikacji).</li>
+              <li>Otwórz Google Calendar w przeglądarce <b>na komputerze</b> (nie w aplikacji mobilnej).</li>
               <li>Po lewej stronie przy <b>Inne kalendarze</b> kliknij <b>+</b> i wybierz <b>Z adresu URL</b>.</li>
-              <li>Wklej skopiowany link i kliknij <b>Dodaj kalendarz</b>.</li>
+              <li>Wklej skopiowany link i kliknij <b>Dodaj kalendarz</b>. Pojawi się on automatycznie na Twoim telefonie.</li>
             </ol>
             
             <div className={styles.copyBox}>
