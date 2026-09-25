@@ -18,7 +18,7 @@
 .card {
   background: var(--bg-elevated);
   border: 1px solid var(--border);
-  border-radius: var(--radius-2xl);
+  border-radius: var(--radius-xl);
   width: 100%;
   max-width: 850px;
   display: flex;
@@ -159,13 +159,13 @@
 
 .modBadge {
   display: inline-block;
-  padding: 2px 8px;
+  padding: 4px 10px;
   border-radius: 12px;
   background: rgba(124, 58, 237, 0.15);
   color: #a78bfa;
   font-size: 0.75rem;
   font-weight: 700;
-  margin-left: 8px;
+  margin-bottom: 6px;
 }
 
 .resetForm {

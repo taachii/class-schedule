@@ -87,11 +87,13 @@ export default function ModeratorsModal({ onClose }: ModeratorsModalProps) {
   const renderModRow = (mod: Moderator) => (
     <div key={mod.id} className={styles.moderatorRow} style={mod.role === 'admin' ? { borderColor: 'rgba(239, 68, 68, 0.3)', background: 'rgba(239, 68, 68, 0.05)' } : {}}>
       <div className={styles.modInfo}>
+        <div>
+          <span className={styles.modBadge} style={mod.role === 'admin' ? { background: 'rgba(239, 68, 68, 0.15)', color: '#ef4444' } : {}}>
+            {mod.role === 'admin' ? `Starosta Roku ${ROMAN_YEARS[activeTabYear - 1]}` : `Starosta ${mod.assigned_group}`}
+          </span>
+        </div>
         <div className={styles.modName}>
           {mod.name || 'Brak imienia'} 
-          <span className={styles.modBadge} style={mod.role === 'admin' ? { background: 'rgba(239, 68, 68, 0.15)', color: '#ef4444' } : {}}>
-            {mod.role === 'admin' ? `Admin Roku` : mod.assigned_group}
-          </span>
         </div>
         <div className={styles.modDetails}>
           {mod.email || 'Brak emaila'}
