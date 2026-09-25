@@ -49,8 +49,8 @@ export default function ModeratorsModal({ onClose }: ModeratorsModalProps) {
     const randomStr = generateComplexString(8);
     
     const randomCode = mod.role === 'admin' 
-      ? `ROK-${yearNum}-${randomStr}`
-      : `ROK-${yearNum}-${mod.assigned_group}-${randomStr}`;
+      ? `R${yearNum}-${randomStr}`
+      : `R${yearNum}-${mod.assigned_group}-${randomStr}`;
 
     setResettingId(mod.id);
     try {
