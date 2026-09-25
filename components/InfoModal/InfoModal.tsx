@@ -12,16 +12,9 @@ export default function InfoModal({ onClose }: InfoModalProps) {
   const academicYearLabel = activeSemester?.academic_year_label || '';
   const periods = ACADEMIC_PERIODS[academicYearLabel] || [];
 
-  // Filter periods for current semester if needed, or just show all for the year
-  // Let's show periods relevant to the active semester
-  const semesterPeriods = periods.filter(p => {
-    // Prosty podział: semestr zimowy to miesiące przed lutym/marcem
-    if (activeSemester?.semester_no === 1) {
-      return p.startDate < `${academicYearLabel.split('/')[0]}-03-01`;
-    } else {
-      return p.startDate >= `${academicYearLabel.split('/')[0]}-02-01` || p.startDate >= `${parseInt(academicYearLabel.split('/')[0]) + 1}-02-01`;
-    }
-  });
+  const semesterPeriods = periods
+    .filter(p => p.semester === activeSemester?.semester_no || p.semester === 'both')
+    .sort((a, b) => a.startDate.localeCompare(b.startDate));
 
   const getPeriodColor = (type: string) => {
     switch (type) {
