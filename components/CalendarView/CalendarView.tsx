@@ -33,7 +33,8 @@ interface CalendarViewProps {
 }
 
 export default function CalendarView({ onEventClick }: CalendarViewProps) {
-  const { enrichedEvents, activeSubjectKeys, currentYear, currentMonth, setMonth, isAdmin, initialize, semesters, activeSemesterId } = useScheduleStore();
+  const { enrichedEvents, activeSubjectKeys, currentYear, currentMonth, setMonth, adminRole, initialize, semesters, activeSemesterId } = useScheduleStore();
+  const isAdmin = !!adminRole;
   const [selectedEvent, setSelectedEvent] = useState<EnrichedEvent | null>(null);
   const [adminAddDate, setAdminAddDate] = useState<string | null>(null);
   const [timelineDate, setTimelineDate] = useState<string | null>(null);
