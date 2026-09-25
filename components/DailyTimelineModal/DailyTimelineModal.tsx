@@ -32,8 +32,33 @@ export default function DailyTimelineModal({ dateStr, events, onClose }: DailyTi
 
   useEffect(() => {
     document.body.style.overflow = 'hidden';
-    return () => { document.body.style.overflow = ''; };
+    
+    // Hardware back button support: push state on mount
+    window.history.pushState({ isModal: 'timeline' }, '');
+    
+    return () => { 
+      document.body.style.overflow = ''; 
+      if (window.history.state?.isModal === 'timeline') {
+        window.history.back();
+      }
+    };
   }, []);
+
+  useEffect(() => {
+    const handlePopState = () => {
+      if (selectedEvent) {
+        // If sub-modal is open, just close it and replenish the history state
+        setSelectedEvent(null);
+        window.history.pushState({ isModal: 'timeline' }, '');
+      } else {
+        // Close the main modal
+        onClose();
+      }
+    };
+    
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [selectedEvent, onClose]);
 
   // Auto-scroll to first event on mount
   useEffect(() => {

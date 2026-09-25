@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useScheduleStore } from '@/store/scheduleStore';
 import type { EnrichedEvent } from '@/types/schedule';
 import { addEventAction, updateEventAction, deleteEventAction } from '@/app/admin/actions';
@@ -19,6 +19,22 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
   const [status, setStatus] = useState<{type: 'success' | 'error', message: string} | null>(null);
   
   const isEditing = !!initialEvent;
+
+  useEffect(() => {
+    window.history.pushState({ isModal: 'admin' }, '');
+    
+    const handlePopState = () => {
+      onClose();
+    };
+    
+    window.addEventListener('popstate', handlePopState);
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+      if (window.history.state?.isModal === 'admin') {
+        window.history.back();
+      }
+    };
+  }, [onClose]);
 
   // Form state
   const [formData, setFormData] = useState({

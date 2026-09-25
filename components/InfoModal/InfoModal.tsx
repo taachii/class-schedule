@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useScheduleStore } from '@/store/scheduleStore';
 import { ACADEMIC_PERIODS } from '@/config/academicPeriods';
 import styles from './InfoModal.module.css';
@@ -11,6 +12,19 @@ export default function InfoModal({ onClose }: InfoModalProps) {
   const activeSemester = semesters.find(s => s.id === activeSemesterId);
   const academicYearLabel = activeSemester?.academic_year_label || '';
   const periods = ACADEMIC_PERIODS[academicYearLabel] || [];
+
+  useEffect(() => {
+    window.history.pushState({ isModal: 'info' }, '');
+    const handlePopState = () => onClose();
+    
+    window.addEventListener('popstate', handlePopState);
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+      if (window.history.state?.isModal === 'info') {
+        window.history.back();
+      }
+    };
+  }, [onClose]);
 
   const semesterPeriods = periods
     .filter(p => p.semester === activeSemester?.semester_no || p.semester === 'both')
