@@ -4,13 +4,15 @@ import { useState } from 'react';
 import { useScheduleStore } from '@/store/scheduleStore';
 import InfoModal from '../InfoModal/InfoModal';
 import ExportModal from '../ExportModal/ExportModal';
+import ModeratorsModal from '../ModeratorsModal/ModeratorsModal';
 import styles from './Header.module.css';
 
 export default function Header() {
-  const { semesters, activeSemesterId, activeGroup, setActiveGroup, activeYearNumber, setActiveYearNumber, isAdmin } =
+  const { semesters, activeSemesterId, activeGroup, setActiveGroup, activeYearNumber, setActiveYearNumber, adminRole } =
     useScheduleStore();
   const [isInfoOpen, setIsInfoOpen] = useState(false);
   const [isExportOpen, setIsExportOpen] = useState(false);
+  const [isModsOpen, setIsModsOpen] = useState(false);
 
   const activeSemester = semesters.find(s => s.id === activeSemesterId);
 
@@ -41,7 +43,7 @@ export default function Header() {
             <div className={styles.brandText}>
               <h1 className={styles.title}>
                 <span className={styles.titleGradient}>Plan Zajęć</span>
-                {isAdmin && <span className={styles.titleAdmin}> - Tryb Edycji</span>}
+                {adminRole && <span className={styles.titleAdmin}> - Tryb Edycji</span>}
               </h1>
               <p className={styles.subtitle}>
                 {activeYearNumber ? `${['I', 'II', 'III', 'IV', 'V', 'VI'][activeYearNumber - 1]} Rok` : ''}
@@ -62,6 +64,22 @@ export default function Header() {
           </div>
 
           <div className={styles.right}>
+            {adminRole?.type === 'master' && (
+              <button
+                className={styles.backBtn}
+                onClick={() => setIsModsOpen(true)}
+                aria-label="Zarządzaj moderatorami"
+                title="Zarządzaj moderatorami"
+                style={{ marginRight: '12px' }}
+              >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="url(#backGrad)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="9" cy="7" r="4"></circle>
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+              </button>
+            )}
             <button
               className={styles.backBtn}
               onClick={() => setIsExportOpen(true)}
@@ -94,6 +112,7 @@ export default function Header() {
       </header>
       {isInfoOpen && <InfoModal onClose={() => setIsInfoOpen(false)} />}
       {isExportOpen && <ExportModal onClose={() => setIsExportOpen(false)} />}
+      {isModsOpen && <ModeratorsModal onClose={() => setIsModsOpen(false)} />}
     </>
   );
 }

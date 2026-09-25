@@ -7,7 +7,7 @@ import { verifyPasswordAction } from './actions';
 import styles from './Admin.module.css';
 
 export default function AdminPage() {
-  const { isAdmin, setAdminAuth } = useScheduleStore();
+  const { adminRole, setAdminAuth } = useScheduleStore();
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [loginError, setLoginError] = useState('');
@@ -16,16 +16,29 @@ export default function AdminPage() {
     e.preventDefault();
     setLoading(true);
     setLoginError('');
-    const isValid = await verifyPasswordAction(password);
-    setLoading(false);
-    if (isValid) {
-      setAdminAuth(password);
-    } else {
-      setLoginError('Nieprawidłowe hasło');
+    
+    try {
+      const res = await fetch('/api/auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password }),
+      });
+      const data = await res.json();
+      
+      setLoading(false);
+      
+      if (res.ok && data.role) {
+        setAdminAuth(data.role, password);
+      } else {
+        setLoginError(data.error || 'Nieprawidłowe hasło');
+      }
+    } catch (err) {
+      setLoading(false);
+      setLoginError('Wystąpił błąd sieci.');
     }
   };
 
-  if (isAdmin) {
+  if (adminRole) {
     return (
       <div className="admin-wrapper" style={{ borderTop: '4px solid #ef4444' }}>
         <SchedulePage />

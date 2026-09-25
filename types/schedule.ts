@@ -63,3 +63,13 @@ export interface GroupTab {
   label: string;
   type: 'seminar' | 'lecture';
 }
+
+export type AdminRoleType = 'master' | 'moderator';
+
+export interface AdminRole {
+  type: AdminRoleType;
+  group?: string | null;
+  year?: number | null;
+  name?: string | null;
+  email?: string | null;
+}
