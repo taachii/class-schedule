@@ -3,24 +3,18 @@
 import { useScheduleStore } from '@/store/scheduleStore';
 import styles from './GroupTabs.module.css';
 
-const GROUPS = [
-  { key: 'GS1', label: 'GS 1' },
-  { key: 'GS2', label: 'GS 2' },
-  { key: 'GS3', label: 'GS 3' },
-  { key: 'GS4', label: 'GS 4' },
-  { key: 'GS5', label: 'GS 5' },
-  { key: 'GS6', label: 'GS 6' },
-  { key: 'GS7', label: 'GS 7' },
-  { key: 'GS8', label: 'GS 8' },
-  { key: 'GS9', label: 'GS 9' },
-  { key: 'GS10', label: 'GS 10' },
-  { key: 'GS11', label: 'GS 11' },
-  { key: 'GS12', label: 'GS 12' },
-  { key: 'GW', label: 'GW', isSpecial: true },
-];
-
 export default function GroupTabs() {
-  const { activeGroup, setActiveGroup, adminRole } = useScheduleStore();
+  const { activeGroup, setActiveGroup, adminRole, semesters, activeSemesterId } = useScheduleStore();
+  const activeSemester = semesters.find(s => s.id === activeSemesterId);
+  const gsCount = activeSemester?.gs_count ?? 12;
+  const gsPrefix = activeSemester?.gs_prefix ?? 'GS';
+
+  const GROUPS = [...Array(gsCount)].map((_, i) => ({
+    key: `${gsPrefix}${i + 1}`,
+    label: `${gsPrefix} ${i + 1}`,
+    isSpecial: false
+  }));
+  GROUPS.push({ key: 'GW', label: 'GW', isSpecial: true });
 
   return (
     <nav className={styles.nav} aria-label="Grupy dziekańskie">
