@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import SchedulePage from '../page';
 import { useScheduleStore } from '@/store/scheduleStore';
 import { verifyPasswordAction } from './actions';
@@ -68,6 +69,9 @@ export default function AdminPage() {
         <button type="submit" className={styles.submitBtn} disabled={loading}>
           {loading ? 'Weryfikacja...' : 'Zaloguj i edytuj'}
         </button>
+        <Link href="/" className={styles.backLink}>
+          Wróć do przeglądania planu
+        </Link>
         {loginError && <div className={`${styles.statusMessage} ${styles.statusError}`}>{loginError}</div>}
       </form>
     </div>
