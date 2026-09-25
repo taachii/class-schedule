@@ -333,5 +333,5 @@
   .eventName { font-size: 0.8rem; -webkit-line-clamp: 1; }
   .eventBadge { font-size: 0.58rem; padding: 1px 5px; }
   .eventTime { font-size: 0.68rem; }
-  .metaItem { font-size: 0.65rem; }
+  .metaItem { font-size: 0.65rem; white-space: normal; word-break: break-word; }
 }
