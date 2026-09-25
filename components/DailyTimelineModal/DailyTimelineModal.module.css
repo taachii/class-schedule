@@ -230,6 +230,11 @@
   font-variant-numeric: tabular-nums;
 }
 
+.eventDuration {
+  font-weight: 500;
+  opacity: 0.7;
+}
+
 .eventBadge {
   font-size: 0.65rem;
   font-weight: 700;

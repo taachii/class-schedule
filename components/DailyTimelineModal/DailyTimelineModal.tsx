@@ -197,7 +197,7 @@ export default function DailyTimelineModal({ dateStr, events, onClose }: DailyTi
                     >
                       <div className={styles.eventInner}>
                         <div className={styles.eventTop}>
-                          <span className={styles.eventTime}>{ev.timeStartShort} – {ev.timeEndShort}</span>
+                          <span className={styles.eventTime}>{ev.timeStartShort} – {ev.timeEndShort} <span className={styles.eventDuration}>({getDurationLabel(ev)})</span></span>
                           <span className={styles.eventBadge}>{getTypeLabel(ev.type)}</span>
                         </div>
                         <h3 className={styles.eventName}>{ev.subject.label}</h3>
@@ -208,10 +208,6 @@ export default function DailyTimelineModal({ dateStr, events, onClose }: DailyTi
                               {ev.resolvedLocation}
                             </span>
                           )}
-                          <span className={styles.metaItem}>
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                            {getDurationLabel(ev)}
-                          </span>
                           {ev.subject.contact && (
                             <span className={styles.metaItem}>
                               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
