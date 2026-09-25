@@ -31,22 +31,39 @@ export default function Header() {
             </defs>
           </svg>
           <div className={styles.left}>
-            <button
-              className={styles.backBtn}
-              onClick={() => {
-                setActiveYearNumber(null);
-                if (adminRole && adminRole.type !== 'master') {
-                  logoutAdmin();
-                  router.push('/');
-                }
-              }}
-              aria-label="Wróć"
-              title="Wróć do wyboru planu"
-            >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="url(#backGrad)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M19 12H5M12 19l-7-7 7-7" />
-              </svg>
-            </button>
+            {activeYearNumber && (
+              <button
+                className={styles.backBtn}
+                onClick={() => {
+                  setActiveYearNumber(null);
+                  if (adminRole && adminRole.type !== 'master') {
+                    logoutAdmin();
+                    router.push('/');
+                  }
+                }}
+                aria-label="Wróć"
+                title="Wróć do wyboru planu"
+              >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="url(#backGrad)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M19 12H5M12 19l-7-7 7-7" />
+                </svg>
+              </button>
+            )}
+            
+            {!adminRole && (
+              <button
+                className={styles.backBtn}
+                style={{ marginLeft: activeYearNumber ? '12px' : '0' }}
+                onClick={() => router.push('/admin')}
+                aria-label="Panel Administratora"
+                title="Logowanie do Panelu Administratora"
+              >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="url(#backGrad)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+              </button>
+            )}
           </div>
 
           <div className={styles.center}>
