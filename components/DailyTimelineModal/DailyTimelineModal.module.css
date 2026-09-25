@@ -219,7 +219,8 @@
   justify-content: space-between;
   align-items: center;
   gap: 8px;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
+  flex-shrink: 0;
 }
 
 .eventTime {
@@ -250,14 +251,16 @@
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  flex-shrink: 0;
 }
 
 .eventMeta {
   margin-top: auto;
   display: flex;
   flex-wrap: wrap;
-  gap: 6px 12px;
+  gap: 4px 10px;
   padding-top: 4px;
+  overflow: hidden;
 }
 .metaItem {
   display: inline-flex;
@@ -316,7 +319,14 @@
   }
   .header { padding: 16px 20px; }
   .title  { font-size: 1.1rem; }
+  .hourLabel { font-size: 0.65rem; width: 46px; }
+  .eventsLayer { left: 46px; }
+  .quarterLine { left: 46px; }
+  .nowLine { left: 38px; }
   .eventBlock { border-left-width: 3px; }
-  .eventInner { padding: 6px 8px; }
-  .eventName { font-size: 0.82rem; }
+  .eventInner { padding: 5px 8px; }
+  .eventName { font-size: 0.8rem; -webkit-line-clamp: 1; }
+  .eventBadge { font-size: 0.58rem; padding: 1px 5px; }
+  .eventTime { font-size: 0.68rem; }
+  .metaItem { font-size: 0.65rem; }
 }
