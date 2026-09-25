@@ -3,12 +3,14 @@
 import { useState } from 'react';
 import { useScheduleStore } from '@/store/scheduleStore';
 import InfoModal from '../InfoModal/InfoModal';
+import ExportModal from '../ExportModal/ExportModal';
 import styles from './Header.module.css';
 
 export default function Header() {
   const { semesters, activeSemesterId, activeGroup, setActiveGroup, activeYearNumber, setActiveYearNumber, isAdmin } =
     useScheduleStore();
   const [isInfoOpen, setIsInfoOpen] = useState(false);
+  const [isExportOpen, setIsExportOpen] = useState(false);
 
   const activeSemester = semesters.find(s => s.id === activeSemesterId);
 
@@ -61,6 +63,26 @@ export default function Header() {
         <div className={styles.right}>
           <button
             className={styles.backBtn}
+            onClick={() => setIsExportOpen(true)}
+            aria-label="Dodaj do kalendarza"
+            title="Dodaj do kalendarza (WebCal / ICS)"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="url(#calGrad)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+              <defs>
+                <linearGradient id="calGrad" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
+                  <stop stopColor="#10b981" />
+                  <stop offset="1" stopColor="#3b82f6" />
+                </linearGradient>
+              </defs>
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="16" y1="2" x2="16" y2="6"></line>
+              <line x1="8" y1="2" x2="8" y2="6"></line>
+              <line x1="3" y1="10" x2="21" y2="10"></line>
+            </svg>
+          </button>
+          
+          <button
+            className={styles.backBtn}
             onClick={() => setIsInfoOpen(true)}
             aria-label="Informacje o roku akademickim"
             title="Organizacja roku akademickiego"
@@ -81,6 +103,7 @@ export default function Header() {
         </div>
       </div>
       {isInfoOpen && <InfoModal onClose={() => setIsInfoOpen(false)} />}
+      {isExportOpen && <ExportModal onClose={() => setIsExportOpen(false)} />}
     </header>
   );
 }
