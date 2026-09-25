@@ -41,7 +41,6 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
     semester_id: initialEvent ? initialEvent.semester_id.toString() : (activeSemesterId?.toString() || (semesters[0]?.id.toString() ?? '')),
     subject_key: initialEvent ? initialEvent.subject_key : (subjects[0]?.key ?? ''),
     type: initialEvent ? initialEvent.type : 'W',
-    date: initialEvent ? initialEvent.date : (initialDate || new Date().toISOString().split('T')[0]),
     time_start: initialEvent ? initialEvent.time_start.slice(0, 5) : '08:00',
     time_end: initialEvent ? initialEvent.time_end.slice(0, 5) : '09:30',
     location: initialEvent?.location || '',
@@ -49,6 +48,10 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
     professor: initialEvent?.professor || '',
     notes: initialEvent?.notes || '',
   });
+
+  const [dates, setDates] = useState<string[]>(
+    initialEvent ? [initialEvent.date] : [initialDate || new Date().toISOString().split('T')[0]]
+  );
 
   const [seminarGroups, setSeminarGroups] = useState<string[]>(initialEvent?.seminar_groups || []);
   const [exerciseGroups, setExerciseGroups] = useState<string[]>(initialEvent?.exercise_groups || []);
@@ -71,7 +74,7 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
     setLoading(true);
     setStatus(null);
 
-    const payload = {
+    const basePayload = {
       ...formData,
       location: formData.location || (formData.type === 'W' ? 'MS Teams - online' : null),
       semester_id: parseInt(formData.semester_id),
@@ -81,9 +84,10 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
 
     let res;
     if (isEditing && initialEvent) {
-      res = await updateEventAction(initialEvent.id, payload, adminPassword);
+      res = await updateEventAction(initialEvent.id, { ...basePayload, date: dates[0] }, adminPassword);
     } else {
-      res = await addEventAction(payload, adminPassword);
+      const payloads = dates.map(d => ({ ...basePayload, date: d }));
+      res = await addEventAction(payloads, adminPassword);
     }
 
     setLoading(false);
@@ -152,8 +156,28 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
               </select>
             </div>
             <div>
-              <label className={styles.label}>Data</label>
-              <input type="date" name="date" value={formData.date} onChange={handleChange} className={styles.input} required />
+              <label className={styles.label}>{isEditing ? 'Data' : 'Daty (możesz dodać wiele)'}</label>
+              <div className={styles.datesContainer}>
+                {dates.map((d, i) => (
+                  <div key={i} className={styles.dateRow}>
+                    <input type="date" value={d} onChange={(e) => {
+                      const newDates = [...dates];
+                      newDates[i] = e.target.value;
+                      setDates(newDates);
+                    }} className={styles.input} required />
+                    {!isEditing && dates.length > 1 && (
+                      <button type="button" onClick={() => {
+                        setDates(dates.filter((_, idx) => idx !== i));
+                      }} className={styles.removeDateBtn}>✕</button>
+                    )}
+                  </div>
+                ))}
+                {!isEditing && (
+                  <button type="button" onClick={() => {
+                    setDates([...dates, dates[dates.length - 1]]);
+                  }} className={styles.addDateBtn}>+ Dodaj kolejną datę</button>
+                )}
+              </div>
             </div>
           </div>
 
