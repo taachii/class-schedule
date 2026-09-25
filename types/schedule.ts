@@ -21,6 +21,7 @@ export interface Subject {
   color: string;      // '#3b82f6'
   contact: string | null;
   location: string | null;
+  department: string | null;
 }
 
 export interface EventType {
@@ -39,6 +40,8 @@ export interface ScheduleEvent {
   time_start: string;         // 'HH:MM:SS'
   time_end: string;           // 'HH:MM:SS'
   location: string | null;
+  department: string | null;
+  professor: string | null;
   notes: string | null;
   // Joined fields
   subject?: Subject;
