@@ -104,6 +104,11 @@
   cursor: pointer;
 }
 
+.checkboxItem.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
 .actions {
   display: flex;
   gap: 12px;
