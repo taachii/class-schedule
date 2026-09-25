@@ -16,12 +16,15 @@ interface ModeratorsModalProps {
 
 const ROMAN_YEARS = ['I', 'II', 'III', 'IV', 'V', 'VI'];
 
+import { useScheduleStore } from '@/store/scheduleStore';
+
 export default function ModeratorsModal({ onClose }: ModeratorsModalProps) {
+  const { adminRole, adminPassword } = useScheduleStore();
   const [moderators, setModerators] = useState<Moderator[]>([]);
   const [loading, setLoading] = useState(true);
   const [resettingId, setResettingId] = useState<string | null>(null);
   const [newPasswords, setNewPasswords] = useState<Record<string, string>>({});
-  const [activeTabYear, setActiveTabYear] = useState<number>(1);
+  const [activeTabYear, setActiveTabYear] = useState<number>(adminRole?.year || 1);
 
   useEffect(() => {
     fetch('/api/admin/moderators')
@@ -57,7 +60,7 @@ export default function ModeratorsModal({ onClose }: ModeratorsModalProps) {
       const res = await fetch('/api/admin/moderators', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: mod.id, newPassword: randomCode }),
+        body: JSON.stringify({ id: mod.id, newPassword: randomCode, password: adminPassword }),
       });
       if (res.ok) {
         setNewPasswords(prev => ({ ...prev, [mod.id]: randomCode }));
@@ -133,15 +136,20 @@ export default function ModeratorsModal({ onClose }: ModeratorsModalProps) {
           ) : (
             <>
               <div className={styles.tabs}>
-                {availableYears.map(year => (
-                  <button
-                    key={year}
-                    className={`${styles.tab} ${activeTabYear === year ? styles.active : ''}`}
-                    onClick={() => setActiveTabYear(year)}
-                  >
-                    Rok {ROMAN_YEARS[year - 1] || year}
-                  </button>
-                ))}
+                {availableYears.map(year => {
+                  const isLocked = adminRole?.type === 'admin' && adminRole.year !== year;
+                  return (
+                    <button
+                      key={year}
+                      className={`${styles.tab} ${activeTabYear === year ? styles.active : ''}`}
+                      onClick={() => !isLocked && setActiveTabYear(year)}
+                      disabled={isLocked}
+                      style={{ opacity: isLocked ? 0.3 : 1, cursor: isLocked ? 'not-allowed' : 'pointer' }}
+                    >
+                      Rok {ROMAN_YEARS[year - 1] || year}
+                    </button>
+                  );
+                })}
               </div>
               <div className={styles.tabContent}>
                 {!adminMod && gsMods.length === 0 ? (
