@@ -12,7 +12,6 @@ export interface Semester {
   label: string;              // 'Semestr Zimowy 2026/2027'
   academic_year_label: string; // '2026/2027'
   gs_count?: number;
-  gc_count?: number;
   gs_prefix?: string;
   gc_prefix?: string;
 }
