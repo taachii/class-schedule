@@ -248,65 +248,6 @@ export default function CalendarView({ onEventClick }: CalendarViewProps) {
           onSuccess={() => { setSelectedEvent(null); initialize(); }} 
         />
       )}
-
-      {/* User View Modal */}
-      {!isAdmin && selectedEvent && (
-        <EventDetailModal event={selectedEvent} onClose={() => setSelectedEvent(null)} />
-      )}
-    </div>
-  );
-}
-
-// Inline modal used within the calendar view
-function EventDetailModal({ event, onClose }: { event: EnrichedEvent; onClose: () => void }) {
-  const { eventTypes } = useScheduleStore();
-  const typeLabel = eventTypes.find(t => t.code === event.type)?.label ?? event.type;
-  const d = new Date(event.date + 'T00:00:00');
-  const dayName = d.toLocaleDateString('pl-PL', { weekday: 'long' });
-  const dateStr = d.toLocaleDateString('pl-PL', { day: '2-digit', month: 'long', year: 'numeric' });
-
-  return (
-    <div className={styles.modalOverlay} onClick={onClose}>
-      <div className={styles.modalCard} onClick={e => e.stopPropagation()}>
-        <button className={styles.modalClose} onClick={onClose}>✕</button>
-        <div className={styles.modalHeader} style={{ borderBottomColor: event.subject.color + '66' }}>
-          <span
-            className={styles.typeBadge}
-            style={{ background: event.subject.color + '33', color: event.subject.color }}
-          >
-            {typeLabel}
-          </span>
-          <h3 className={styles.modalTitle}>{event.subject.label}</h3>
-          <div className={styles.modalDate}>
-            {dayName.charAt(0).toUpperCase() + dayName.slice(1)}, {dateStr}
-          </div>
-        </div>
-        <div className={styles.modalBody}>
-          {[
-            { icon: '🕐', label: 'Godziny', value: `${event.timeStartShort} – ${event.timeEndShort}` },
-            { 
-              icon: '👥', 
-              label: 'Grupy', 
-              value: (event.exercise_groups.length > 0 ? event.exercise_groups : event.seminar_groups).join(', ') 
-            },
-            { icon: '📍', label: 'Miejsce', value: event.resolvedLocation },
-            event.subject.contact ? { icon: '✉️', label: 'Kontakt', value: event.subject.contact, isEmail: true } : null,
-            event.notes ? { icon: '📝', label: 'Uwagi', value: event.notes } : null,
-          ].filter(Boolean).map((row: any) => (
-            <div key={row.label} className={styles.infoRow}>
-              <span className={styles.infoIcon}>{row.icon}</span>
-              <div className={styles.infoContent}>
-                <div className={styles.infoLabel}>{row.label}</div>
-                <div className={styles.infoValue}>
-                  {row.isEmail
-                    ? <a href={`mailto:${row.value}`} className={styles.emailLink}>{row.value}</a>
-                    : row.value}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
     </div>
   );
 }
