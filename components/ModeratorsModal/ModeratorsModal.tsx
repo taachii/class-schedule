@@ -21,18 +21,14 @@ export default function ModeratorsModal({ onClose }: ModeratorsModalProps) {
   const [loading, setLoading] = useState(true);
   const [resettingId, setResettingId] = useState<string | null>(null);
   const [newPasswords, setNewPasswords] = useState<Record<string, string>>({});
-  const [activeTabYear, setActiveTabYear] = useState<number | null>(null);
+  const [activeTabYear, setActiveTabYear] = useState<number>(1);
 
   useEffect(() => {
     fetch('/api/admin/moderators')
       .then(res => res.json())
       .then(data => {
-        if (data.moderators) {
+          if (data.moderators) {
           setModerators(data.moderators);
-          const years = Array.from(new Set(data.moderators.map((m: Moderator) => m.assigned_year)))
-            .filter((y): y is number => y !== null && y !== undefined)
-            .sort((a, b) => a - b);
-          if (years.length > 0) setActiveTabYear(years[0]);
         }
         setLoading(false);
       })
@@ -63,9 +59,7 @@ export default function ModeratorsModal({ onClose }: ModeratorsModalProps) {
     setResettingId(null);
   };
 
-  const availableYears = Array.from(new Set(moderators.map(m => m.assigned_year)))
-    .filter((y): y is number => y !== null && y !== undefined)
-    .sort((a, b) => a - b);
+  const availableYears = [1, 2, 3, 4, 5, 6];
 
   const currentMods = moderators.filter(m => m.assigned_year === activeTabYear);
   const adminMod = currentMods.find(m => m.role === 'admin');
@@ -138,11 +132,17 @@ export default function ModeratorsModal({ onClose }: ModeratorsModalProps) {
                 ))}
               </div>
               <div className={styles.tabContent}>
-                {adminMod && renderModRow(adminMod)}
-                {gsMods.length > 0 ? (
-                  gsMods.map(renderModRow)
+                {!adminMod && gsMods.length === 0 ? (
+                  <div className={styles.loading} style={{ padding: 0 }}>Brak jakichkolwiek przypisanych moderatorów na tym roku.</div>
                 ) : (
-                  <div className={styles.loading} style={{ padding: 0 }}>Brak przypisanych moderatorów GS w tym roku.</div>
+                  <>
+                    {adminMod ? renderModRow(adminMod) : <div className={styles.loading} style={{ padding: 0, fontSize: '0.9rem' }}>Brak przypisanego Starosty Roku (Admina)</div>}
+                    {gsMods.length > 0 ? (
+                      gsMods.map(renderModRow)
+                    ) : (
+                      <div className={styles.loading} style={{ padding: 0, fontSize: '0.9rem' }}>Brak przypisanych moderatorów GS w tym roku.</div>
+                    )}
+                  </>
                 )}
               </div>
             </>
