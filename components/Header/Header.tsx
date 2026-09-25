@@ -16,11 +16,11 @@ export default function Header() {
     <header className={styles.header}>
       <div className={styles.inner}>
         <div className={styles.left}>
-          <button 
-            className={styles.backBtn} 
+          <button
+            className={styles.backBtn}
             onClick={() => setActiveYearNumber(null)}
             aria-label="Wróć"
-            title="Wróć do wyboru roku"
+            title="Wróć do wyboru planu"
           >
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="url(#backGrad)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
               <defs>
@@ -59,8 +59,8 @@ export default function Header() {
             ))}
             <option value="GW">GW</option>
           </select>
-          <button 
-            className={styles.backBtn} 
+          <button
+            className={styles.backBtn}
             onClick={() => setIsInfoOpen(true)}
             aria-label="Informacje o roku akademickim"
             title="Organizacja roku akademickiego"
