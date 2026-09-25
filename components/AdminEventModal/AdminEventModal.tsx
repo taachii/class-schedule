@@ -59,6 +59,25 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
   const gsList = ['GW', ...Array.from({length: 12}, (_, i) => `GS${i+1}`)];
   const gcList = Array.from({length: 24}, (_, i) => `GC${i+1}`);
 
+  useEffect(() => {
+    if (formData.type === 'W') {
+      setSeminarGroups(['GW']);
+      setExerciseGroups([]);
+    } else if (formData.type === 'S') {
+      setSeminarGroups(prev => prev.filter(g => g !== 'GW'));
+      setExerciseGroups([]);
+    } else if (formData.type === 'C' || formData.type === 'CSM') {
+      setSeminarGroups([]);
+    }
+  }, [formData.type]);
+
+  const isGroupDisabled = (g: string) => {
+    if (formData.type === 'W') return g !== 'GW';
+    if (formData.type === 'S') return g === 'GW' || g.startsWith('GC');
+    if (formData.type === 'C' || formData.type === 'CSM') return g === 'GW' || g.startsWith('GS');
+    return false;
+  };
+
   const handleGroupToggle = (group: string, list: string[], setList: (l: string[]) => void) => {
     if (list.includes(group)) {
       setList(list.filter(g => g !== group));
@@ -194,20 +213,26 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
 
           <label className={styles.label}>Grupy Seminaryjne / Wykładowe</label>
           <div className={styles.checkboxGrid}>
-            {gsList.map(g => (
-              <label key={g} className={styles.checkboxItem}>
-                <input type="checkbox" checked={seminarGroups.includes(g)} onChange={() => handleGroupToggle(g, seminarGroups, setSeminarGroups)} /> {g}
-              </label>
-            ))}
+            {gsList.map(g => {
+              const disabled = isGroupDisabled(g);
+              return (
+                <label key={g} className={`${styles.checkboxItem} ${disabled ? styles.disabled : ''}`}>
+                  <input type="checkbox" checked={seminarGroups.includes(g)} onChange={() => handleGroupToggle(g, seminarGroups, setSeminarGroups)} disabled={disabled} /> {g}
+                </label>
+              );
+            })}
           </div>
 
           <label className={styles.label}>Grupy Ćwiczeniowe</label>
           <div className={styles.checkboxGrid}>
-            {gcList.map(g => (
-              <label key={g} className={styles.checkboxItem}>
-                <input type="checkbox" checked={exerciseGroups.includes(g)} onChange={() => handleGroupToggle(g, exerciseGroups, setExerciseGroups)} /> {g}
-              </label>
-            ))}
+            {gcList.map(g => {
+              const disabled = isGroupDisabled(g);
+              return (
+                <label key={g} className={`${styles.checkboxItem} ${disabled ? styles.disabled : ''}`}>
+                  <input type="checkbox" checked={exerciseGroups.includes(g)} onChange={() => handleGroupToggle(g, exerciseGroups, setExerciseGroups)} disabled={disabled} /> {g}
+                </label>
+              );
+            })}
           </div>
 
           <div className={styles.row}>
