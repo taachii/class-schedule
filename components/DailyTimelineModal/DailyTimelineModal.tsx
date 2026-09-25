@@ -226,7 +226,7 @@ export default function DailyTimelineModal({ dateStr, events, onClose }: DailyTi
               </div>
 
               {/* Current time indicator */}
-              <CurrentTimeIndicator dateStr={dateStr} minHour={minHour} />
+              <CurrentTimeIndicator dateStr={dateStr} minHour={minHour} pxPerMin={PIXELS_PER_MINUTE} />
             </div>
           )}
         </div>
@@ -235,7 +235,7 @@ export default function DailyTimelineModal({ dateStr, events, onClose }: DailyTi
   );
 }
 
-function CurrentTimeIndicator({ dateStr, minHour }: { dateStr: string; minHour: number }) {
+function CurrentTimeIndicator({ dateStr, minHour, pxPerMin }: { dateStr: string; minHour: number; pxPerMin: number }) {
   const now = new Date();
   const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
   if (todayStr !== dateStr) return null;
@@ -244,7 +244,7 @@ function CurrentTimeIndicator({ dateStr, minHour }: { dateStr: string; minHour: 
   if (minutes < 0) return null;
 
   return (
-    <div className={styles.nowLine} style={{ top: `${minutes * PIXELS_PER_MINUTE}px` }}>
+    <div className={styles.nowLine} style={{ top: `${minutes * pxPerMin}px` }}>
       <div className={styles.nowDot} />
       <div className={styles.nowRule} />
     </div>
