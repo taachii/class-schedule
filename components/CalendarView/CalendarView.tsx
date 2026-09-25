@@ -21,13 +21,31 @@ interface CalendarViewProps {
 }
 
 export default function CalendarView({ onEventClick }: CalendarViewProps) {
-  const { enrichedEvents, activeSubjectKeys, currentYear, currentMonth, setMonth, isAdmin, initialize } = useScheduleStore();
+  const { enrichedEvents, activeSubjectKeys, currentYear, currentMonth, setMonth, isAdmin, initialize, semesters, activeSemesterId } = useScheduleStore();
   const [selectedEvent, setSelectedEvent] = useState<EnrichedEvent | null>(null);
   const [adminAddDate, setAdminAddDate] = useState<string | null>(null);
 
   const filtered = enrichedEvents.filter(ev => activeSubjectKeys.has(ev.subject_key));
+  const activeSemester = semesters.find(s => s.id === activeSemesterId);
+
+  let minYear = currentYear, minMonth = 0;
+  let maxYear = currentYear, maxMonth = 11;
+  if (activeSemester) {
+    const baseYear = parseInt(activeSemester.academic_year_label.split('/')[0]);
+    if (activeSemester.semester_no === 1) {
+      minYear = baseYear; minMonth = 9;
+      maxYear = baseYear + 1; maxMonth = 2;
+    } else {
+      minYear = baseYear + 1; minMonth = 1;
+      maxYear = baseYear + 1; maxMonth = 8;
+    }
+  }
+
+  const isPrevDisabled = currentYear < minYear || (currentYear === minYear && currentMonth <= minMonth);
+  const isNextDisabled = currentYear > maxYear || (currentYear === maxYear && currentMonth >= maxMonth);
 
   const prevMonth = () => {
+    if (isPrevDisabled) return;
     let m = currentMonth - 1;
     let y = currentYear;
     if (m < 0) { m = 11; y--; }
@@ -35,6 +53,7 @@ export default function CalendarView({ onEventClick }: CalendarViewProps) {
   };
 
   const nextMonth = () => {
+    if (isNextDisabled) return;
     let m = currentMonth + 1;
     let y = currentYear;
     if (m > 11) { m = 0; y++; }
@@ -124,13 +143,25 @@ export default function CalendarView({ onEventClick }: CalendarViewProps) {
     <div className={styles.wrapper}>
       {/* Navigation */}
       <div className={styles.nav}>
-        <button className={styles.navBtn} onClick={prevMonth} aria-label="Poprzedni miesiąc">
+        <button 
+          className={styles.navBtn} 
+          onClick={prevMonth} 
+          disabled={isPrevDisabled}
+          style={{ opacity: isPrevDisabled ? 0.3 : 1, cursor: isPrevDisabled ? 'not-allowed' : 'pointer' }}
+          aria-label="Poprzedni miesiąc"
+        >
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="15 18 9 12 15 6"></polyline>
           </svg>
         </button>
         <h2 className={styles.monthTitle}>{MONTH_NAMES_PL[currentMonth]} {currentYear}</h2>
-        <button className={styles.navBtn} onClick={nextMonth} aria-label="Następny miesiąc">
+        <button 
+          className={styles.navBtn} 
+          onClick={nextMonth} 
+          disabled={isNextDisabled}
+          style={{ opacity: isNextDisabled ? 0.3 : 1, cursor: isNextDisabled ? 'not-allowed' : 'pointer' }}
+          aria-label="Następny miesiąc"
+        >
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="9 18 15 12 9 6"></polyline>
           </svg>

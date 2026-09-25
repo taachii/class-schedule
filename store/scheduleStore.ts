@@ -88,20 +88,32 @@ export const useScheduleStore = create<ScheduleStore>()(
         fetchEventTypes(),
       ]);
 
-      // Pick the current semester by date
       const now = new Date();
       const currentSemester = semesters.find(s => {
-        const academicYear = parseInt(s.academic_year_label.split('/')[0]);
         const isWinter = s.semester_no === 1;
-        // Winter: Oct–Jan, Summer: Feb–Jun (rough)
-        if (isWinter) return now.getMonth() >= 9 || now.getMonth() <= 0;
-        return now.getMonth() >= 1 && now.getMonth() <= 5;
+        if (isWinter) return now.getMonth() >= 9 || now.getMonth() <= 1;
+        return now.getMonth() >= 1 && now.getMonth() <= 8;
       }) ?? semesters[0];
 
       const semesterId = forcedSemesterId ?? currentSemester?.id ?? semesters[0]?.id;
+      const activeSemester = semesters.find(s => s.id === semesterId);
       const subjects = semesterId ? await fetchSubjects(semesterId) : [];
       const events = semesterId ? await fetchEventsForGroup(semesterId, 'GS1') : [];
       const enrichedEvents = enrichEvents(events, subjects);
+
+      // Snap month
+      let snapYear = get().currentYear;
+      let snapMonth = get().currentMonth;
+      if (activeSemester) {
+        const baseYear = parseInt(activeSemester.academic_year_label.split('/')[0]);
+        if (activeSemester.semester_no === 1) { // Winter (Oct-Mar)
+          if (snapYear < baseYear || (snapYear === baseYear && snapMonth < 9)) { snapYear = baseYear; snapMonth = 9; }
+          if (snapYear > baseYear + 1 || (snapYear === baseYear + 1 && snapMonth > 2)) { snapYear = baseYear; snapMonth = 9; }
+        } else { // Summer (Feb-Sep)
+          if (snapYear < baseYear + 1 || (snapYear === baseYear + 1 && snapMonth < 1)) { snapYear = baseYear + 1; snapMonth = 1; }
+          if (snapYear > baseYear + 1 || (snapYear === baseYear + 1 && snapMonth > 8)) { snapYear = baseYear + 1; snapMonth = 1; }
+        }
+      }
 
       set({
         semesters,
@@ -111,6 +123,8 @@ export const useScheduleStore = create<ScheduleStore>()(
         events,
         enrichedEvents,
         activeSubjectKeys: new Set(subjects.map(s => s.key)),
+        currentYear: snapYear,
+        currentMonth: snapMonth,
         isLoading: false,
       });
     } catch (err: any) {
@@ -142,7 +156,7 @@ export const useScheduleStore = create<ScheduleStore>()(
 
   // ── setActiveSemester ────────────────────────────────────────
   setActiveSemester: async (semesterId: number) => {
-    const { activeGroup } = get();
+    const { activeGroup, semesters } = get();
     set({ activeSemesterId: semesterId, isLoading: true, error: null });
     try {
       const [subjects, events] = await Promise.all([
@@ -150,11 +164,28 @@ export const useScheduleStore = create<ScheduleStore>()(
         fetchEventsForGroup(semesterId, activeGroup),
       ]);
       const enrichedEvents = enrichEvents(events, subjects);
+      
+      const activeSemester = semesters.find(s => s.id === semesterId);
+      let snapYear = get().currentYear;
+      let snapMonth = get().currentMonth;
+      if (activeSemester) {
+        const baseYear = parseInt(activeSemester.academic_year_label.split('/')[0]);
+        if (activeSemester.semester_no === 1) { // Winter (Oct-Mar)
+          if (snapYear < baseYear || (snapYear === baseYear && snapMonth < 9)) { snapYear = baseYear; snapMonth = 9; }
+          if (snapYear > baseYear + 1 || (snapYear === baseYear + 1 && snapMonth > 2)) { snapYear = baseYear; snapMonth = 9; }
+        } else { // Summer (Feb-Sep)
+          if (snapYear < baseYear + 1 || (snapYear === baseYear + 1 && snapMonth < 1)) { snapYear = baseYear + 1; snapMonth = 1; }
+          if (snapYear > baseYear + 1 || (snapYear === baseYear + 1 && snapMonth > 8)) { snapYear = baseYear + 1; snapMonth = 1; }
+        }
+      }
+
       set({
         subjects,
         events,
         enrichedEvents,
         activeSubjectKeys: new Set(subjects.map(s => s.key)),
+        currentYear: snapYear,
+        currentMonth: snapMonth,
         isLoading: false,
       });
     } catch (err: any) {
