@@ -30,14 +30,39 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
-    const { id, newPassword } = await request.json();
+    const { id, newPassword, password } = await request.json();
 
-    if (!id || !newPassword) {
-      return NextResponse.json({ error: 'Missing parameters' }, { status: 400 });
+    if (!id || !newPassword || !password) {
+      return NextResponse.json({ error: 'Missing parameters or password' }, { status: 400 });
     }
 
     const supabaseAdmin = getSupabaseAdmin();
-    const { data, error } = await supabaseAdmin
+    
+    // Verify password and role
+    const { data: authData } = await supabaseAdmin
+      .from('admin_keys')
+      .select('role, assigned_year')
+      .eq('pass_key', password)
+      .single();
+
+    if (!authData || (authData.role !== 'master' && authData.role !== 'admin')) {
+      return NextResponse.json({ error: 'Unauthorized. Only Master or Admin can generate codes.' }, { status: 403 });
+    }
+
+    // If it's an admin, verify they are modifying a moderator from their year
+    if (authData.role === 'admin') {
+      const { data: targetMod } = await supabaseAdmin
+        .from('admin_keys')
+        .select('assigned_year')
+        .eq('id', id)
+        .single();
+      
+      if (!targetMod || targetMod.assigned_year !== authData.assigned_year) {
+         return NextResponse.json({ error: 'Unauthorized. You can only modify moderators for your assigned year.' }, { status: 403 });
+      }
+    }
+
+    const { error } = await supabaseAdmin
       .from('admin_keys')
       .update({ pass_key: newPassword })
       .eq('id', id)
