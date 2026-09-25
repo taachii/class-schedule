@@ -6,8 +6,10 @@ import InfoModal from '../InfoModal/InfoModal';
 import ExportModal from '../ExportModal/ExportModal';
 import ModeratorsModal from '../ModeratorsModal/ModeratorsModal';
 import styles from './Header.module.css';
+import { useRouter } from 'next/navigation';
 
 export default function Header() {
+  const router = useRouter();
   const { semesters, activeSemesterId, activeGroup, setActiveGroup, activeYearNumber, setActiveYearNumber, adminRole, logoutAdmin } =
     useScheduleStore();
   const [isInfoOpen, setIsInfoOpen] = useState(false);
@@ -35,6 +37,7 @@ export default function Header() {
                 setActiveYearNumber(null);
                 if (adminRole && adminRole.type !== 'master') {
                   logoutAdmin();
+                  router.push('/');
                 }
               }}
               aria-label="Wróć"
