@@ -20,16 +20,13 @@ export async function addEventAction(eventData: any, password: string) {
     return { success: false, error: 'Brak SUPABASE_SERVICE_KEY w zmiennych środowiskowych serwera.' };
   }
 
-  // Wymuszenie formatu czasu (dodanie :00 jeśli brakuje sekund)
   const formatTime = (t: string) => (t.length === 5 ? `${t}:00` : t);
 
-  const newEvent = {
-    ...eventData,
-    time_start: formatTime(eventData.time_start),
-    time_end: formatTime(eventData.time_end),
-  };
+  const eventsToInsert = Array.isArray(eventData) 
+    ? eventData.map((ev: any) => ({ ...ev, time_start: formatTime(ev.time_start), time_end: formatTime(ev.time_end) }))
+    : [{ ...eventData, time_start: formatTime(eventData.time_start), time_end: formatTime(eventData.time_end) }];
 
-  const { data, error } = await supabaseAdmin.from('events').insert([newEvent]);
+  const { data, error } = await supabaseAdmin.from('events').insert(eventsToInsert);
 
   if (error) {
     console.error('Błąd dodawania zajęć:', error);
