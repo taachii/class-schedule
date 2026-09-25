@@ -142,3 +142,16 @@
   color: #f87171;
   border: 1px solid rgba(239, 68, 68, 0.2);
 }
+
+.backLink {
+  margin-top: 12px;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: color var(--transition);
+}
+
+.backLink:hover {
+  color: var(--text-primary);
+  text-decoration: underline;
+}
