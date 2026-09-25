@@ -18,23 +18,25 @@ export default function AppleIcon() {
         }}
       >
         <svg 
-          width="120" 
-          height="120" 
-          viewBox="125 15 100 60" 
+          width="110" 
+          height="110" 
+          viewBox="0 0 24 24" 
           fill="none" 
-          stroke="url(#sumGradient)" 
-          strokeWidth="6" 
-          strokeLinecap="butt"
+          stroke="url(#calGradient)" 
+          strokeWidth="2" 
+          strokeLinecap="round"
+          strokeLinejoin="round"
         >
           <defs>
-            <linearGradient id="sumGradient" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stopColor="#ec4899" />
+            <linearGradient id="calGradient" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stopColor="#4f8ef7" />
               <stop offset="100%" stopColor="#7c3aed" />
             </linearGradient>
           </defs>
-          <path d="M 135 58 V 40 A 18 18 0 0 1 171 40 V 58" />
-          <path d="M 171 40 A 18 18 0 0 1 207 40" />
-          <path d="M 207 50 V 66 M 199 58 H 215" strokeWidth="4" />
+          <rect x="3" y="4" width="18" height="18" rx="3" ry="3"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
         </svg>
       </div>
     ),
