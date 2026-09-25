@@ -5,9 +5,10 @@
   backdrop-filter: blur(4px);
   z-index: 9999;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  padding: 20px;
+  overflow-y: auto;
+  padding: 40px 20px;
   animation: fadeIn 0.15s ease;
 }
 
@@ -22,9 +23,12 @@
   border-radius: var(--radius-xl);
   width: 100%;
   max-width: 420px;
+  margin: auto;
   box-shadow: var(--shadow-lg);
   position: relative;
   animation: slideUp 0.2s ease;
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
 }
 
