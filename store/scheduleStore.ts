@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { Subject, ScheduleEvent, Semester, EventType, GroupKey, EnrichedEvent } from '@/types/schedule';
+import type { Subject, ScheduleEvent, Semester, EventType, GroupKey, EnrichedEvent, AdminRole } from '@/types/schedule';
 import { fetchEventsForGroup, fetchSubjects, fetchSemesters, fetchEventTypes } from '@/lib/supabase/queries';
 
 // Replaced by dynamic year selection
@@ -38,9 +38,9 @@ interface ScheduleStore {
   setActiveSemester: (semesterId: number) => void;
 
   // ── Admin ────────────────────────────────────────────────────
-  isAdmin: boolean;
+  adminRole: AdminRole | null;
   adminPassword: string | null;
-  setAdminAuth: (password: string) => void;
+  setAdminAuth: (role: AdminRole, password: string) => void;
   logoutAdmin: () => void;
 }
 
@@ -211,10 +211,10 @@ export const useScheduleStore = create<ScheduleStore>()(
   }),
 
   // ── Admin ────────────────────────────────────────────────────
-  isAdmin: false,
+  adminRole: null,
   adminPassword: null,
-  setAdminAuth: (password) => set({ isAdmin: true, adminPassword: password }),
-  logoutAdmin: () => set({ isAdmin: false, adminPassword: null }),
+  setAdminAuth: (role, password) => set({ adminRole: role, adminPassword: password }),
+  logoutAdmin: () => set({ adminRole: null, adminPassword: null }),
 }), {
   name: 'class-schedule-storage',
   partialize: (state) => ({

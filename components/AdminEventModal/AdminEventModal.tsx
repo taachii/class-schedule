@@ -14,7 +14,7 @@ interface Props {
 }
 
 export default function AdminEventModal({ initialDate, initialEvent, onClose, onSuccess }: Props) {
-  const { semesters, subjects, eventTypes, adminPassword, activeSemesterId } = useScheduleStore();
+  const { semesters, subjects, eventTypes, adminPassword, activeSemesterId, adminRole } = useScheduleStore();
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState<{type: 'success' | 'error', message: string} | null>(null);
   
@@ -72,16 +72,22 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
   }, [formData.type]);
 
   const isGroupDisabled = (g: string) => {
+    if (adminRole?.type === 'moderator' && g === 'GW') return true;
     if (formData.type === 'W') return g !== 'GW';
     if (formData.type === 'S') return g === 'GW' || g.startsWith('GC');
     if (formData.type === 'C' || formData.type === 'CSM') return g === 'GW' || g.startsWith('GS');
     return false;
   };
 
-  const handleGroupToggle = (group: string, list: string[], setList: (l: string[]) => void) => {
+  const handleGroupToggle = (group: string, list: string[], setList: (l: string[]) => void, maxLimit: number) => {
     if (list.includes(group)) {
       setList(list.filter(g => g !== group));
     } else {
+      if (adminRole?.type === 'moderator' && list.length >= maxLimit) {
+        setStatus({ type: 'error', message: `Możesz zaznaczyć maksymalnie ${maxLimit} grupy tego typu.` });
+        setTimeout(() => setStatus(null), 3000);
+        return;
+      }
       setList([...list, group]);
     }
   };
@@ -92,6 +98,26 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
 
     setLoading(true);
     setStatus(null);
+
+    // Validation for moderators
+    if (adminRole?.type === 'moderator' && adminRole.group) {
+      // e.g. 'GS3' -> match 'GS3', or 'GC5', 'GC6'
+      const modGs = adminRole.group;
+      const modGsNum = parseInt(modGs.replace('GS', ''));
+      const allowedGc1 = `GC${modGsNum * 2 - 1}`;
+      const allowedGc2 = `GC${modGsNum * 2}`;
+      
+      const hasAccess = 
+        seminarGroups.includes(modGs) || 
+        exerciseGroups.includes(allowedGc1) || 
+        exerciseGroups.includes(allowedGc2);
+
+      if (!hasAccess) {
+        setLoading(false);
+        setStatus({ type: 'error', message: `Brak uprawnień. Musisz uwzględnić swoją grupę (${modGs} lub ${allowedGc1}/${allowedGc2}).` });
+        return;
+      }
+    }
 
     const basePayload = {
       ...formData,
@@ -217,7 +243,7 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
               const disabled = isGroupDisabled(g);
               return (
                 <label key={g} className={`${styles.checkboxItem} ${disabled ? styles.disabled : ''}`}>
-                  <input type="checkbox" checked={seminarGroups.includes(g)} onChange={() => handleGroupToggle(g, seminarGroups, setSeminarGroups)} disabled={disabled} /> {g}
+                  <input type="checkbox" checked={seminarGroups.includes(g)} onChange={() => handleGroupToggle(g, seminarGroups, setSeminarGroups, 2)} disabled={disabled} /> {g}
                 </label>
               );
             })}
@@ -229,7 +255,7 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
               const disabled = isGroupDisabled(g);
               return (
                 <label key={g} className={`${styles.checkboxItem} ${disabled ? styles.disabled : ''}`}>
-                  <input type="checkbox" checked={exerciseGroups.includes(g)} onChange={() => handleGroupToggle(g, exerciseGroups, setExerciseGroups)} disabled={disabled} /> {g}
+                  <input type="checkbox" checked={exerciseGroups.includes(g)} onChange={() => handleGroupToggle(g, exerciseGroups, setExerciseGroups, 4)} disabled={disabled} /> {g}
                 </label>
               );
             })}
