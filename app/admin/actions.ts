@@ -3,10 +3,11 @@
 import { createClient } from '@supabase/supabase-js';
 
 // Używamy Service Key, by ominąć RLS i mieć pewność, że wstawienie zadziała
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY!;
-
-const supabaseAdmin = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
+function getSupabaseAdmin() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const key = process.env.SUPABASE_SERVICE_KEY!;
+  return createClient(url, key);
+}
 
 export async function addEventAction(eventData: any, password: string) {
   // Proste zabezpieczenie hasłem (odczytywane ze zmiennych środowiskowych)
@@ -16,9 +17,12 @@ export async function addEventAction(eventData: any, password: string) {
     return { success: false, error: 'Nieprawidłowe hasło administratora.' };
   }
 
-  if (!SUPABASE_SERVICE_KEY) {
+  const key = process.env.SUPABASE_SERVICE_KEY;
+  if (!key) {
     return { success: false, error: 'Brak SUPABASE_SERVICE_KEY w zmiennych środowiskowych serwera.' };
   }
+
+  const supabaseAdmin = getSupabaseAdmin();
 
   const formatTime = (t: string) => (t.length === 5 ? `${t}:00` : t);
 
@@ -42,6 +46,7 @@ export async function deleteEventAction(id: string, password: string) {
     return { success: false, error: 'Nieprawidłowe hasło administratora.' };
   }
 
+  const supabaseAdmin = getSupabaseAdmin();
   const { error } = await supabaseAdmin.from('events').delete().eq('id', id);
 
   if (error) {
@@ -66,6 +71,7 @@ export async function updateEventAction(id: string, eventData: any, password: st
     time_end: formatTime(eventData.time_end),
   };
 
+  const supabaseAdmin = getSupabaseAdmin();
   const { data, error } = await supabaseAdmin.from('events').update(updatedEvent).eq('id', id);
 
   if (error) {
