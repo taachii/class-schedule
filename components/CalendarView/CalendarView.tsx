@@ -5,6 +5,7 @@ import { useScheduleStore } from '@/store/scheduleStore';
 import { ACADEMIC_PERIODS, PeriodType } from '@/config/academicPeriods';
 import type { EnrichedEvent } from '@/types/schedule';
 import AdminEventModal from '../AdminEventModal/AdminEventModal';
+import DailyTimelineModal from '../DailyTimelineModal/DailyTimelineModal';
 import styles from './CalendarView.module.css';
 
 const MONTH_NAMES_PL = [
@@ -35,6 +36,7 @@ export default function CalendarView({ onEventClick }: CalendarViewProps) {
   const { enrichedEvents, activeSubjectKeys, currentYear, currentMonth, setMonth, isAdmin, initialize, semesters, activeSemesterId } = useScheduleStore();
   const [selectedEvent, setSelectedEvent] = useState<EnrichedEvent | null>(null);
   const [adminAddDate, setAdminAddDate] = useState<string | null>(null);
+  const [timelineDate, setTimelineDate] = useState<string | null>(null);
 
   const filtered = enrichedEvents.filter(ev => activeSubjectKeys.has(ev.subject_key));
   const activeSemester = semesters.find(s => s.id === activeSemesterId);
@@ -146,9 +148,15 @@ export default function CalendarView({ onEventClick }: CalendarViewProps) {
           isOther ? styles.otherMonth : '',
           isToday ? styles.today : '',
           isWeekend ? styles.weekend : '',
-          isAdmin ? styles.adminDayClickable : ''
+          styles.dayClickable
         ].filter(Boolean).join(' ')}
-        onClick={() => { if (isAdmin) setAdminAddDate(dateStr); }}
+        onClick={() => {
+          if (isAdmin) {
+            setAdminAddDate(dateStr);
+          } else {
+            setTimelineDate(dateStr);
+          }
+        }}
       >
         <div className={styles.dayNum} title={activePeriod?.label}>{day}</div>
         <div className={styles.events}>
@@ -158,7 +166,13 @@ export default function CalendarView({ onEventClick }: CalendarViewProps) {
               className={styles.eventChip}
               style={{ '--ev-color': ev.subject.color } as React.CSSProperties}
               title={`${ev.subject.label} (${ev.timeStartShort}–${ev.timeEndShort})`}
-              onClick={(e) => { e.stopPropagation(); setSelectedEvent(ev); }}
+              onClick={(e) => {
+                if (isAdmin) {
+                  e.stopPropagation();
+                  setSelectedEvent(ev);
+                }
+                // For non-admins, it bubbles up to the day cell and opens the timeline
+              }}
             >
                 <span className={styles.chipTime}>{ev.timeStartShort} </span>
                 <span className={styles.chipText}>{ev.subject.short_label} [{ev.type}]</span>
@@ -214,6 +228,15 @@ export default function CalendarView({ onEventClick }: CalendarViewProps) {
           initialDate={adminAddDate} 
           onClose={() => setAdminAddDate(null)} 
           onSuccess={() => { setAdminAddDate(null); initialize(); }} 
+        />
+      )}
+
+      {/* Daily Timeline Modal */}
+      {!isAdmin && timelineDate && (
+        <DailyTimelineModal
+          dateStr={timelineDate}
+          events={byDate[timelineDate] ?? []}
+          onClose={() => setTimelineDate(null)}
         />
       )}
 
