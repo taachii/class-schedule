@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useScheduleStore } from '@/store/scheduleStore';
+import { ACADEMIC_PERIODS, PeriodType } from '@/config/academicPeriods';
 import type { EnrichedEvent } from '@/types/schedule';
 import AdminEventModal from '../AdminEventModal/AdminEventModal';
 import styles from './CalendarView.module.css';
@@ -16,6 +17,16 @@ function toIso(year: number, month: number, day: number): string {
   return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
 }
 
+// Check period priority - higher index = higher priority for overlapping ranges
+const PERIOD_PRIORITIES: Record<PeriodType, number> = {
+  teaching: 1,
+  summer_holidays: 2,
+  break: 3,
+  exam: 4,
+  makeup_exam: 5,
+  holiday: 6
+};
+
 interface CalendarViewProps {
   onEventClick?: (event: EnrichedEvent) => void;
 }
@@ -27,6 +38,9 @@ export default function CalendarView({ onEventClick }: CalendarViewProps) {
 
   const filtered = enrichedEvents.filter(ev => activeSubjectKeys.has(ev.subject_key));
   const activeSemester = semesters.find(s => s.id === activeSemesterId);
+
+  const academicYearLabel = activeSemester?.academic_year_label || '';
+  const periods = ACADEMIC_PERIODS[academicYearLabel] || [];
 
   let minYear = currentYear, minMonth = 0;
   let maxYear = currentYear, maxMonth = 11;
@@ -108,11 +122,27 @@ export default function CalendarView({ onEventClick }: CalendarViewProps) {
       a.time_start.localeCompare(b.time_start)
     );
 
+    // Find active period for this date
+    let activePeriod = null;
+    let maxPriority = -1;
+    for (const p of periods) {
+      if (dateStr >= p.startDate && dateStr <= p.endDate) {
+        const priority = PERIOD_PRIORITIES[p.type] || 0;
+        if (priority > maxPriority) {
+          maxPriority = priority;
+          activePeriod = p;
+        }
+      }
+    }
+
+    const periodClass = activePeriod ? styles[`period_${activePeriod.type}`] : '';
+
     cells.push(
       <div
         key={dateStr + i}
         className={[
           styles.day,
+          periodClass,
           isOther ? styles.otherMonth : '',
           isToday ? styles.today : '',
           isWeekend ? styles.weekend : '',
@@ -120,7 +150,7 @@ export default function CalendarView({ onEventClick }: CalendarViewProps) {
         ].filter(Boolean).join(' ')}
         onClick={() => { if (isAdmin) setAdminAddDate(dateStr); }}
       >
-        <div className={styles.dayNum}>{day}</div>
+        <div className={styles.dayNum} title={activePeriod?.label}>{day}</div>
         <div className={styles.events}>
           {dayEvents.map(ev => (
             <div
