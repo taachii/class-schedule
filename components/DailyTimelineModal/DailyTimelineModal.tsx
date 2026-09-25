@@ -193,9 +193,9 @@ export default function DailyTimelineModal({ dateStr, events, onClose }: DailyTi
                   
                   const hasDepartment = !!(ev.department || ev.subject.department);
                   const hasLocation = !!ev.resolvedLocation;
-                  const hasProfessor = !!ev.professor;
                   const hasContact = !!ev.subject.contact;
-                  const hasAnyMeta = hasDepartment || hasLocation || hasProfessor || hasContact;
+                  const hasNotes = !!ev.notes;
+                  const hasAnyMeta = true; // Because we always show professor fallback
                   const showMetaInline = blockHeight >= 120;
 
                   return (
@@ -207,7 +207,6 @@ export default function DailyTimelineModal({ dateStr, events, onClose }: DailyTi
                         left: `${col * colWidth}%`,
                         width: `${colWidth - 1}%`,
                       }}
-                      onClick={() => setSelectedEvent(ev)}
                     >
                       <div className={styles.eventInner}>
                         <div className={styles.eventTop}>
@@ -231,16 +230,20 @@ export default function DailyTimelineModal({ dateStr, events, onClose }: DailyTi
                                   {ev.resolvedLocation}
                                 </span>
                               )}
-                              {ev.professor && (
-                                <span className={styles.metaItem}>
-                                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                                  {ev.professor}
-                                </span>
-                              )}
+                              <span className={styles.metaItem}>
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                                {ev.professor || 'Prowadzący: nie wyznaczono'}
+                              </span>
                               {ev.subject.contact && (
                                 <span className={styles.metaItem}>
                                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
                                   {ev.subject.contact}
+                                </span>
+                              )}
+                              {ev.notes && (
+                                <span className={styles.metaItem}>
+                                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                                  {ev.notes}
                                 </span>
                               )}
                             </div>
@@ -297,12 +300,10 @@ export default function DailyTimelineModal({ dateStr, events, onClose }: DailyTi
                     <span>{selectedEvent.resolvedLocation}</span>
                   </div>
                 )}
-                {selectedEvent.professor && (
-                  <div className={styles.subMetaItem}>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                    <span>{selectedEvent.professor}</span>
-                  </div>
-                )}
+                <div className={styles.subMetaItem}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                  <span>{selectedEvent.professor || 'Prowadzący: nie wyznaczono'}</span>
+                </div>
                 {selectedEvent.subject.contact && (
                   <div className={styles.subMetaItem}>
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
