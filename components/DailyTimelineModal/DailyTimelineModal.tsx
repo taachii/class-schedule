@@ -8,8 +8,11 @@ interface DailyTimelineModalProps {
   onClose: () => void;
 }
 
+import { useScheduleStore } from '@/store/scheduleStore';
+
 export default function DailyTimelineModal({ dateStr, events, onClose }: DailyTimelineModalProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const { eventTypes } = useScheduleStore();
 
   // Prevent background scrolling
   useEffect(() => {
@@ -49,6 +52,10 @@ export default function DailyTimelineModal({ dateStr, events, onClose }: DailyTi
     };
   };
 
+  const getEventTypeLabel = (code: string) => {
+    return eventTypes.find(t => t.code === code)?.label ?? code;
+  };
+
   return (
     <div className={styles.overlay} onClick={onClose}>
       <div className={styles.modal} onClick={e => e.stopPropagation()}>
@@ -82,9 +89,9 @@ export default function DailyTimelineModal({ dateStr, events, onClose }: DailyTi
                     <div className={styles.eventContent}>
                       <div className={styles.eventHeader}>
                         <span className={styles.eventTime}>{ev.timeStartShort} - {ev.timeEndShort}</span>
-                        <span className={styles.eventType}>{ev.type.name}</span>
+                        <span className={styles.eventType}>{getEventTypeLabel(ev.type)}</span>
                       </div>
-                      <h3 className={styles.eventName}>{ev.subject.name}</h3>
+                      <h3 className={styles.eventName}>{ev.subject.label}</h3>
                       <div className={styles.eventDetails}>
                         {ev.resolvedLocation && (
                           <div className={styles.detailRow}>
@@ -92,10 +99,10 @@ export default function DailyTimelineModal({ dateStr, events, onClose }: DailyTi
                             <span>{ev.resolvedLocation}</span>
                           </div>
                         )}
-                        {ev.professor && (
+                        {ev.subject.contact && (
                           <div className={styles.detailRow}>
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                            <span>{ev.professor}</span>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                            <span>{ev.subject.contact}</span>
                           </div>
                         )}
                       </div>
