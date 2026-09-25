@@ -98,7 +98,9 @@ export const useScheduleStore = create<ScheduleStore>()(
       const semesterId = forcedSemesterId ?? currentSemester?.id ?? semesters[0]?.id;
       const activeSemester = semesters.find(s => s.id === semesterId);
       const subjects = semesterId ? await fetchSubjects(semesterId) : [];
-      const events = semesterId ? await fetchEventsForGroup(semesterId, 'GS1') : [];
+      
+      const { activeGroup } = get();
+      const events = semesterId ? await fetchEventsForGroup(semesterId, activeGroup) : [];
       const enrichedEvents = enrichEvents(events, subjects);
 
       // Snap month

@@ -20,23 +20,28 @@ const GROUPS = [
 ];
 
 export default function GroupTabs() {
-  const { activeGroup, setActiveGroup } = useScheduleStore();
+  const { activeGroup, setActiveGroup, adminRole } = useScheduleStore();
 
   return (
     <nav className={styles.nav} aria-label="Grupy dziekańskie">
       <div className={styles.inner}>
         <div className={styles.tabs} role="tablist">
-          {GROUPS.map(g => (
-            <button
-              key={g.key}
-              role="tab"
-              className={`${styles.tab} ${activeGroup === g.key ? styles.active : ''} ${g.isSpecial ? styles.special : ''}`}
-              aria-selected={activeGroup === g.key}
-              onClick={() => setActiveGroup(g.key)}
-            >
-              {g.label}
-            </button>
-          ))}
+          {GROUPS.map(g => {
+            const isDisabled = adminRole?.type === 'moderator' && adminRole.group !== g.key;
+            return (
+              <button
+                key={g.key}
+                role="tab"
+                className={`${styles.tab} ${activeGroup === g.key ? styles.active : ''} ${g.isSpecial ? styles.special : ''}`}
+                aria-selected={activeGroup === g.key}
+                onClick={() => !isDisabled && setActiveGroup(g.key)}
+                disabled={isDisabled}
+                style={{ opacity: isDisabled ? 0.4 : 1, cursor: isDisabled ? 'not-allowed' : 'pointer' }}
+              >
+                {g.label}
+              </button>
+            );
+          })}
         </div>
       </div>
     </nav>
