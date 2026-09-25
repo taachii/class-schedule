@@ -20,14 +20,13 @@ export default function Icon() {
         {/* We use a scaled-up version of the SVG. The original viewBox is 0 15 230 60, meaning width 230, height 45. 
             We center it in the 512x512 box. */}
         <svg 
-          width="460" 
-          height="120" 
-          viewBox="0 15 230 60" 
+          width="360" 
+          height="360" 
+          viewBox="125 15 100 60" 
           fill="none" 
           stroke="url(#sumGradient)" 
           strokeWidth="6" 
           strokeLinecap="butt"
-          style={{ transform: 'scale(1.5)' }}
         >
           <defs>
             <linearGradient id="sumGradient" x1="0" y1="0" x2="1" y2="0">
@@ -35,9 +34,6 @@ export default function Icon() {
               <stop offset="100%" stopColor="#7c3aed" />
             </linearGradient>
           </defs>
-          <path d="M 15 40 A 18 18 0 0 0 51 40" />
-          <path d="M 35 40 A 18 18 0 0 1 71 40" />
-          <path d="M 85 22 V 40 A 18 18 0 0 0 121 40 V 22" />
           <path d="M 135 58 V 40 A 18 18 0 0 1 171 40 V 58" />
           <path d="M 171 40 A 18 18 0 0 1 207 40" />
           <path d="M 207 50 V 66 M 199 58 H 215" strokeWidth="4" />

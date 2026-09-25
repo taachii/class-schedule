@@ -18,9 +18,9 @@ export default function AppleIcon() {
         }}
       >
         <svg 
-          width="160" 
-          height="45" 
-          viewBox="0 15 230 60" 
+          width="120" 
+          height="120" 
+          viewBox="125 15 100 60" 
           fill="none" 
           stroke="url(#sumGradient)" 
           strokeWidth="6" 
@@ -32,9 +32,6 @@ export default function AppleIcon() {
               <stop offset="100%" stopColor="#7c3aed" />
             </linearGradient>
           </defs>
-          <path d="M 15 40 A 18 18 0 0 0 51 40" />
-          <path d="M 35 40 A 18 18 0 0 1 71 40" />
-          <path d="M 85 22 V 40 A 18 18 0 0 0 121 40 V 22" />
           <path d="M 135 58 V 40 A 18 18 0 0 1 171 40 V 58" />
           <path d="M 171 40 A 18 18 0 0 1 207 40" />
           <path d="M 207 50 V 66 M 199 58 H 215" strokeWidth="4" />
