@@ -1,11 +1,14 @@
 'use client';
 
+import { useState } from 'react';
 import { useScheduleStore } from '@/store/scheduleStore';
+import InfoModal from '../InfoModal/InfoModal';
 import styles from './Header.module.css';
 
 export default function Header() {
   const { semesters, activeSemesterId, activeGroup, setActiveGroup, activeYearNumber, setActiveYearNumber, isAdmin } =
     useScheduleStore();
+  const [isInfoOpen, setIsInfoOpen] = useState(false);
 
   const activeSemester = semesters.find(s => s.id === activeSemesterId);
 
@@ -55,8 +58,27 @@ export default function Header() {
             ))}
             <option value="GW">GW</option>
           </select>
+          <button 
+            className={styles.backBtn} 
+            onClick={() => setIsInfoOpen(true)}
+            aria-label="Informacje o roku akademickim"
+            style={{ marginLeft: '12px' }}
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="url(#infoGrad)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+              <defs>
+                <linearGradient id="infoGrad" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
+                  <stop stopColor="#ef4444" />
+                  <stop offset="1" stopColor="#f59e0b" />
+                </linearGradient>
+              </defs>
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="16" x2="12" y2="12"></line>
+              <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+          </button>
         </div>
       </div>
+      {isInfoOpen && <InfoModal onClose={() => setIsInfoOpen(false)} />}
     </header>
   );
 }
