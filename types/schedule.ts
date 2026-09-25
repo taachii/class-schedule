@@ -40,6 +40,7 @@ export interface ScheduleEvent {
   time_start: string;         // 'HH:MM:SS'
   time_end: string;           // 'HH:MM:SS'
   location: string | null;
+  department: string | null;
   professor: string | null;
   notes: string | null;
   // Joined fields
