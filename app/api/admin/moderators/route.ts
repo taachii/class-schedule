@@ -53,12 +53,12 @@ export async function POST(request: Request) {
     if (authData.role === 'admin') {
       const { data: targetMod } = await supabaseAdmin
         .from('admin_keys')
-        .select('assigned_year')
+        .select('assigned_year, role')
         .eq('id', id)
         .single();
       
-      if (!targetMod || targetMod.assigned_year !== authData.assigned_year) {
-         return NextResponse.json({ error: 'Unauthorized. You can only modify moderators for your assigned year.' }, { status: 403 });
+      if (!targetMod || targetMod.assigned_year !== authData.assigned_year || targetMod.role === 'admin') {
+         return NextResponse.json({ error: 'Unauthorized. You can only modify group moderators for your assigned year.' }, { status: 403 });
       }
     }
 

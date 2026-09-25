@@ -156,7 +156,9 @@ export default function ModeratorsModal({ onClose }: ModeratorsModalProps) {
                   <div className={styles.loading} style={{ padding: 0 }}>Brak jakichkolwiek przypisanych moderatorów na tym roku.</div>
                 ) : (
                   <>
-                    {adminMod ? renderModRow(adminMod) : <div className={styles.loading} style={{ padding: 0, fontSize: '0.9rem' }}>Brak przypisanego Starosty Roku (Admina)</div>}
+                    {adminRole?.type === 'master' && (
+                      adminMod ? renderModRow(adminMod) : <div className={styles.loading} style={{ padding: 0, fontSize: '0.9rem' }}>Brak przypisanego Starosty Roku (Admina)</div>
+                    )}
                     {gsMods.length > 0 ? (
                       <div className={styles.gsList}>
                         {gsMods.map(renderModRow)}
