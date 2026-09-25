@@ -35,20 +35,23 @@ export default function ModeratorsModal({ onClose }: ModeratorsModalProps) {
       .catch(() => setLoading(false));
   }, []);
 
-  const handleGenerateCode = async (id: string, role: string) => {
-    const randomCode = role === 'admin' 
-      ? `ROK-ADMIN-${Math.random().toString(36).substring(2, 8).toUpperCase()}`
-      : `MOD-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
+  const handleGenerateCode = async (mod: Moderator) => {
+    const yearStr = ROMAN_YEARS[mod.assigned_year - 1] || mod.assigned_year;
+    const randomStr = Math.random().toString(36).substring(2, 7).toUpperCase();
+    
+    const randomCode = mod.role === 'admin' 
+      ? `ROK-${yearStr}-${randomStr}`
+      : `MOD-R${yearStr}-${mod.assigned_group}-${randomStr}`;
 
-    setResettingId(id);
+    setResettingId(mod.id);
     try {
       const res = await fetch('/api/admin/moderators', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, newPassword: randomCode }),
+        body: JSON.stringify({ id: mod.id, newPassword: randomCode }),
       });
       if (res.ok) {
-        setNewPasswords(prev => ({ ...prev, [id]: randomCode }));
+        setNewPasswords(prev => ({ ...prev, [mod.id]: randomCode }));
       } else {
         const data = await res.json();
         alert('Błąd: ' + data.error);
@@ -91,7 +94,7 @@ export default function ModeratorsModal({ onClose }: ModeratorsModalProps) {
         ) : (
           <button 
             className={styles.resetBtn} 
-            onClick={() => handleGenerateCode(mod.id, mod.role)}
+            onClick={() => handleGenerateCode(mod)}
             disabled={resettingId === mod.id}
           >
             {resettingId === mod.id ? 'Generowanie...' : 'Generuj nowy kod'}
