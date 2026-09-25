@@ -35,13 +35,22 @@ export default function ModeratorsModal({ onClose }: ModeratorsModalProps) {
       .catch(() => setLoading(false));
   }, []);
 
+  const generateComplexString = (length: number) => {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
+    let result = '';
+    for (let i = 0; i < length; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
+  };
+
   const handleGenerateCode = async (mod: Moderator) => {
-    const yearStr = ROMAN_YEARS[mod.assigned_year - 1] || mod.assigned_year;
-    const randomStr = Math.random().toString(36).substring(2, 7).toUpperCase();
+    const yearNum = mod.assigned_year;
+    const randomStr = generateComplexString(8);
     
     const randomCode = mod.role === 'admin' 
-      ? `ROK-${yearStr}-${randomStr}`
-      : `MOD-R${yearStr}-${mod.assigned_group}-${randomStr}`;
+      ? `ROK-${yearNum}-${randomStr}`
+      : `ROK-${yearNum}-${mod.assigned_group}-${randomStr}`;
 
     setResettingId(mod.id);
     try {
@@ -141,7 +150,9 @@ export default function ModeratorsModal({ onClose }: ModeratorsModalProps) {
                   <>
                     {adminMod ? renderModRow(adminMod) : <div className={styles.loading} style={{ padding: 0, fontSize: '0.9rem' }}>Brak przypisanego Starosty Roku (Admina)</div>}
                     {gsMods.length > 0 ? (
-                      gsMods.map(renderModRow)
+                      <div className={styles.gsList}>
+                        {gsMods.map(renderModRow)}
+                      </div>
                     ) : (
                       <div className={styles.loading} style={{ padding: 0, fontSize: '0.9rem' }}>Brak przypisanych moderatorów GS w tym roku.</div>
                     )}
