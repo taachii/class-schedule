@@ -64,8 +64,8 @@ export default function Header() {
           <button
             className={styles.backBtn}
             onClick={() => setIsExportOpen(true)}
-            aria-label="Dodaj do kalendarza"
-            title="Dodaj do kalendarza (WebCal / ICS)"
+            aria-label="Subskrybuj kalendarz"
+            title="Subskrybuj kalendarz"
           >
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="url(#backGrad)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
               <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
