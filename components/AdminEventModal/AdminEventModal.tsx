@@ -58,7 +58,7 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
 
   const activeSemester = semesters.find(s => s.id === (parseInt(formData.semester_id) || activeSemesterId));
   const gsCount = activeSemester?.gs_count ?? 12;
-  const gcCount = activeSemester?.gc_count ?? 24;
+  const gcCount = gsCount * 2;
   const gsPrefix = activeSemester?.gs_prefix ?? 'GS';
   const gcPrefix = activeSemester?.gc_prefix ?? 'GC';
 
