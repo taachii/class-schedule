@@ -8,7 +8,7 @@ import ModeratorsModal from '../ModeratorsModal/ModeratorsModal';
 import styles from './Header.module.css';
 
 export default function Header() {
-  const { semesters, activeSemesterId, activeGroup, setActiveGroup, activeYearNumber, setActiveYearNumber, adminRole } =
+  const { semesters, activeSemesterId, activeGroup, setActiveGroup, activeYearNumber, setActiveYearNumber, adminRole, logoutAdmin } =
     useScheduleStore();
   const [isInfoOpen, setIsInfoOpen] = useState(false);
   const [isExportOpen, setIsExportOpen] = useState(false);
@@ -29,18 +29,21 @@ export default function Header() {
             </defs>
           </svg>
           <div className={styles.left}>
-            {(!adminRole || adminRole.type === 'master') && (
-              <button
-                className={styles.backBtn}
-                onClick={() => setActiveYearNumber(null)}
-                aria-label="Wróć"
-                title="Wróć do wyboru planu"
-              >
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="url(#backGrad)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M19 12H5M12 19l-7-7 7-7" />
-                </svg>
-              </button>
-            )}
+            <button
+              className={styles.backBtn}
+              onClick={() => {
+                setActiveYearNumber(null);
+                if (adminRole && adminRole.type !== 'master') {
+                  logoutAdmin();
+                }
+              }}
+              aria-label="Wróć"
+              title="Wróć do wyboru planu"
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="url(#backGrad)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M19 12H5M12 19l-7-7 7-7" />
+              </svg>
+            </button>
           </div>
 
           <div className={styles.center}>
