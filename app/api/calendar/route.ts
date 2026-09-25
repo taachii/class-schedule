@@ -1,7 +1,13 @@
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
 import { NextResponse } from 'next/server';
 import ical from 'ical-generator';
 import { supabase } from '@/lib/supabase/client';
 import type { ScheduleEvent, Subject } from '@/types/schedule';
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -69,13 +75,14 @@ export async function GET(request: Request) {
       const notes = ev.notes ? `\n📝 Uwagi: ${ev.notes}` : '';
       const department = ev.department || subject?.department ? `\n🏢 Zakład/Katedra: ${ev.department || subject?.department}` : '';
 
-      // Create proper Date objects using date and time fields
-      const startStr = `${ev.date}T${ev.time_start}`;
-      const endStr = `${ev.date}T${ev.time_end}`;
+      // Parse time specifically in Warsaw timezone to avoid Vercel UTC issues
+      const start = dayjs.tz(`${ev.date}T${ev.time_start}`, 'Europe/Warsaw').toDate();
+      const end = dayjs.tz(`${ev.date}T${ev.time_end}`, 'Europe/Warsaw').toDate();
 
       cal.createEvent({
-        start: new Date(startStr),
-        end: new Date(endStr),
+        start: start,
+        end: end,
+        timezone: 'Europe/Warsaw',
         summary: `[${ev.type}] ${subject?.label || 'Zajęcia'}`,
         description: `Zajęcia: ${subject?.label || 'Brak danych'}${department}${professor}${notes}`,
         location: location,
