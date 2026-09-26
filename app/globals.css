@@ -70,6 +70,7 @@
   --shadow-md:  0 4px 16px rgba(0,0,0,0.5);
   --shadow-lg:  0 8px 32px rgba(0,0,0,0.6);
   --shadow-glow: 0 0 24px rgba(79,142,247,0.12);
+  --logo-glow:  drop-shadow(0 0 24px rgba(217, 70, 239, 0.45));
 }
 
 [data-theme='light'] {
@@ -125,6 +126,7 @@
   --shadow-md:  0 4px 12px rgba(0,0,0,0.08);
   --shadow-lg:  0 8px 24px rgba(0,0,0,0.10);
   --shadow-glow: 0 0 16px rgba(37, 99, 235, 0.1);
+  --logo-glow:  drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
 }
 
 /* ── Reset ─────────────────────────────────────────────────── */
