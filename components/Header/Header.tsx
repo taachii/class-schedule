@@ -1,12 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useScheduleStore } from '@/store/scheduleStore';
 import InfoModal from '../InfoModal/InfoModal';
 import ExportModal from '../ExportModal/ExportModal';
 import ModeratorsModal from '../ModeratorsModal/ModeratorsModal';
-import styles from './Header.module.css';
 import { useRouter } from 'next/navigation';
+import styles from './Header.module.css';
 
 export default function Header() {
   const router = useRouter();
@@ -17,6 +17,18 @@ export default function Header() {
   const [isModsOpen, setIsModsOpen] = useState(false);
 
   const activeSemester = semesters.find(s => s.id === activeSemesterId);
+
+  useEffect(() => {
+    let newTitle = "Plan Zajęć";
+    if (activeYearNumber) {
+      newTitle += " | Kierunek lekarski";
+      if (activeSemester) {
+        const yearRoman = ['I', 'II', 'III', 'IV', 'V', 'VI'][activeYearNumber - 1] || activeYearNumber;
+        newTitle += ` | ${yearRoman} Rok - ${activeSemester.label}`;
+      }
+    }
+    document.title = newTitle;
+  }, [activeYearNumber, activeSemester]);
 
   return (
     <>
