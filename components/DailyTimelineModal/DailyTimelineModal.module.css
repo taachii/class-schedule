@@ -166,7 +166,7 @@
 .hourLine {
   flex: 1;
   height: 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  border-top: 1px solid var(--border);
 }
 
 /* ─── Quarter-hour sub-gridlines ─── */
@@ -175,7 +175,7 @@
   left: 62px;
   right: 16px;
   height: 0;
-  border-top: 1px dotted rgba(255, 255, 255, 0.08);
+  border-top: 1px dotted var(--border-subtle);
   z-index: 0;
   pointer-events: none;
 }
@@ -250,7 +250,7 @@
 .eventName {
   font-size: 0.95rem;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--text-primary);
   line-height: 1.3;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -271,7 +271,7 @@
   align-items: flex-start;
   gap: 6px;
   font-size: 0.76rem;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--text-secondary);
   white-space: normal;
   line-height: 1.3;
 }
@@ -282,9 +282,9 @@
 }
 .expandBtn {
   margin-top: 8px;
-  background: rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.9);
+  background: var(--bg-overlay);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
   padding: 4px 10px;
   border-radius: 12px;
   font-size: 0.7rem;
@@ -297,7 +297,7 @@
   width: fit-content;
 }
 .expandBtn:hover {
-  background: rgba(0, 0, 0, 0.4);
+  background: var(--bg-elevated);
 }
 
 /* ─── Sub-modal ─── */
@@ -339,7 +339,7 @@
 .subTitle {
   font-size: 1.1rem;
   font-weight: 700;
-  color: #fff;
+  color: var(--text-primary);
   line-height: 1.2;
   margin-bottom: 4px;
 }
