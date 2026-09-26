@@ -74,7 +74,7 @@
   align-items: center;
   justify-content: center;
   gap: 12px;
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--highlight-bg);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   padding: 8px 24px;
@@ -90,7 +90,7 @@
 
 .customSelectTrigger:hover, .customSelectTrigger:focus {
   border-color: #ec4899;
-  background: rgba(255, 255, 255, 0.06);
+  background: var(--highlight-hover);
 }
 
 .selectIcon {
@@ -253,7 +253,7 @@
   padding: 16px 24px;
   background: transparent;
   border: none;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-top: 1px solid var(--border-subtle);
   color: var(--text-secondary);
   font-size: 1rem;
   cursor: pointer;
@@ -276,7 +276,7 @@
   font-size: 0.75rem;
   padding: 2px 8px;
   border-radius: 12px;
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--highlight-hover);
   color: var(--text-muted);
 }
 

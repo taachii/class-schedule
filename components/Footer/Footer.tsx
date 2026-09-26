@@ -1,4 +1,5 @@
 import { useScheduleStore } from '@/store/scheduleStore';
+import ThemeToggle from '../ThemeToggle/ThemeToggle';
 import styles from './Footer.module.css';
 
 export default function Footer() {
@@ -82,6 +83,7 @@ export default function Footer() {
             Postaw wirtualną kawę
           </a>
           */}
+          <ThemeToggle />
         </div>
 
       </div>

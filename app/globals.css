@@ -7,9 +7,19 @@
 
 /* ── CSS Variables ─────────────────────────────────────────── */
 :root {
-  color-scheme: dark;
   --font-sans: 'Inter', system-ui, sans-serif;
+  --transition: 0.18s ease;
 
+  /* Radius */
+  --radius-sm:      6px;
+  --radius-md:      10px;
+  --radius-lg:      16px;
+  --radius-xl:      20px;
+}
+
+[data-theme='dark'], :root {
+  color-scheme: dark;
+  
   /* Surface */
   --bg-base:        #0d0f1a;
   --bg-surface:     #141628;
@@ -26,28 +36,57 @@
   --text-secondary: #8b91b3;
   --text-muted:     #555a78;
 
-  /* Brand gradient */
+  /* Brand & Accents */
   --brand-start:    #4f8ef7;
   --brand-end:      #7c3aed;
-
-  /* Accent */
   --accent:         #4f8ef7;
   --accent-glow:    rgba(79,142,247,0.15);
 
-  /* Radius */
-  --radius-sm:      6px;
-  --radius-md:      10px;
-  --radius-lg:      16px;
-  --radius-xl:      20px;
+  /* Highlights */
+  --highlight-bg:   rgba(255, 255, 255, 0.05);
+  --highlight-hover:rgba(255, 255, 255, 0.1);
 
   /* Shadows */
   --shadow-sm:  0 1px 3px rgba(0,0,0,0.4);
   --shadow-md:  0 4px 16px rgba(0,0,0,0.5);
   --shadow-lg:  0 8px 32px rgba(0,0,0,0.6);
   --shadow-glow: 0 0 24px rgba(79,142,247,0.12);
+}
 
-  /* Transitions */
-  --transition: 0.18s ease;
+[data-theme='light'] {
+  color-scheme: light;
+  
+  /* Surface */
+  --bg-base:        #f8fafc;
+  --bg-surface:     #ffffff;
+  --bg-elevated:    #ffffff;
+  --bg-overlay:     #f1f5f9;
+
+  /* Borders */
+  --border:         rgba(0, 0, 0, 0.1);
+  --border-subtle:  rgba(0, 0, 0, 0.05);
+  --border-strong:  rgba(0, 0, 0, 0.2);
+
+  /* Text */
+  --text-primary:   #0f172a;
+  --text-secondary: #475569;
+  --text-muted:     #64748b;
+
+  /* Brand & Accents - slightly adjusted for better contrast on light mode */
+  --brand-start:    #2563eb;
+  --brand-end:      #6d28d9;
+  --accent:         #3b82f6;
+  --accent-glow:    rgba(59, 130, 246, 0.2);
+
+  /* Highlights */
+  --highlight-bg:   rgba(0, 0, 0, 0.03);
+  --highlight-hover:rgba(0, 0, 0, 0.06);
+
+  /* Shadows */
+  --shadow-sm:  0 1px 3px rgba(0,0,0,0.05);
+  --shadow-md:  0 4px 16px rgba(0,0,0,0.08);
+  --shadow-lg:  0 8px 32px rgba(0,0,0,0.12);
+  --shadow-glow: 0 0 24px rgba(59, 130, 246, 0.2);
 }
 
 /* ── Reset ─────────────────────────────────────────────────── */

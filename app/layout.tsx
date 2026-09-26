@@ -25,10 +25,16 @@ export const viewport = {
   maximumScale: 1,
 };
 
+import { ThemeProvider } from '@/components/ThemeProvider/ThemeProvider';
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="pl">
-      <body className={inter.variable}>{children}</body>
+    <html lang="pl" suppressHydrationWarning>
+      <body className={inter.variable}>
+        <ThemeProvider attribute="data-theme" defaultTheme="dark" disableTransitionOnChange>
+          {children}
+        </ThemeProvider>
+      </body>
     </html>
   );
 }
