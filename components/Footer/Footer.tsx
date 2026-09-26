@@ -8,23 +8,23 @@ export default function Footer() {
     const d = new Date(isoDate);
     const today = new Date();
     const isToday = d.getDate() === today.getDate() && d.getMonth() === today.getMonth() && d.getFullYear() === today.getFullYear();
-    
+
     const timeStr = d.toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' });
     if (isToday) return `Dzisiaj o ${timeStr}`;
-    
+
     const yesterday = new Date(today);
     yesterday.setDate(yesterday.getDate() - 1);
     if (d.getDate() === yesterday.getDate() && d.getMonth() === yesterday.getMonth() && d.getFullYear() === yesterday.getFullYear()) {
       return `Wczoraj o ${timeStr}`;
     }
-    
+
     return d.toLocaleDateString('pl-PL', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
   };
 
   return (
     <footer className={styles.footer}>
       <div className={styles.content}>
-        
+
         {/* Lewa strona - Twórca i kontakt */}
         <div className={styles.left}>
           <div className={styles.brand}>
@@ -39,7 +39,7 @@ export default function Footer() {
           <p className={styles.copyright}>
             &copy; {new Date().getFullYear()} Adam Chyt, lekarski Rok I.<br />Wszelkie prawa zastrzeżone.
           </p>
-          <a href="mailto:a.chyt@365.sum.edu.pl" className={styles.linkWithIcon}>
+          <a href="mailto:s99242@365.sum.edu.pl" className={styles.linkWithIcon}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
               <polyline points="22,6 12,13 2,6"></polyline>
@@ -64,10 +64,10 @@ export default function Footer() {
 
         {/* Prawa strona - Kawa / Linki */}
         <div className={styles.right}>
-          <a 
-            href="https://buycoffee.to/adamchyt" 
-            target="_blank" 
-            rel="noopener noreferrer" 
+          <a
+            href="https://buycoffee.to/adamchyt"
+            target="_blank"
+            rel="noopener noreferrer"
             className={styles.coffeeBtn}
             title="Wesprzyj utrzymanie serwerów i domeny"
           >
