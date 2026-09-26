@@ -37,6 +37,7 @@ export default function CalendarView({ onEventClick }: CalendarViewProps) {
   const isAdmin = !!adminRole;
   const [selectedEvent, setSelectedEvent] = useState<EnrichedEvent | null>(null);
   const [adminAddDate, setAdminAddDate] = useState<string | null>(null);
+  const [timelineDate, setTimelineDate] = useState<string | null>(null);
   const [now, setNow] = useState(debugTime || new Date());
 
   useEffect(() => {
