@@ -31,6 +31,7 @@ export default function HomeSelector() {
       <div className={styles.container}>
         <div className={styles.header}>
           <div className={styles.logoIcon}>
+            {/* Tymczasowo zakomentowane logo (klon oficjalnego), czeka na zgodę z uczelni 
             <svg width="240" viewBox="0 15 230 60" fill="none" stroke="url(#sumGradient)" strokeWidth="6" strokeLinecap="butt">
               <defs>
                 <linearGradient id="sumGradient" x1="0" y1="0" x2="1" y2="0">
@@ -45,6 +46,21 @@ export default function HomeSelector() {
               <path d="M 171 40 A 18 18 0 0 1 207 40" />
               <path d="M 207 50 V 66 M 199 58 H 215" strokeWidth="4" />
             </svg>
+            */}
+            <h2 style={{ 
+              fontSize: '28px', 
+              fontWeight: '800', 
+              letterSpacing: '-0.5px',
+              background: 'linear-gradient(to right, #ec4899, #7c3aed)',
+              WebkitBackgroundClip: 'text',
+              color: 'transparent',
+              margin: '0',
+              padding: '0 10px',
+              textAlign: 'center',
+              lineHeight: '1.2'
+            }}>
+              Śląski Uniwersytet Medyczny
+            </h2>
           </div>
           <p className={styles.subtitle}>Wydział Nauk Medycznych w Zabrzu</p>
           <div className={styles.majorSelectorWrapper}>
