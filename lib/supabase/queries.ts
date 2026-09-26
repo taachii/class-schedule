@@ -101,3 +101,22 @@ export async function fetchAllSemesters(): Promise<Semester[]> {
   if (error) throw error;
   return data ?? [];
 }
+
+export async function fetchGroupUpdate(semesterId: number, groupKey: string): Promise<string | null> {
+  const isLectureGroup = groupKey === 'GW';
+  let query = supabase
+    .from('group_updates')
+    .select('updated_at')
+    .eq('semester_id', semesterId);
+
+  if (isLectureGroup) {
+    query = query.eq('group_key', 'GW');
+  } else {
+    query = query.in('group_key', [groupKey, 'GW']);
+  }
+
+  const { data, error } = await query.order('updated_at', { ascending: false }).limit(1);
+
+  if (error || !data || data.length === 0) return null;
+  return data[0].updated_at;
+}
