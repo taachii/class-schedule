@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import { useScheduleStore } from '@/store/scheduleStore';
 import { ACADEMIC_PERIODS, PeriodType } from '@/config/academicPeriods';
 import type { EnrichedEvent } from '@/types/schedule';
@@ -33,6 +34,8 @@ interface CalendarViewProps {
 }
 
 export default function CalendarView({ onEventClick }: CalendarViewProps) {
+  const pathname = usePathname();
+  const isDebug = pathname === '/debug';
   const { enrichedEvents, activeSubjectKeys, currentYear, currentMonth, setMonth, adminRole, initialize, semesters, activeSemesterId, debugTime, setDebugTime } = useScheduleStore();
   const isAdmin = !!adminRole;
   const [selectedEvent, setSelectedEvent] = useState<EnrichedEvent | null>(null);
@@ -271,11 +274,23 @@ export default function CalendarView({ onEventClick }: CalendarViewProps) {
         />
       )}
 
-      {/* Admin Time Traveler */}
-      {isAdmin && (
+      {/* Time Traveler */}
+      {isDebug && (
         <div style={{ position: 'fixed', bottom: 20, left: 20, zIndex: 9999, background: 'var(--bg-surface)', padding: 12, borderRadius: 12, border: '1px solid var(--border)', boxShadow: 'var(--shadow-lg)' }}>
           <label style={{ fontSize: '0.8rem', display: 'flex', flexDirection: 'column', gap: 8, color: 'var(--text-primary)', fontWeight: 600 }}>
             Time Traveler 🛸
+            <input 
+              type="date"
+              value={`${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`}
+              onChange={e => {
+                if (!e.target.value) return;
+                const [y, m, d] = e.target.value.split('-');
+                const dt = new Date(now);
+                dt.setFullYear(parseInt(y), parseInt(m) - 1, parseInt(d));
+                setDebugTime(dt);
+              }}
+              style={{ background: 'var(--bg-elevated)', color: 'var(--text-primary)', border: '1px solid var(--border)', borderRadius: 4, padding: '4px 8px' }}
+            />
             <input 
               type="range" 
               min="0" 
@@ -285,10 +300,10 @@ export default function CalendarView({ onEventClick }: CalendarViewProps) {
               onChange={e => {
                 const val = parseFloat(e.target.value);
                 const h = Math.floor(val);
-                const m = Math.round((val - h) * 60);
-                const d = new Date(now);
-                d.setHours(h, m, 0);
-                setDebugTime(d);
+                const min = Math.round((val - h) * 60);
+                const dt = new Date(now);
+                dt.setHours(h, min, 0);
+                setDebugTime(dt);
               }}
               style={{ width: 150, accentColor: 'var(--accent)' }}
             />
