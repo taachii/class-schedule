@@ -72,6 +72,9 @@ export default function Header() {
                 <span className={styles.titleGradient}>Plan Zajęć</span>
                 {adminRole && <span className={styles.titleAdmin}> - Tryb Edycji</span>}
               </h1>
+              {activeYearNumber && (
+                <p className={styles.majorTitle}>Kierunek lekarski</p>
+              )}
               <p className={styles.subtitle}>
                 {activeYearNumber ? `${['I', 'II', 'III', 'IV', 'V', 'VI'][activeYearNumber - 1]} Rok` : ''}
                 {activeSemester ? `${activeYearNumber ? ' - ' : ''}${activeSemester.label}` : ''}
