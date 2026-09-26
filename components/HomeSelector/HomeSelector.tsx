@@ -48,7 +48,7 @@ export default function HomeSelector() {
             </svg>
             */}
             <h2 style={{ 
-              fontSize: '28px', 
+              fontSize: 'clamp(28px, 6vw, 42px)', 
               fontWeight: '800', 
               letterSpacing: '-0.5px',
               background: 'linear-gradient(to right, #ec4899, #7c3aed)',
