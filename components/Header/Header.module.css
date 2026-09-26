@@ -85,6 +85,14 @@
   color: #ef4444;
 }
 
+.majorTitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+  margin-top: 2px;
+}
+
 .subtitle {
   font-size: 0.95rem;
   color: var(--text-muted);
@@ -154,6 +162,11 @@
   
   .title {
     font-size: 1.15rem;
+  }
+
+  .majorTitle {
+    font-size: 0.85rem;
+    margin-top: 0;
   }
 
   .subtitle {
