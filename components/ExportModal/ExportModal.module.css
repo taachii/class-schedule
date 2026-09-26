@@ -1,7 +1,7 @@
 .overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.65);
+  background: var(--overlay-bg);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   z-index: 9999;
@@ -27,7 +27,7 @@
   margin: auto;
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
-  box-shadow: 0 24px 80px rgba(0,0,0,0.45);
+  box-shadow: var(--shadow-lg);
   animation: slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   overflow: hidden;
   position: relative;

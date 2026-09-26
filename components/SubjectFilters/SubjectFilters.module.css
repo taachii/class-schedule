@@ -41,9 +41,9 @@
   transition: all var(--transition);
   font-family: inherit;
   
-  background: rgba(255,255,255,0.04) !important;
+  background: var(--highlight-bg) !important;
   color: var(--text-muted) !important;
-  border-color: rgba(255,255,255,0.08) !important;
+  border-color: var(--border) !important;
   text-decoration: line-through;
   opacity: 0.6;
 }
@@ -54,7 +54,7 @@
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  border: 1.5px solid rgba(255,255,255,0.2);
+  border: 1.5px solid var(--border-strong);
   flex-shrink: 0;
   transition: all var(--transition);
 }
@@ -76,7 +76,7 @@
   justify-content: center;
   color: inherit;
   border-color: currentColor;
-  background: rgba(255,255,255,0.15);
+  background: var(--highlight-hover);
 }
 
 .chip:hover {
