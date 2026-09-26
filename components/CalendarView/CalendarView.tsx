@@ -33,17 +33,21 @@ interface CalendarViewProps {
 }
 
 export default function CalendarView({ onEventClick }: CalendarViewProps) {
-  const { enrichedEvents, activeSubjectKeys, currentYear, currentMonth, setMonth, adminRole, initialize, semesters, activeSemesterId } = useScheduleStore();
+  const { enrichedEvents, activeSubjectKeys, currentYear, currentMonth, setMonth, adminRole, initialize, semesters, activeSemesterId, debugTime, setDebugTime } = useScheduleStore();
   const isAdmin = !!adminRole;
   const [selectedEvent, setSelectedEvent] = useState<EnrichedEvent | null>(null);
   const [adminAddDate, setAdminAddDate] = useState<string | null>(null);
-  const [timelineDate, setTimelineDate] = useState<string | null>(null);
-  const [now, setNow] = useState(new Date());
+  const [now, setNow] = useState(debugTime || new Date());
 
   useEffect(() => {
+    if (debugTime) {
+      setNow(debugTime);
+      return;
+    }
+    setNow(new Date());
     const timer = setInterval(() => setNow(new Date()), 60000);
     return () => clearInterval(timer);
-  }, []);
+  }, [debugTime]);
 
   const filtered = enrichedEvents.filter(ev => activeSubjectKeys.has(ev.subject_key));
   const activeSemester = semesters.find(s => s.id === activeSemesterId);
@@ -264,6 +268,40 @@ export default function CalendarView({ onEventClick }: CalendarViewProps) {
           onClose={() => setSelectedEvent(null)} 
           onSuccess={() => { setSelectedEvent(null); initialize(); }} 
         />
+      )}
+
+      {/* Admin Time Traveler */}
+      {isAdmin && (
+        <div style={{ position: 'fixed', bottom: 20, left: 20, zIndex: 9999, background: 'var(--bg-surface)', padding: 12, borderRadius: 12, border: '1px solid var(--border)', boxShadow: 'var(--shadow-lg)' }}>
+          <label style={{ fontSize: '0.8rem', display: 'flex', flexDirection: 'column', gap: 8, color: 'var(--text-primary)', fontWeight: 600 }}>
+            Time Traveler 🛸
+            <input 
+              type="range" 
+              min="0" 
+              max="24" 
+              step="0.083333333" // 5 minutes
+              value={now.getHours() + now.getMinutes() / 60} 
+              onChange={e => {
+                const val = parseFloat(e.target.value);
+                const h = Math.floor(val);
+                const m = Math.round((val - h) * 60);
+                const d = new Date(now);
+                d.setHours(h, m, 0);
+                setDebugTime(d);
+              }}
+              style={{ width: 150, accentColor: 'var(--accent)' }}
+            />
+          </label>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 8 }}>
+            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>{now.toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' })}</span>
+            <button 
+              style={{ fontSize: '0.7rem', padding: '4px 8px', borderRadius: 6, background: 'rgba(255,255,255,0.1)', border: 'none', color: '#fff', cursor: 'pointer' }} 
+              onClick={() => setDebugTime(null)}
+            >
+              Reset
+            </button>
+          </div>
+        </div>
       )}
     </div>
   );

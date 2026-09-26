@@ -43,6 +43,10 @@ interface ScheduleStore {
   adminPassword: string | null;
   setAdminAuth: (role: AdminRole, password: string) => void;
   logoutAdmin: () => void;
+
+  // ── Debug ────────────────────────────────────────────────────
+  debugTime: Date | null;
+  setDebugTime: (d: Date | null) => void;
 }
 
 function enrichEvents(events: ScheduleEvent[], subjects: Subject[]): EnrichedEvent[] {
@@ -226,6 +230,9 @@ export const useScheduleStore = create<ScheduleStore>()(
   adminPassword: null,
   setAdminAuth: (role, password) => set({ adminRole: role, adminPassword: password }),
   logoutAdmin: () => set({ adminRole: null, adminPassword: null }),
+
+  debugTime: null,
+  setDebugTime: (debugTime) => set({ debugTime }),
 }), {
   name: 'class-schedule-storage',
   partialize: (state) => ({
