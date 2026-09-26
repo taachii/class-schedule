@@ -190,13 +190,13 @@
 .expandedCard {
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
-  border-color: var(--accent);
-  background: var(--bg-elevated);
+  border-color: #ec4899;
+  background: rgba(236, 72, 153, 0.05);
 }
 
 .card:hover:not(.disabledCard) {
-  background: var(--bg-elevated);
-  border-color: var(--accent);
+  background: rgba(236, 72, 153, 0.05);
+  border-color: #ec4899;
 }
 
 .disabledCard {
@@ -223,7 +223,7 @@
 
 .rotatedArrow {
   transform: rotate(180deg);
-  color: var(--accent);
+  color: #ec4899;
 }
 
 .accordionContent {
@@ -259,8 +259,8 @@
 }
 
 .semesterBtn:hover:not(.disabledBtn) {
-  background: rgba(255, 255, 255, 0.03);
-  color: var(--text-primary);
+  background: rgba(236, 72, 153, 0.05);
+  color: #ec4899;
   padding-left: 28px;
 }
 
