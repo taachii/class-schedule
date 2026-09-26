@@ -9,7 +9,7 @@ import styles from './HomeSelector.module.css';
 const ROMAN_NUMERALS = ['I', 'II', 'III', 'IV', 'V', 'VI'];
 
 export default function HomeSelector() {
-  const { setActiveYearNumber } = useScheduleStore();
+  const { setActiveYearNumber, adminRole, logoutAdmin } = useScheduleStore();
   const [allSemesters, setAllSemesters] = useState<Semester[]>([]);
   const [expandedYear, setExpandedYear] = useState<number | null>(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -29,6 +29,26 @@ export default function HomeSelector() {
   return (
     <div className={styles.wrapper}>
       <div className={styles.container}>
+        {adminRole?.type === 'master' && (
+          <button
+            onClick={logoutAdmin}
+            style={{
+              alignSelf: 'center',
+              marginBottom: '16px',
+              padding: '6px 16px',
+              background: 'rgba(239, 68, 68, 0.1)',
+              color: '#ef4444',
+              border: '1px solid rgba(239, 68, 68, 0.2)',
+              borderRadius: '8px',
+              cursor: 'pointer',
+              fontWeight: '600',
+              fontSize: '14px',
+              transition: 'all 0.2s'
+            }}
+          >
+            Wyjdź z trybu edycji (Master)
+          </button>
+        )}
         <div className={styles.header}>
           <div className={styles.logoIcon}>
             {/* Tymczasowo zakomentowane logo (klon oficjalnego), czeka na zgodę z uczelni 
