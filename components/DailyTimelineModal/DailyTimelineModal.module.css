@@ -260,14 +260,16 @@
   letter-spacing: 0.05em;
   padding: 2px 8px;
   border-radius: 10px;
-  background: rgba(239, 68, 68, 0.15);
-  color: #dc2626;
+  background: #ef4444;
+  color: #ffffff;
   white-space: nowrap;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
 .examBadgeInner {
-  background: rgba(220, 38, 38, 0.15) !important;
-  color: #dc2626 !important;
+  background: #ef4444 !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2) !important;
 }
 
 .eventBlockExam {
