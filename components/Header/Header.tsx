@@ -82,7 +82,7 @@ export default function Header() {
             <div className={styles.brandText}>
               <h1 className={styles.title}>
                 <span className={styles.titleGradient}>Plan Zajęć</span>
-                {adminRole && <span className={styles.titleAdmin}> - Tryb Edycji</span>}
+                {adminRole && <span style={{ color: '#ef4444' }}> Edycja</span>}
               </h1>
               {activeYearNumber && (
                 <p className={styles.majorTitle}>Kierunek lekarski</p>
