@@ -46,7 +46,19 @@ export default function HomeSelector() {
             </svg>
           </div>
           <p className={styles.subtitle}>Wydział Nauk Medycznych w Zabrzu</p>
-          <h1 className={styles.title}>Plany zajęć dla kierunku lekarskiego</h1>
+          <div className={styles.majorSelectorWrapper}>
+            <h1 className={styles.title}>Plany zajęć dla kierunku</h1>
+            <div className={styles.selectWrapper}>
+              <select className={styles.majorSelect} defaultValue="lekarski">
+                <option value="lekarski">lekarskiego</option>
+                <option value="lek-dent" disabled>lekarsko-dentystycznego (wkrótce)</option>
+                <option value="ratownictwo" disabled>ratownictwa med. (wkrótce)</option>
+              </select>
+              <svg className={styles.selectIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </div>
+          </div>
         </div>
 
         <div className={styles.grid}>
