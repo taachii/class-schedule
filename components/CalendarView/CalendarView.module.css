@@ -188,7 +188,9 @@
 
 .assessmentIcon {
   margin-left: 4px;
-  font-size: 0.85em;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
 }
 
 .liveDot {
