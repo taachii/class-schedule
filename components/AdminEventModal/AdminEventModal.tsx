@@ -47,6 +47,8 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
     department: initialEvent?.department || '',
     professor: initialEvent?.professor || '',
     notes: initialEvent?.notes || '',
+    exam_term: initialEvent?.exam_term || '',
+    assessment_type: initialEvent?.assessment_type || '',
   });
 
   const [dates, setDates] = useState<string[]>(
@@ -131,6 +133,9 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
       semester_id: parseInt(formData.semester_id),
       seminar_groups: seminarGroups,
       exercise_groups: exerciseGroups,
+      exam_term: formData.type === 'E' ? (formData.exam_term || null) : null,
+      assessment_type: formData.type !== 'E' ? (formData.assessment_type || null) : null,
+      notes: formData.notes || null,
     };
 
     let res;
@@ -203,7 +208,10 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
             <div>
               <label className={styles.label}>Typ zajęć</label>
               <select name="type" value={formData.type} onChange={handleChange} className={styles.select}>
-                {eventTypes.map(t => <option key={t.code} value={t.code}>{t.label}</option>)}
+                {eventTypes.map(t => {
+                  if (t.code === 'E' && adminRole?.type === 'moderator') return null;
+                  return <option key={t.code} value={t.code}>{t.label}</option>;
+                })}
               </select>
             </div>
             <div>
@@ -282,6 +290,42 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
             <div>
               <label className={styles.label}>Prowadzący</label>
               <input type="text" name="professor" value={formData.professor} onChange={handleChange} className={styles.input} placeholder="Imię i nazwisko prowadzącego" />
+            </div>
+          </div>
+
+          {formData.type === 'E' ? (
+            <div className={styles.row}>
+              <div style={{ flex: 1 }}>
+                <label className={styles.label}>Termin Egzaminu</label>
+                <select name="exam_term" value={formData.exam_term} onChange={handleChange} className={styles.select}>
+                  <option value="">- Wybierz termin -</option>
+                  <option value="0">Termin 0</option>
+                  <option value="I">Termin I</option>
+                  <option value="II">Termin II</option>
+                  <option value="III">Termin III</option>
+                  <option value="IV">Termin IV</option>
+                </select>
+              </div>
+            </div>
+          ) : (
+            <div className={styles.row}>
+              <div style={{ flex: 1 }}>
+                <label className={styles.label}>Typ zaliczenia na tych zajęciach (opcjonalnie)</label>
+                <select name="assessment_type" value={formData.assessment_type} onChange={handleChange} className={styles.select}>
+                  <option value="">- Brak zaliczenia -</option>
+                  <option value="Kolokwium">Kolokwium</option>
+                  <option value="Wejściówka">Wejściówka</option>
+                  <option value="Kartkówka">Kartkówka</option>
+                  <option value="Sprawdzian">Sprawdzian</option>
+                </select>
+              </div>
+            </div>
+          )}
+
+          <div className={styles.row}>
+            <div style={{ flex: 1 }}>
+              <label className={styles.label}>Uwagi / Zagadnienia (opcjonalnie)</label>
+              <input type="text" name="notes" value={formData.notes} onChange={handleChange} className={styles.input} placeholder="np. Zakres materiału, sala rezerwowa, co zabrać ze sobą" />
             </div>
           </div>
 

@@ -177,6 +177,20 @@
   border-left-color: #22c55e !important;
 }
 
+.eventExam {
+  border-left-color: #dc2626 !important;
+}
+
+.examBadge {
+  color: #dc2626;
+  font-weight: 800;
+}
+
+.assessmentIcon {
+  margin-left: 4px;
+  font-size: 0.85em;
+}
+
 .liveDot {
   display: inline-block;
   width: 6px;

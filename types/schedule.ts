@@ -46,6 +46,8 @@ export interface ScheduleEvent {
   department: string | null;
   professor: string | null;
   notes: string | null;
+  exam_term?: string | null;
+  assessment_type?: string | null;
   // Joined fields
   subject?: Subject;
 }
