@@ -22,15 +22,20 @@ function useIsMobile(breakpoint = 768) {
 
 export default function DailyTimelineModal({ dateStr, events, onClose }: DailyTimelineModalProps) {
   const bodyRef = useRef<HTMLDivElement>(null);
-  const { eventTypes } = useScheduleStore();
+  const { eventTypes, debugTime } = useScheduleStore();
   const [selectedEvent, setSelectedEvent] = useState<EnrichedEvent | null>(null);
   const isMobile = useIsMobile();
-  const [now, setNow] = useState(new Date());
+  const [now, setNow] = useState(debugTime || new Date());
 
   useEffect(() => {
+    if (debugTime) {
+      setNow(debugTime);
+      return;
+    }
+    setNow(new Date());
     const timer = setInterval(() => setNow(new Date()), 60000);
     return () => clearInterval(timer);
-  }, []);
+  }, [debugTime]);
 
   const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
 
