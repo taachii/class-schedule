@@ -24,17 +24,38 @@ export default function Footer() {
   return (
     <footer className={styles.footer}>
       <div className={styles.content}>
-        <div className={styles.updateInfo}>
-          Ostatnia aktualizacja dla {activeGroup}:{' '}
-          <strong>{lastUpdated ? formatDate(lastUpdated) : 'Brak danych'}</strong>
+        
+        {/* Lewa strona - Twórca i kontakt */}
+        <div className={styles.left}>
+          <div className={styles.credits}>
+            Stworzone przez: <strong>Adam Chyt</strong> (lekarski Rok I)
+          </div>
+          <a href="mailto:a.chyt@365.sum.edu.pl" className={styles.bugReport}>
+            Znalazłeś błąd? Napisz na maila uczelnianego
+          </a>
         </div>
-        <div className={styles.divider} />
-        <div className={styles.credits}>
-          Stworzone z pasją dla studentów WNMZ | © {new Date().getFullYear()}
+
+        {/* Środek - Aktualizacja */}
+        <div className={styles.center}>
+          <div className={styles.updateInfo}>
+            Ostatnia aktualizacja dla {activeGroup}:<br />
+            <strong>{lastUpdated ? formatDate(lastUpdated) : 'Brak danych'}</strong>
+          </div>
         </div>
-        <a href="mailto:bugreport@example.com" className={styles.bugReport}>
-          Znalazłeś błąd? Zgłoś go tutaj.
-        </a>
+
+        {/* Prawa strona - Kawa / Linki */}
+        <div className={styles.right}>
+          <a 
+            href="https://buycoffee.to/adamchyt" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className={styles.coffeeBtn}
+            title="Wesprzyj utrzymanie serwerów i domeny"
+          >
+            ☕ Postaw wirtualną kawę
+          </a>
+        </div>
+
       </div>
     </footer>
   );
