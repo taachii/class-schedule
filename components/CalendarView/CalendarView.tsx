@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useScheduleStore } from '@/store/scheduleStore';
 import { ACADEMIC_PERIODS, PeriodType } from '@/config/academicPeriods';
 import type { EnrichedEvent } from '@/types/schedule';
@@ -38,6 +38,12 @@ export default function CalendarView({ onEventClick }: CalendarViewProps) {
   const [selectedEvent, setSelectedEvent] = useState<EnrichedEvent | null>(null);
   const [adminAddDate, setAdminAddDate] = useState<string | null>(null);
   const [timelineDate, setTimelineDate] = useState<string | null>(null);
+  const [now, setNow] = useState(new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => setNow(new Date()), 60000);
+    return () => clearInterval(timer);
+  }, []);
 
   const filtered = enrichedEvents.filter(ev => activeSubjectKeys.has(ev.subject_key));
   const activeSemester = semesters.find(s => s.id === activeSemesterId);
@@ -84,8 +90,7 @@ export default function CalendarView({ onEventClick }: CalendarViewProps) {
   const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
   const daysInPrev = new Date(currentYear, currentMonth, 0).getDate();
 
-  const today = new Date();
-  const todayStr = toIso(today.getFullYear(), today.getMonth() + 1, today.getDate());
+  const todayStr = toIso(now.getFullYear(), now.getMonth() + 1, now.getDate());
 
   // Build date → events map
   const byDate: Record<string, EnrichedEvent[]> = {};
@@ -161,24 +166,35 @@ export default function CalendarView({ onEventClick }: CalendarViewProps) {
       >
         <div className={styles.dayNum} title={activePeriod?.label}>{day}</div>
         <div className={styles.events}>
-          {dayEvents.map(ev => (
-            <div
-              key={ev.id}
-              className={styles.eventChip}
-              style={{ '--ev-color': ev.subject.color } as React.CSSProperties}
-              title={`${ev.subject.label} (${ev.timeStartShort}–${ev.timeEndShort})`}
-              onClick={(e) => {
-                if (isAdmin) {
-                  e.stopPropagation();
-                  setSelectedEvent(ev);
-                }
-                // For non-admins, it bubbles up to the day cell and opens the timeline
-              }}
-            >
-                <span className={styles.chipTime}>{ev.timeStartShort} </span>
-                <span className={styles.chipText}>{ev.subject.short_label} [{ev.type}]</span>
-            </div>
-          ))}
+          {dayEvents.map(ev => {
+            let isLive = false;
+            if (isToday) {
+              const [startH, startM] = ev.time_start.split(':').map(Number);
+              const [endH, endM] = ev.time_end.split(':').map(Number);
+              const evStart = new Date(year, month - 1, day, startH, startM);
+              const evEnd = new Date(year, month - 1, day, endH, endM);
+              isLive = now >= evStart && now <= evEnd;
+            }
+
+            return (
+              <div
+                key={ev.id}
+                className={`${styles.eventChip} ${isLive ? styles.eventLive : ''}`}
+                style={{ '--ev-color': ev.subject.color } as React.CSSProperties}
+                title={`${ev.subject.label} (${ev.timeStartShort}–${ev.timeEndShort})`}
+                onClick={(e) => {
+                  if (isAdmin) {
+                    e.stopPropagation();
+                    setSelectedEvent(ev);
+                  }
+                }}
+              >
+                  <span className={styles.chipTime}>{ev.timeStartShort} </span>
+                  <span className={styles.chipText}>{ev.subject.short_label} [{ev.type}]</span>
+                  {isLive && <span className={styles.liveDot} title="Zajęcia trwają"></span>}
+              </div>
+            );
+          })}
         </div>
       </div>
     );

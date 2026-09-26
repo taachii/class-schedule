@@ -351,7 +351,13 @@ export default function DailyTimelineModal({ dateStr, events, onClose }: DailyTi
 }
 
 function CurrentTimeIndicator({ dateStr, minHour, pxPerMin }: { dateStr: string; minHour: number; pxPerMin: number }) {
-  const now = new Date();
+  const [now, setNow] = useState(new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => setNow(new Date()), 60000);
+    return () => clearInterval(timer);
+  }, []);
+
   const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
   if (todayStr !== dateStr) return null;
 
