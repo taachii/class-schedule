@@ -37,7 +37,7 @@ export default function Footer() {
             <span>Plany Zajęć WNMZ</span>
           </div>
           <p className={styles.copyright}>
-            &copy; {new Date().getFullYear()} Adam Chyt, lekarski Rok I.<br />Wszelkie prawa zastrzeżone.
+            &copy; Adam Chyt | lekarski | I Rok | {new Date().getFullYear()}<br />Wszelkie prawa zastrzeżone.
           </p>
           <a href="mailto:s99242@365.sum.edu.pl" className={styles.linkWithIcon}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
