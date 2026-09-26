@@ -152,9 +152,9 @@
   pointer-events: none;
 }
 .hourLabel {
-  width: 56px;
+  width: 62px;
   text-align: right;
-  padding-right: 10px;
+  padding-right: 14px;
   font-size: 0.72rem;
   font-weight: 600;
   color: var(--text-muted);
@@ -172,7 +172,7 @@
 /* ─── Quarter-hour sub-gridlines ─── */
 .quarterLine {
   position: absolute;
-  left: 56px;
+  left: 62px;
   right: 16px;
   height: 0;
   border-top: 1px dotted rgba(255, 255, 255, 0.08);
@@ -184,7 +184,7 @@
 .eventsLayer {
   position: absolute;
   top: 0;
-  left: 56px;
+  left: 62px;
   right: 16px;
   bottom: 0;
   z-index: 2;
@@ -388,7 +388,7 @@
 /* ─── Current time line ─── */
 .nowLine {
   position: absolute;
-  left: 48px;
+  left: 54px;
   right: 16px;
   height: 0;
   z-index: 10;
@@ -400,9 +400,9 @@
 .nowDot {
   width: 0;
   height: 0;
-  border-top: 6px solid transparent;
-  border-bottom: 6px solid transparent;
-  border-left: 10px solid #22c55e;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-left: 8px solid #22c55e;
   border-radius: 0;
   background: transparent;
   flex-shrink: 0;
@@ -432,10 +432,10 @@
   }
   .header { padding: 16px 20px; }
   .title  { font-size: 1.1rem; }
-  .hourLabel { font-size: 0.65rem; width: 46px; }
-  .eventsLayer { left: 46px; }
-  .quarterLine { left: 46px; }
-  .nowLine { left: 38px; }
+  .hourLabel { font-size: 0.65rem; width: 52px; padding-right: 10px; }
+  .eventsLayer { left: 52px; }
+  .quarterLine { left: 52px; }
+  .nowLine { left: 44px; }
   .eventBlock { border-left-width: 3px; }
   .eventInner { padding: 5px 8px; }
   .eventName { font-size: 0.8rem; -webkit-line-clamp: 1; }
