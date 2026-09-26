@@ -61,8 +61,8 @@ export default function HomeSelector() {
             }}>
               Śląski Uniwersytet Medyczny
             </h2>
+            <p className={styles.subtitle}>Wydział Nauk Medycznych w Zabrzu</p>
           </div>
-          <p className={styles.subtitle}>Wydział Nauk Medycznych w Zabrzu</p>
           <div className={styles.majorSelectorWrapper}>
             <h1 className={styles.title}>Plany zajęć dla kierunku</h1>
             
