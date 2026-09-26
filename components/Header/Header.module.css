@@ -56,9 +56,9 @@
 }
 
 .backBtn:hover {
-  border-color: var(--accent);
+  border-color: var(--brand-end);
   background: var(--bg-overlay);
-  box-shadow: 0 0 16px rgba(79, 142, 247, 0.2);
+  box-shadow: 0 0 16px rgba(124, 58, 237, 0.2);
 }
 
 .brandText { 
