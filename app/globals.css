@@ -56,6 +56,12 @@
   --ev-text-base:   #ffffff;
   --ev-meta-color:  rgba(255, 255, 255, 0.8);
 
+  /* Calendar & Periods */
+  --calendar-header-bg: var(--bg-overlay);
+  --period-holiday: rgba(34, 197, 94, 0.05);
+  --period-exam:    rgba(239, 68, 68, 0.05);
+  --period-makeup:  rgba(245, 158, 11, 0.05);
+
   /* Grid background */
   --grid-line:      rgba(79,142,247,0.03);
 
@@ -104,6 +110,12 @@
   --ev-text-mix:    #1e293b;
   --ev-text-base:   #1e293b;
   --ev-meta-color:  #334155;
+
+  /* Calendar & Periods */
+  --calendar-header-bg: #f8fafc;
+  --period-holiday: rgba(34, 197, 94, 0.12);
+  --period-exam:    rgba(239, 68, 68, 0.12);
+  --period-makeup:  rgba(245, 158, 11, 0.12);
 
   /* Grid background */
   --grid-line:      rgba(37, 99, 235, 0.04);
