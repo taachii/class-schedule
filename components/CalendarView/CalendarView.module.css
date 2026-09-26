@@ -148,7 +148,7 @@
   padding: 4px 6px;
   border-radius: 4px;
   background: color-mix(in srgb, var(--ev-color) 20%, transparent);
-  color: color-mix(in srgb, var(--ev-color) 40%, white);
+  color: color-mix(in srgb, var(--ev-color) 40%, var(--ev-text-mix));
   border-left: 3px solid var(--ev-color);
   cursor: pointer;
   white-space: nowrap;

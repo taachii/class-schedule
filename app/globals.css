@@ -46,6 +46,19 @@
   --highlight-bg:   rgba(255, 255, 255, 0.05);
   --highlight-hover:rgba(255, 255, 255, 0.1);
 
+  /* Overlays & Glass */
+  --overlay-bg:     rgba(0, 0, 0, 0.65);
+  --header-glass:   rgba(13, 15, 20, 0.85);
+  --header-shadow:  0 4px 24px rgba(0,0,0,0.3);
+
+  /* Event chip text: mixed toward white in dark mode */
+  --ev-text-mix:    white;
+  --ev-text-base:   #ffffff;
+  --ev-meta-color:  rgba(255, 255, 255, 0.8);
+
+  /* Grid background */
+  --grid-line:      rgba(79,142,247,0.03);
+
   /* Shadows */
   --shadow-sm:  0 1px 3px rgba(0,0,0,0.4);
   --shadow-md:  0 4px 16px rgba(0,0,0,0.5);
@@ -57,36 +70,49 @@
   color-scheme: light;
   
   /* Surface */
-  --bg-base:        #f8fafc;
+  --bg-base:        #f0f4f8;
   --bg-surface:     #ffffff;
   --bg-elevated:    #ffffff;
-  --bg-overlay:     #f1f5f9;
+  --bg-overlay:     #e8ecf1;
 
   /* Borders */
   --border:         rgba(0, 0, 0, 0.1);
   --border-subtle:  rgba(0, 0, 0, 0.05);
-  --border-strong:  rgba(0, 0, 0, 0.2);
+  --border-strong:  rgba(0, 0, 0, 0.18);
 
   /* Text */
   --text-primary:   #0f172a;
-  --text-secondary: #475569;
+  --text-secondary: #334155;
   --text-muted:     #64748b;
 
-  /* Brand & Accents - slightly adjusted for better contrast on light mode */
+  /* Brand & Accents – deeper for contrast on white */
   --brand-start:    #2563eb;
-  --brand-end:      #6d28d9;
-  --accent:         #3b82f6;
-  --accent-glow:    rgba(59, 130, 246, 0.2);
+  --brand-end:      #7c3aed;
+  --accent:         #2563eb;
+  --accent-glow:    rgba(37, 99, 235, 0.12);
 
   /* Highlights */
-  --highlight-bg:   rgba(0, 0, 0, 0.03);
-  --highlight-hover:rgba(0, 0, 0, 0.06);
+  --highlight-bg:   rgba(0, 0, 0, 0.04);
+  --highlight-hover:rgba(0, 0, 0, 0.07);
+
+  /* Overlays & Glass */
+  --overlay-bg:     rgba(0, 0, 0, 0.35);
+  --header-glass:   rgba(240, 244, 248, 0.88);
+  --header-shadow:  0 1px 8px rgba(0,0,0,0.08);
+
+  /* Event chip text: mixed toward dark in light mode */
+  --ev-text-mix:    #1e293b;
+  --ev-text-base:   #1e293b;
+  --ev-meta-color:  #334155;
+
+  /* Grid background */
+  --grid-line:      rgba(37, 99, 235, 0.04);
 
   /* Shadows */
-  --shadow-sm:  0 1px 3px rgba(0,0,0,0.05);
-  --shadow-md:  0 4px 16px rgba(0,0,0,0.08);
-  --shadow-lg:  0 8px 32px rgba(0,0,0,0.12);
-  --shadow-glow: 0 0 24px rgba(59, 130, 246, 0.2);
+  --shadow-sm:  0 1px 2px rgba(0,0,0,0.06);
+  --shadow-md:  0 4px 12px rgba(0,0,0,0.08);
+  --shadow-lg:  0 8px 24px rgba(0,0,0,0.10);
+  --shadow-glow: 0 0 16px rgba(37, 99, 235, 0.1);
 }
 
 /* ── Reset ─────────────────────────────────────────────────── */
@@ -110,8 +136,8 @@ body::before {
   position: fixed;
   inset: 0;
   background-image:
-    linear-gradient(rgba(79,142,247,0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(79,142,247,0.03) 1px, transparent 1px);
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
   background-size: 40px 40px;
   pointer-events: none;
   z-index: -1;
