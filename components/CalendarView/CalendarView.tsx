@@ -184,12 +184,23 @@ export default function CalendarView({ onEventClick }: CalendarViewProps) {
               isLive = now >= evStart && now <= evEnd;
             }
 
+              const isExam = ev.type === 'E';
+              const examTermInfo = isExam && ev.exam_term ? ` - Termin ${ev.exam_term}` : '';
+              
+              let tooltip = `${ev.subject.label}${examTermInfo} (${ev.timeStartShort}–${ev.timeEndShort})`;
+              if (ev.assessment_type) {
+                tooltip += `\nZaliczenie: ${ev.assessment_type}`;
+              }
+              if (ev.notes) {
+                tooltip += `\nUwagi: ${ev.notes}`;
+              }
+
             return (
               <div
                 key={ev.id}
-                className={`${styles.eventChip} ${isLive ? styles.eventLive : ''}`}
+                className={`${styles.eventChip} ${isLive ? styles.eventLive : ''} ${isExam ? styles.eventExam : ''}`}
                 style={{ '--ev-color': ev.subject.color } as React.CSSProperties}
-                title={`${ev.subject.label} (${ev.timeStartShort}–${ev.timeEndShort})`}
+                title={tooltip}
                 onClick={(e) => {
                   if (isAdmin) {
                     e.stopPropagation();
@@ -198,7 +209,17 @@ export default function CalendarView({ onEventClick }: CalendarViewProps) {
                 }}
               >
                   <span className={styles.chipTime}>{ev.timeStartShort} </span>
-                  <span className={styles.chipText}>{ev.subject.short_label} [{ev.type}]</span>
+                  <span className={styles.chipText}>
+                    {ev.subject.short_label}
+                    {isExam ? (
+                      <span className={styles.examBadge}> [E]</span>
+                    ) : (
+                      ` [${ev.type}]`
+                    )}
+                  </span>
+                  {!isExam && ev.assessment_type && (
+                     <span className={styles.assessmentIcon} title={ev.assessment_type}>❗</span>
+                  )}
                   {isLive && <span className={styles.liveDot} title="Zajęcia trwają"></span>}
               </div>
             );

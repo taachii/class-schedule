@@ -247,6 +247,33 @@
   white-space: nowrap;
 }
 
+.badgeContainer {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.assessmentBadge {
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: rgba(239, 68, 68, 0.15);
+  color: #dc2626;
+  white-space: nowrap;
+}
+
+.examBadgeInner {
+  background: rgba(220, 38, 38, 0.15) !important;
+  color: #dc2626 !important;
+}
+
+.eventBlockExam {
+  border-left-color: #dc2626 !important;
+}
+
 .eventName {
   font-size: 0.95rem;
   font-weight: 700;

@@ -11,8 +11,11 @@ function getSupabaseAdmin() {
 
 async function verifyAdminPassword(password: string) {
   const supabaseAdmin = getSupabaseAdmin();
-  const { data } = await supabaseAdmin.from('admin_keys').select('id').eq('pass_key', password).single();
-  return !!data;
+  const { data } = await supabaseAdmin.from('admin_keys').select('id, role').eq('pass_key', password).single();
+  if (data) {
+    return { isValid: true, role: data.role };
+  }
+  return { isValid: false };
 }
 
 async function touchGroups(supabaseAdmin: any, semesterId: number, seminarGroups: string[], exerciseGroups: string[]) {
@@ -45,9 +48,15 @@ async function touchGroups(supabaseAdmin: any, semesterId: number, seminarGroups
 }
 
 export async function addEventAction(eventData: any, password: string) {
-  const isValid = await verifyAdminPassword(password);
-  if (!isValid) {
+  const auth = await verifyAdminPassword(password);
+  if (!auth.isValid) {
     return { success: false, error: 'Nieprawidłowe hasło administratora.' };
+  }
+
+  const eventsToCheck = Array.isArray(eventData) ? eventData : [eventData];
+  const hasExams = eventsToCheck.some(ev => ev.type === 'E');
+  if (hasExams && auth.role === 'moderator') {
+    return { success: false, error: 'Tylko starosta może dodawać egzaminy.' };
   }
 
   const key = process.env.SUPABASE_SERVICE_KEY;
@@ -81,8 +90,8 @@ export async function addEventAction(eventData: any, password: string) {
 }
 
 export async function deleteEventAction(id: string, password: string) {
-  const isValid = await verifyAdminPassword(password);
-  if (!isValid) {
+  const auth = await verifyAdminPassword(password);
+  if (!auth.isValid) {
     return { success: false, error: 'Nieprawidłowe hasło administratora.' };
   }
 
@@ -91,6 +100,10 @@ export async function deleteEventAction(id: string, password: string) {
   // Fetch event first to know which groups to touch
   const { data: eventToDel } = await supabaseAdmin.from('events').select('*').eq('id', id).single();
   
+  if (eventToDel && eventToDel.type === 'E' && auth.role === 'moderator') {
+    return { success: false, error: 'Tylko starosta może usuwać egzaminy.' };
+  }
+
   const { error } = await supabaseAdmin.from('events').delete().eq('id', id);
 
   if (error) {
@@ -106,9 +119,13 @@ export async function deleteEventAction(id: string, password: string) {
 }
 
 export async function updateEventAction(id: string, eventData: any, password: string) {
-  const isValid = await verifyAdminPassword(password);
-  if (!isValid) {
+  const auth = await verifyAdminPassword(password);
+  if (!auth.isValid) {
     return { success: false, error: 'Nieprawidłowe hasło administratora.' };
+  }
+
+  if (eventData.type === 'E' && auth.role === 'moderator') {
+    return { success: false, error: 'Tylko starosta może edytować egzaminy.' };
   }
 
   const formatTime = (t: string) => (t.length === 5 ? `${t}:00` : t);
@@ -136,5 +153,6 @@ export async function updateEventAction(id: string, eventData: any, password: st
 }
 
 export async function verifyPasswordAction(password: string) {
-  return await verifyAdminPassword(password);
+  const auth = await verifyAdminPassword(password);
+  return auth.isValid;
 }
