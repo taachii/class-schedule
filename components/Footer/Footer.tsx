@@ -64,6 +64,7 @@ export default function Footer() {
 
         {/* Prawa strona - Kawa / Linki */}
         <div className={styles.right}>
+          {/* 
           <a
             href="https://buycoffee.to/adamchyt"
             target="_blank"
@@ -80,6 +81,7 @@ export default function Footer() {
             </svg>
             Postaw wirtualną kawę
           </a>
+          */}
         </div>
 
       </div>
