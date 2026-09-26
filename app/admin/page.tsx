@@ -48,18 +48,6 @@ export default function AdminPage() {
   if (adminRole) {
     return (
       <div className="admin-wrapper" style={{ borderTop: '4px solid #ef4444' }}>
-        <div style={{ background: '#ef4444', color: 'white', textAlign: 'center', padding: '8px', fontSize: '14px', fontWeight: 'bold', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '16px' }}>
-          ⚠️ Tryb Administratora
-          <button 
-            onClick={() => {
-              setAdminAuth(null, '');
-              window.location.href = '/';
-            }} 
-            style={{ background: 'rgba(0,0,0,0.3)', border: 'none', padding: '4px 12px', borderRadius: '6px', color: 'white', cursor: 'pointer', fontWeight: 'bold' }}
-          >
-            Wyloguj i wyjdź
-          </button>
-        </div>
         <SchedulePage />
       </div>
     );
