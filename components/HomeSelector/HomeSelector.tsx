@@ -12,6 +12,7 @@ export default function HomeSelector() {
   const { setActiveYearNumber } = useScheduleStore();
   const [allSemesters, setAllSemesters] = useState<Semester[]>([]);
   const [expandedYear, setExpandedYear] = useState<number | null>(null);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   useEffect(() => {
     fetchAllSemesters().then(setAllSemesters).catch(console.error);
@@ -48,16 +49,34 @@ export default function HomeSelector() {
           <p className={styles.subtitle}>Wydział Nauk Medycznych w Zabrzu</p>
           <div className={styles.majorSelectorWrapper}>
             <h1 className={styles.title}>Plany zajęć dla kierunku</h1>
-            <div className={styles.selectWrapper}>
-              <select className={styles.majorSelect} defaultValue="lekarski">
-                <option value="lekarski">lekarskiego</option>
-                <option value="lek-dent" disabled>lekarsko-dentystycznego (wkrótce)</option>
-                <option value="ratownictwo" disabled>ratownictwa med. (wkrótce)</option>
-              </select>
-              <svg className={styles.selectIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <polyline points="6 9 12 15 18 9"></polyline>
-              </svg>
+            
+            <div className={styles.customSelectContainer}>
+              <button 
+                className={styles.customSelectTrigger}
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                onBlur={() => setTimeout(() => setIsDropdownOpen(false), 200)}
+              >
+                <span>lekarskiego</span>
+                <svg className={`${styles.selectIcon} ${isDropdownOpen ? styles.selectIconOpen : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </button>
+              
+              {isDropdownOpen && (
+                <div className={styles.customSelectMenu}>
+                  <div className={`${styles.customOption} ${styles.customOptionActive}`}>
+                    lekarskiego
+                  </div>
+                  <div className={`${styles.customOption} ${styles.customOptionDisabled}`}>
+                    lekarsko-dentystycznego <span className={styles.futureText}>(może kiedyś...)</span>
+                  </div>
+                  <div className={`${styles.customOption} ${styles.customOptionDisabled}`}>
+                    ratownictwa medycznego <span className={styles.futureText}>(może kiedyś...)</span>
+                  </div>
+                </div>
+              )}
             </div>
+            
           </div>
         </div>
 
