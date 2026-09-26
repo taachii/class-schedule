@@ -39,6 +39,14 @@
   100% { transform: translateY(0px); }
 }
 
+.majorSelectorWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-top: 64px;
+}
+
 .title {
   font-size: 2.2rem;
   font-weight: 800;
@@ -47,7 +55,56 @@
   -webkit-text-fill-color: transparent;
   background-clip: text;
   letter-spacing: -0.02em;
-  margin-top: 64px;
+}
+
+.selectWrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.majorSelect {
+  appearance: none;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 8px 36px 8px 16px;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  cursor: pointer;
+  outline: none;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.majorSelect:focus {
+  border-color: #ec4899;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.majorSelect:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.majorSelect option {
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  font-size: 1rem;
+}
+
+.majorSelect option:disabled {
+  color: var(--text-muted);
+}
+
+.selectIcon {
+  position: absolute;
+  right: 12px;
+  width: 18px;
+  height: 18px;
+  color: var(--text-muted);
+  pointer-events: none;
 }
 
 .subtitle {
