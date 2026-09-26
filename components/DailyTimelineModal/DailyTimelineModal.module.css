@@ -207,7 +207,7 @@
 }
 
 .eventInner {
-  padding: 8px 10px;
+  padding: 12px 14px;
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -437,7 +437,7 @@
   .quarterLine { left: 52px; }
   .nowLine { left: 44px; }
   .eventBlock { border-left-width: 3px; }
-  .eventInner { padding: 5px 8px; }
+  .eventInner { padding: 8px 10px; }
   .eventName { font-size: 0.8rem; -webkit-line-clamp: 1; }
   .eventBadge { font-size: 0.58rem; padding: 1px 5px; }
   .eventTime { font-size: 0.68rem; }
