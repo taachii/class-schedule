@@ -40,7 +40,7 @@ export default function DailyTimelineModal({ dateStr, events, onClose }: DailyTi
   const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
 
   // More space per minute on mobile so short events aren't crushed
-  const PIXELS_PER_MINUTE = isMobile ? 2.6 : 1.8;
+  const PIXELS_PER_MINUTE = isMobile ? 2.6 : 2.4;
   const PIXELS_PER_HOUR = 60 * PIXELS_PER_MINUTE;
 
   useEffect(() => {
