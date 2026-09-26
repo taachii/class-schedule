@@ -22,7 +22,12 @@ export default function Icon() {
         <svg 
           width="320" 
           height="320" 
-          viewBox="0 0 24 24" 
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="url(#calGradient)"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         >
           <defs>
             <linearGradient id="calGradient" x1="0" y1="0" x2="1" y2="1">
@@ -30,10 +35,10 @@ export default function Icon() {
               <stop offset="100%" stopColor="#7c3aed" />
             </linearGradient>
           </defs>
-          <path 
-            fill="url(#calGradient)"
-            d="M19 4h-2V2h-2v2H9V2H7v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zM7 12h2v2H7v-2zm4 0h2v2h-2v-2zm4 0h2v2h-2v-2zM7 16h2v2H7v-2zm4 0h2v2h-2v-2zm4 0h2v2h-2v-2z" 
-          />
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
         </svg>
       </div>
     ),
