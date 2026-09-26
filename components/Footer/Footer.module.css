@@ -1,0 +1,52 @@
+.footer {
+  margin-top: 40px;
+  padding: 32px 24px;
+  border-top: 1px solid var(--border);
+  background: var(--bg-default);
+  text-align: center;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.updateInfo {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.updateInfo strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.divider {
+  width: 40px;
+  height: 2px;
+  background: var(--border);
+  border-radius: 2px;
+  margin: 4px 0;
+}
+
+.credits {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.bugReport {
+  font-size: 0.8rem;
+  color: #7c3aed;
+  text-decoration: none;
+  font-weight: 500;
+  transition: opacity 0.2s;
+}
+
+.bugReport:hover {
+  opacity: 0.8;
+  text-decoration: underline;
+}

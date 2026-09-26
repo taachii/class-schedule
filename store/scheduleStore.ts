@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { Subject, ScheduleEvent, Semester, EventType, GroupKey, EnrichedEvent, AdminRole } from '@/types/schedule';
-import { fetchEventsForGroup, fetchSubjects, fetchSemesters, fetchEventTypes } from '@/lib/supabase/queries';
+import { fetchEventsForGroup, fetchSubjects, fetchSemesters, fetchEventTypes, fetchGroupUpdate } from '@/lib/supabase/queries';
 
 // Replaced by dynamic year selection
 
@@ -21,6 +21,7 @@ interface ScheduleStore {
 
   // ── Event data ───────────────────────────────────────────────
   events: ScheduleEvent[];
+  lastUpdated: string | null;
   isLoading: boolean;
   error: string | null;
 
@@ -72,6 +73,7 @@ export const useScheduleStore = create<ScheduleStore>()(
   currentMonth: new Date().getMonth(),
   activeSubjectKeys: new Set(),
   events: [],
+  lastUpdated: null,
   isLoading: false,
   error: null,
   enrichedEvents: [],
@@ -101,6 +103,7 @@ export const useScheduleStore = create<ScheduleStore>()(
       
       const { activeGroup } = get();
       const events = semesterId ? await fetchEventsForGroup(semesterId, activeGroup) : [];
+      const lastUpdated = semesterId ? await fetchGroupUpdate(semesterId, activeGroup) : null;
       const enrichedEvents = enrichEvents(events, subjects);
 
       // Snap month
@@ -123,6 +126,7 @@ export const useScheduleStore = create<ScheduleStore>()(
         subjects,
         activeSemesterId: semesterId ?? null,
         events,
+        lastUpdated,
         enrichedEvents,
         activeSubjectKeys: new Set(subjects.map(s => s.key)),
         currentYear: snapYear,
@@ -148,9 +152,12 @@ export const useScheduleStore = create<ScheduleStore>()(
     if (!activeSemesterId) return;
     set({ activeGroup: group, isLoading: true, error: null });
     try {
-      const events = await fetchEventsForGroup(activeSemesterId, group);
+      const [events, lastUpdated] = await Promise.all([
+        fetchEventsForGroup(activeSemesterId, group),
+        fetchGroupUpdate(activeSemesterId, group)
+      ]);
       const enrichedEvents = enrichEvents(events, subjects);
-      set({ events, enrichedEvents, isLoading: false });
+      set({ events, enrichedEvents, lastUpdated, isLoading: false });
     } catch (err: any) {
       set({ error: err.message, isLoading: false });
     }
@@ -161,9 +168,10 @@ export const useScheduleStore = create<ScheduleStore>()(
     const { activeGroup, semesters } = get();
     set({ activeSemesterId: semesterId, isLoading: true, error: null });
     try {
-      const [subjects, events] = await Promise.all([
+      const [subjects, events, lastUpdated] = await Promise.all([
         fetchSubjects(semesterId),
         fetchEventsForGroup(semesterId, activeGroup),
+        fetchGroupUpdate(semesterId, activeGroup)
       ]);
       const enrichedEvents = enrichEvents(events, subjects);
       
@@ -184,6 +192,7 @@ export const useScheduleStore = create<ScheduleStore>()(
       set({
         subjects,
         events,
+        lastUpdated,
         enrichedEvents,
         activeSubjectKeys: new Set(subjects.map(s => s.key)),
         currentYear: snapYear,
