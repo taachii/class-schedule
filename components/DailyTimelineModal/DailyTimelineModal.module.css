@@ -383,19 +383,26 @@
   pointer-events: none;
   display: flex;
   align-items: center;
+  transition: top 0.3s ease;
 }
 .nowDot {
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: #ef4444;
-  box-shadow: 0 0 8px rgba(239, 68, 68, 0.5);
+  background: #22c55e;
+  box-shadow: 0 0 8px rgba(34, 197, 94, 0.5);
   flex-shrink: 0;
+  animation: pulseNow 1.5s infinite ease-in-out;
+}
+@keyframes pulseNow {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+  70% { transform: scale(1.1); box-shadow: 0 0 0 6px rgba(34, 197, 94, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
 }
 .nowRule {
   flex: 1;
   height: 2px;
-  background: #ef4444;
+  background: #22c55e;
   opacity: 0.7;
 }
 
