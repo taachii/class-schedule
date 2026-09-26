@@ -31,7 +31,10 @@ export default function HomeSelector() {
       <div className={styles.container}>
         {adminRole?.type === 'master' && (
           <button
-            onClick={logoutAdmin}
+            onClick={() => {
+              logoutAdmin();
+              window.location.href = '/';
+            }}
             style={{
               alignSelf: 'center',
               marginBottom: '16px',
