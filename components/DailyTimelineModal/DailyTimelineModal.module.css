@@ -398,18 +398,20 @@
   transition: top 0.3s ease;
 }
 .nowDot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: #22c55e;
-  box-shadow: 0 0 8px rgba(34, 197, 94, 0.5);
+  width: 0;
+  height: 0;
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+  border-left: 10px solid #22c55e;
+  border-radius: 0;
+  background: transparent;
   flex-shrink: 0;
-  animation: pulseNow 1.5s infinite ease-in-out;
+  animation: pulseNowTriangle 1.5s infinite ease-in-out;
 }
-@keyframes pulseNow {
-  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
-  70% { transform: scale(1.1); box-shadow: 0 0 0 6px rgba(34, 197, 94, 0); }
-  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+@keyframes pulseNowTriangle {
+  0% { transform: scale(0.95); filter: drop-shadow(0 0 0px rgba(34, 197, 94, 0.7)); }
+  70% { transform: scale(1.15); filter: drop-shadow(0 0 6px rgba(34, 197, 94, 0.8)); }
+  100% { transform: scale(0.95); filter: drop-shadow(0 0 0px rgba(34, 197, 94, 0)); }
 }
 
 /* ─── Mobile ─── */
