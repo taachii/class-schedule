@@ -100,7 +100,7 @@ export default function Header() {
             </div>
           </div>
 
-          <div className={styles.right} style={{ position: 'relative' }}>
+          <div className={styles.right}>
             {/* Desktop Actions */}
             <div className={styles.desktopActions}>
               {adminRole && (

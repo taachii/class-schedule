@@ -150,6 +150,16 @@
   display: none;
 }
 
+.desktopActions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.hamburgerBtn, .mobileMenu {
+  display: none;
+}
+
 @media (max-width: 1024px) {
   .inner {
     padding: 10px 16px;
@@ -244,14 +254,4 @@
     background: var(--bg-overlay);
     color: var(--brand-end);
   }
-}
-
-.desktopActions {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.hamburgerBtn, .mobileMenu {
-  display: none;
 }

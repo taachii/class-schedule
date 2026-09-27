@@ -17,6 +17,10 @@
   --radius-xl:      20px;
 }
 
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
 [data-theme='dark'], :root {
   color-scheme: dark;
   
