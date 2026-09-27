@@ -103,6 +103,12 @@
   color: var(--text-primary);
 }
 
+.activeIcon {
+  color: var(--brand-start);
+  background: var(--accent-glow);
+  border-color: color-mix(in srgb, var(--brand-start) 30%, transparent);
+}
+
 .controls {
   display: flex;
   gap: 8px;

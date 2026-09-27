@@ -16,11 +16,17 @@ export default function SubjectFilters() {
 
   if (!subjects.length) return null;
 
+  const allSubjectsVisible = activeSubjectKeys.size === subjects.length;
+  const noSubjectsVisible = activeSubjectKeys.size === 0;
+
+  const allEventTypesVisible = activeEventTypes.size === eventTypes.length;
+  const noEventTypesVisible = activeEventTypes.size === 0;
+
   return (
     <div className={styles.filterBar}>
       {/* Przedmioty */}
       <div className={styles.inner}>
-        <button className={styles.iconBtn} onClick={clearSubjectFilters} title="Ukryj przedmioty">
+        <button className={`${styles.iconBtn} ${noSubjectsVisible ? styles.activeIcon : ''}`} onClick={clearSubjectFilters} title="Ukryj przedmioty">
           <EyeOff size={18} />
         </button>
         <div className={styles.chips} role="group" aria-label="Filtry przedmiotów">
@@ -42,14 +48,14 @@ export default function SubjectFilters() {
             );
           })}
         </div>
-        <button className={styles.iconBtn} onClick={resetSubjectFilters} title="Pokaż przedmioty">
+        <button className={`${styles.iconBtn} ${allSubjectsVisible ? styles.activeIcon : ''}`} onClick={resetSubjectFilters} title="Pokaż przedmioty">
           <Eye size={18} />
         </button>
       </div>
 
       {/* Typy zajęć */}
       <div className={styles.inner} style={{ marginTop: '12px', paddingTop: '12px', borderTop: '1px solid var(--border-subtle)' }}>
-        <button className={styles.iconBtn} onClick={clearEventTypeFilters} title="Ukryj typy">
+        <button className={`${styles.iconBtn} ${noEventTypesVisible ? styles.activeIcon : ''}`} onClick={clearEventTypeFilters} title="Ukryj typy">
           <EyeOff size={18} />
         </button>
         <div className={styles.chips} role="group" aria-label="Filtry typów zajęć">
@@ -72,7 +78,7 @@ export default function SubjectFilters() {
             );
           })}
         </div>
-        <button className={styles.iconBtn} onClick={resetEventTypeFilters} title="Pokaż typy">
+        <button className={`${styles.iconBtn} ${allEventTypesVisible ? styles.activeIcon : ''}`} onClick={resetEventTypeFilters} title="Pokaż typy">
           <Eye size={18} />
         </button>
       </div>
