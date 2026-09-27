@@ -32,19 +32,35 @@ export interface EventType {
   label: string; // 'Wykład', 'Seminarium'...
 }
 
+export interface Professor {
+  id: string;
+  academic_title: string | null;
+  first_name: string;
+  last_name: string;
+  email: string | null;
+}
+
+export interface SubjectGroupDefault {
+  id: string;
+  subject_key: string;
+  semester_id: number;
+  group_key: string;
+  professor_id: string | null;
+  location: string | null;
+}
+
 export interface ScheduleEvent {
   id: string;
   subject_key: string;
   semester_id: number;
   type: string;
-  seminar_groups: string[];   // ['GS1', 'GS2'] or ['GW']
-  exercise_groups: string[];  // ['GC1', 'GC2'] or []
+  target_groups: string[];    // Zamiast seminar_groups / exercise_groups
   date: string;               // 'YYYY-MM-DD'
   time_start: string;         // 'HH:MM:SS'
   time_end: string;           // 'HH:MM:SS'
-  location: string | null;
+  override_location: string | null;
+  override_professor_id: string | null;
   department: string | null;
-  professor: string | null;
   notes: string | null;
   exam_term?: string | null;
   assessment_type?: string | null;
@@ -58,6 +74,7 @@ export interface EnrichedEvent extends ScheduleEvent {
   resolvedLocation: string;
   timeStartShort: string; // 'HH:MM'
   timeEndShort: string;   // 'HH:MM'
+  resolvedProfessors?: { group: string; professor: string }[]; // Lista prowadzących dla grup
 }
 
 // Group identifier used in tabs

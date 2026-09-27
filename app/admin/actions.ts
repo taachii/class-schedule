@@ -18,20 +18,19 @@ async function verifyAdminPassword(password: string) {
   return { isValid: false };
 }
 
-async function touchGroups(supabaseAdmin: any, semesterId: number, seminarGroups: string[], exerciseGroups: string[]) {
+async function touchGroups(supabaseAdmin: any, semesterId: number, targetGroups: string[]) {
   const groupsToTouch = new Set<string>();
   
-  if (seminarGroups) {
-    seminarGroups.forEach(g => groupsToTouch.add(g));
-  }
-  
-  if (exerciseGroups) {
-    exerciseGroups.forEach(gc => {
-      const num = parseInt(gc.replace(/[^0-9]/g, ''));
-      if (!isNaN(num)) {
-        const gsNum = Math.ceil(num / 2);
-        const prefix = gc.replace(/[0-9]/g, '').replace('C', 'S');
-        groupsToTouch.add(`${prefix}${gsNum}`);
+  if (targetGroups) {
+    targetGroups.forEach(g => {
+      groupsToTouch.add(g);
+      if (g.startsWith('GC')) {
+        const num = parseInt(g.replace(/[^0-9]/g, ''));
+        if (!isNaN(num)) {
+          const gsNum = Math.ceil(num / 2);
+          const prefix = g.replace(/[0-9]/g, '').replace('C', 'S');
+          groupsToTouch.add(`${prefix}${gsNum}`);
+        }
       }
     });
   }
@@ -82,7 +81,7 @@ export async function addEventAction(eventData: any, password: string) {
   // Touch groups
   if (data && data.length > 0) {
     for (const ev of data) {
-      await touchGroups(supabaseAdmin, ev.semester_id, ev.seminar_groups, ev.exercise_groups);
+      await touchGroups(supabaseAdmin, ev.semester_id, ev.target_groups);
     }
   }
 
@@ -112,7 +111,7 @@ export async function deleteEventAction(id: string, password: string) {
   }
 
   if (eventToDel) {
-    await touchGroups(supabaseAdmin, eventToDel.semester_id, eventToDel.seminar_groups, eventToDel.exercise_groups);
+    await touchGroups(supabaseAdmin, eventToDel.semester_id, eventToDel.target_groups);
   }
 
   return { success: true };
@@ -146,7 +145,7 @@ export async function updateEventAction(id: string, eventData: any, password: st
 
   if (data && data.length > 0) {
     const ev = data[0];
-    await touchGroups(supabaseAdmin, ev.semester_id, ev.seminar_groups, ev.exercise_groups);
+    await touchGroups(supabaseAdmin, ev.semester_id, ev.target_groups);
   }
 
   return { success: true, data };

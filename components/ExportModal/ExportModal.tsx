@@ -7,7 +7,8 @@ interface ExportModalProps {
 }
 
 export default function ExportModal({ onClose }: ExportModalProps) {
-  const { activeGroup, activeYearNumber } = useScheduleStore();
+  const { activeGroups, activeYearNumber } = useScheduleStore();
+  const leafGroup = activeGroups.length > 0 ? activeGroups[activeGroups.length - 1] : 'Wszystkie';
   
   useEffect(() => {
     window.history.pushState({ isModal: 'export' }, '');
@@ -27,7 +28,7 @@ export default function ExportModal({ onClose }: ExportModalProps) {
 
   // The base URL for the API
   const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
-  const apiUrl = `/api/calendar?group=${activeGroup}&year=${activeYearNumber}`;
+  const apiUrl = `/api/calendar?groups=${activeGroups.join(',')}&year=${activeYearNumber}`;
   const fullApiUrl = `${baseUrl}${apiUrl}`;
   
   // WebCal URL (replaces https:// with webcal://)
@@ -39,7 +40,7 @@ export default function ExportModal({ onClose }: ExportModalProps) {
         <button className={styles.closeBtn} onClick={onClose}>✕</button>
         <div className={styles.header}>
           <h2>Zasubskrybuj plan</h2>
-          <p className={styles.subtitle}>Grupa {activeGroup} • Rok {activeYearNumber}</p>
+          <p className={styles.subtitle}>Grupa {leafGroup} • Rok {activeYearNumber}</p>
         </div>
         
         <div className={styles.body}>

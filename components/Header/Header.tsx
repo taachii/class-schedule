@@ -10,7 +10,7 @@ import styles from './Header.module.css';
 
 export default function Header() {
   const router = useRouter();
-  const { semesters, activeSemesterId, activeGroup, setActiveGroup, activeYearNumber, setActiveYearNumber, adminRole, logoutAdmin } =
+  const { semesters, activeSemesterId, activeYearNumber, setActiveYearNumber, adminRole, logoutAdmin } =
     useScheduleStore();
   const [isInfoOpen, setIsInfoOpen] = useState(false);
   const [isExportOpen, setIsExportOpen] = useState(false);
@@ -91,20 +91,7 @@ export default function Header() {
                 {activeYearNumber ? `${['I', 'II', 'III', 'IV', 'V', 'VI'][activeYearNumber - 1]} Rok` : ''}
                 {activeSemester ? `${activeYearNumber ? ' - ' : ''}${activeSemester.label}` : ''}
               </p>
-              <select
-                className={`${styles.semesterSelect} ${styles.groupSelectMobile}`}
-                value={activeGroup ?? ''}
-                onChange={e => setActiveGroup(e.target.value)}
-                aria-label="Wybór grupy"
-              >
-                {[...Array(activeSemester?.gs_count ?? 12)].map((_, i) => {
-                  const prefix = activeSemester?.gs_prefix ?? 'GS';
-                  const val = `${prefix}${i + 1}`;
-                  const isDisabled = adminRole?.type === 'moderator' && adminRole.group !== val;
-                  return <option key={val} value={val} disabled={isDisabled}>{prefix} {i + 1}</option>;
-                })}
-                <option value="GW" disabled={adminRole?.type === 'moderator'}>GW</option>
-              </select>
+
             </div>
           </div>
 

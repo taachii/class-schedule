@@ -1,20 +1,20 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { Subject, ScheduleEvent, Semester, EventType, GroupKey, EnrichedEvent, AdminRole } from '@/types/schedule';
-import { fetchEventsForGroup, fetchSubjects, fetchSemesters, fetchEventTypes, fetchGroupUpdate } from '@/lib/supabase/queries';
-
-// Replaced by dynamic year selection
+import type { Subject, ScheduleEvent, Semester, EventType, EnrichedEvent, AdminRole, Professor, SubjectGroupDefault } from '@/types/schedule';
+import { fetchEventsForGroup, fetchSubjects, fetchSemesters, fetchEventTypes, fetchGroupUpdate, fetchProfessors, fetchSubjectGroupDefaults } from '@/lib/supabase/queries';
 
 interface ScheduleStore {
   // ── Reference data ──────────────────────────────────────────
   semesters: Semester[];
   subjects: Subject[];
   eventTypes: EventType[];
+  professors: Professor[];
+  subjectDefaults: SubjectGroupDefault[];
 
   // ── Active filters / navigation ──────────────────────────────
   activeYearNumber: number | null;
   activeSemesterId: number | null;
-  activeGroup: GroupKey;
+  activeGroups: string[]; // e.g. ['GW', 'GS1', 'GC1']
   currentYear: number;
   currentMonth: number; // 0-indexed (0 = January)
   activeSubjectKeys: Set<string>;
@@ -32,7 +32,7 @@ interface ScheduleStore {
   // ── Actions ──────────────────────────────────────────────────
   initialize: (forcedSemesterId?: number) => Promise<void>;
   setActiveYearNumber: (year: number | null, semesterId?: number) => void;
-  setActiveGroup: (group: GroupKey) => void;
+  setActiveGroups: (groups: string[]) => void;
   setMonth: (year: number, month: number) => void;
   toggleSubject: (key: string) => void;
   resetSubjectFilters: () => void;
@@ -53,14 +53,51 @@ interface ScheduleStore {
   setDebugTime: (d: Date | null) => void;
 }
 
-function enrichEvents(events: ScheduleEvent[], subjects: Subject[]): EnrichedEvent[] {
+function enrichEvents(
+  events: ScheduleEvent[], 
+  subjects: Subject[],
+  professors: Professor[],
+  defaults: SubjectGroupDefault[],
+  activeGroups: string[]
+): EnrichedEvent[] {
   const subjectMap = new Map(subjects.map(s => [s.key, s]));
+  const profMap = new Map(professors.map(p => [p.id, p]));
+
   return events.map(ev => {
     const subject = subjectMap.get(ev.subject_key) ?? (ev.subject as Subject);
+    
+    let resolvedLocation = ev.override_location ?? subject?.location ?? '';
+    const resolvedProfessors: { group: string; professor: string }[] = [];
+
+    // Find which of our active groups are targeted by this event
+    const intersectingGroups = ev.target_groups.filter(g => activeGroups.includes(g));
+
+    if (ev.override_professor_id) {
+      const p = profMap.get(ev.override_professor_id);
+      if (p) {
+        resolvedProfessors.push({ group: 'Wszystkie', professor: `${p.academic_title || ''} ${p.first_name} ${p.last_name}`.trim() });
+      }
+    } else {
+      // Loop over the specific active groups that intersect with the event
+      for (const group of intersectingGroups) {
+        const def = defaults.find(d => d.subject_key === ev.subject_key && d.semester_id === ev.semester_id && d.group_key === group);
+        if (def && def.professor_id) {
+          const p = profMap.get(def.professor_id);
+          if (p) {
+            resolvedProfessors.push({ group, professor: `${p.academic_title || ''} ${p.first_name} ${p.last_name}`.trim() });
+          }
+        }
+        if (def && def.location && !ev.override_location) {
+           resolvedLocation = def.location;
+        }
+      }
+    }
+
     return {
       ...ev,
       subject,
-      resolvedLocation: ev.location ?? subject?.location ?? '',
+      resolvedLocation,
+      resolvedProfessors,
       timeStartShort: ev.time_start.slice(0, 5),
       timeEndShort: ev.time_end.slice(0, 5),
     };
@@ -74,9 +111,11 @@ export const useScheduleStore = create<ScheduleStore>()(
   semesters: [],
   subjects: [],
   eventTypes: [],
+  professors: [],
+  subjectDefaults: [],
   activeYearNumber: null,
   activeSemesterId: null,
-  activeGroup: 'GS1',
+  activeGroups: ['GW', 'GS1', 'GC1'], // Default fallback
   currentYear: new Date().getFullYear(),
   currentMonth: new Date().getMonth(),
   activeSubjectKeys: new Set(),
@@ -94,9 +133,10 @@ export const useScheduleStore = create<ScheduleStore>()(
     
     set({ isLoading: true, error: null });
     try {
-      const [semesters, eventTypes] = await Promise.all([
+      const [semesters, eventTypes, professors] = await Promise.all([
         fetchSemesters(activeYearNumber),
         fetchEventTypes(),
+        fetchProfessors(),
       ]);
 
       const now = new Date();
@@ -108,12 +148,16 @@ export const useScheduleStore = create<ScheduleStore>()(
 
       const semesterId = forcedSemesterId ?? currentSemester?.id ?? semesters[0]?.id;
       const activeSemester = semesters.find(s => s.id === semesterId);
-      const subjects = semesterId ? await fetchSubjects(semesterId) : [];
       
-      const { activeGroup } = get();
-      const events = semesterId ? await fetchEventsForGroup(semesterId, activeGroup) : [];
-      const lastUpdated = semesterId ? await fetchGroupUpdate(semesterId, activeGroup) : null;
-      const enrichedEvents = enrichEvents(events, subjects);
+      const [subjects, subjectDefaults] = await Promise.all([
+        semesterId ? fetchSubjects(semesterId) : Promise.resolve([]),
+        semesterId ? fetchSubjectGroupDefaults(semesterId) : Promise.resolve([])
+      ]);
+      
+      const { activeGroups } = get();
+      const events = semesterId ? await fetchEventsForGroup(semesterId, activeGroups) : [];
+      const lastUpdated = semesterId ? await fetchGroupUpdate(semesterId, activeGroups) : null;
+      const enrichedEvents = enrichEvents(events, subjects, professors, subjectDefaults, activeGroups);
 
       // Snap month
       let snapYear = get().currentYear;
@@ -132,6 +176,8 @@ export const useScheduleStore = create<ScheduleStore>()(
       set({
         semesters,
         eventTypes,
+        professors,
+        subjectDefaults,
         subjects,
         activeSemesterId: semesterId ?? null,
         events,
@@ -156,17 +202,21 @@ export const useScheduleStore = create<ScheduleStore>()(
     }
   },
 
-  // ── setActiveGroup ───────────────────────────────────────────
-  setActiveGroup: async (group: GroupKey) => {
-    const { activeSemesterId, subjects } = get();
-    if (!activeSemesterId) return;
-    set({ activeGroup: group, isLoading: true, error: null });
+  // ── setActiveGroups ───────────────────────────────────────────
+  setActiveGroups: async (groups: string[]) => {
+    const { activeSemesterId, subjects, professors, subjectDefaults } = get();
+    if (!activeSemesterId) {
+      set({ activeGroups: groups });
+      return;
+    }
+    
+    set({ activeGroups: groups, isLoading: true, error: null });
     try {
       const [events, lastUpdated] = await Promise.all([
-        fetchEventsForGroup(activeSemesterId, group),
-        fetchGroupUpdate(activeSemesterId, group)
+        fetchEventsForGroup(activeSemesterId, groups),
+        fetchGroupUpdate(activeSemesterId, groups)
       ]);
-      const enrichedEvents = enrichEvents(events, subjects);
+      const enrichedEvents = enrichEvents(events, subjects, professors, subjectDefaults, groups);
       set({ events, enrichedEvents, lastUpdated, isLoading: false });
     } catch (err: any) {
       set({ error: err.message, isLoading: false });
@@ -175,15 +225,16 @@ export const useScheduleStore = create<ScheduleStore>()(
 
   // ── setActiveSemester ────────────────────────────────────────
   setActiveSemester: async (semesterId: number) => {
-    const { activeGroup, semesters } = get();
+    const { activeGroups, semesters, professors } = get();
     set({ activeSemesterId: semesterId, isLoading: true, error: null });
     try {
-      const [subjects, events, lastUpdated] = await Promise.all([
+      const [subjects, subjectDefaults, events, lastUpdated] = await Promise.all([
         fetchSubjects(semesterId),
-        fetchEventsForGroup(semesterId, activeGroup),
-        fetchGroupUpdate(semesterId, activeGroup)
+        fetchSubjectGroupDefaults(semesterId),
+        fetchEventsForGroup(semesterId, activeGroups),
+        fetchGroupUpdate(semesterId, activeGroups)
       ]);
-      const enrichedEvents = enrichEvents(events, subjects);
+      const enrichedEvents = enrichEvents(events, subjects, professors, subjectDefaults, activeGroups);
       
       const activeSemester = semesters.find(s => s.id === semesterId);
       let snapYear = get().currentYear;
@@ -201,6 +252,7 @@ export const useScheduleStore = create<ScheduleStore>()(
 
       set({
         subjects,
+        subjectDefaults,
         events,
         lastUpdated,
         enrichedEvents,
@@ -260,6 +312,6 @@ export const useScheduleStore = create<ScheduleStore>()(
   partialize: (state) => ({
     activeYearNumber: state.activeYearNumber,
     activeSemesterId: state.activeSemesterId,
-    activeGroup: state.activeGroup,
+    activeGroups: state.activeGroups,
   }),
 }));

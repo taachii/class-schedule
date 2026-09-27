@@ -49,38 +49,17 @@ export async function fetchEventTypes(): Promise<EventType[]> {
  */
 export async function fetchEventsForGroup(
   semesterId: number,
-  groupKey: string
+  targetGroups: string[]
 ): Promise<ScheduleEvent[]> {
-  const isLectureGroup = groupKey === 'GW';
 
-  let query = supabase
+  const query = supabase
     .from('events')
     .select(`
       *,
       subject:subjects(*)
     `)
-    .eq('semester_id', semesterId);
-
-  if (isLectureGroup) {
-    // GW tab: only show events that are explicitly for all (GW in seminar_groups)
-    query = query.contains('seminar_groups', ['GW']);
-  } else {
-    // Determine which GC groups belong to this GS group
-    // e.g. GS1 -> GC1, GC2
-    const gsNumber = parseInt(groupKey.replace('GS', ''));
-    if (!isNaN(gsNumber)) {
-      const gc1 = `GC${gsNumber * 2 - 1}`;
-      const gc2 = `GC${gsNumber * 2}`;
-      
-      query = query.or(
-        `seminar_groups.cs.{"GW"},seminar_groups.cs.{"${groupKey}"},exercise_groups.cs.{"${gc1}"},exercise_groups.cs.{"${gc2}"}`
-      );
-    } else {
-      query = query.or(
-        `seminar_groups.cs.{"GW"},seminar_groups.cs.{"${groupKey}"}`
-      );
-    }
-  }
+    .eq('semester_id', semesterId)
+    .overlaps('target_groups', targetGroups);
 
   const { data, error } = await query.order('date').order('time_start');
 
@@ -102,20 +81,35 @@ export async function fetchAllSemesters(): Promise<Semester[]> {
   return data ?? [];
 }
 
-export async function fetchGroupUpdate(semesterId: number, groupKey: string): Promise<string | null> {
-  const isLectureGroup = groupKey === 'GW';
-  let query = supabase
+/**
+ * Fetch all professors
+ */
+export async function fetchProfessors() {
+  const { data, error } = await supabase.from('professors').select('*');
+  if (error) throw error;
+  return data ?? [];
+}
+
+/**
+ * Fetch all subject group defaults for a semester
+ */
+export async function fetchSubjectGroupDefaults(semesterId: number) {
+  const { data, error } = await supabase
+    .from('subject_group_defaults')
+    .select('*')
+    .eq('semester_id', semesterId);
+  if (error) throw error;
+  return data ?? [];
+}
+
+export async function fetchGroupUpdate(semesterId: number, targetGroups: string[]): Promise<string | null> {
+  const { data, error } = await supabase
     .from('group_updates')
     .select('updated_at')
-    .eq('semester_id', semesterId);
-
-  if (isLectureGroup) {
-    query = query.eq('group_key', 'GW');
-  } else {
-    query = query.in('group_key', [groupKey, 'GW']);
-  }
-
-  const { data, error } = await query.order('updated_at', { ascending: false }).limit(1);
+    .eq('semester_id', semesterId)
+    .in('group_key', targetGroups)
+    .order('updated_at', { ascending: false })
+    .limit(1);
 
   if (error || !data || data.length === 0) return null;
   return data[0].updated_at;

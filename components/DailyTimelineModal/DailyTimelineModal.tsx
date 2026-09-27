@@ -233,7 +233,10 @@ export default function DailyTimelineModal({ dateStr, events, onClose }: DailyTi
                   const hasLocation = !!ev.resolvedLocation;
                   const hasContact = !!ev.subject.contact;
                   const hasNotes = !!ev.notes;
-                  const hasAnyMeta = true; // Because we always show professor fallback
+                  const profDisplay = ev.resolvedProfessors && ev.resolvedProfessors.length > 0
+                    ? ev.resolvedProfessors.map(rp => rp.group === 'Wszystkie' || ev.resolvedProfessors!.length === 1 ? rp.professor : `${rp.professor} (${rp.group})`).join(', ')
+                    : 'Prowadzący: nie wyznaczono';
+                  const hasAnyMeta = true; // Always show professor fallback
                   const showMetaInline = blockHeight >= 120;
 
                   const [yearPart, monthPart, dayPart] = dateStr.split('-').map(Number);
@@ -305,7 +308,7 @@ export default function DailyTimelineModal({ dateStr, events, onClose }: DailyTi
                               )}
                               <span className={styles.metaItem}>
                                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                                {ev.professor || 'Prowadzący: nie wyznaczono'}
+                                {profDisplay}
                               </span>
                             </div>
                           ) : (
@@ -375,7 +378,11 @@ export default function DailyTimelineModal({ dateStr, events, onClose }: DailyTi
                 )}
                 <div className={styles.subMetaItem}>
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                  <span>{selectedEvent.professor || 'Prowadzący: nie wyznaczono'}</span>
+                  <span>
+                    {selectedEvent.resolvedProfessors && selectedEvent.resolvedProfessors.length > 0
+                      ? selectedEvent.resolvedProfessors.map(rp => rp.group === 'Wszystkie' || selectedEvent.resolvedProfessors!.length === 1 ? rp.professor : `${rp.professor} (${rp.group})`).join(', ')
+                      : 'Prowadzący: nie wyznaczono'}
+                  </span>
                 </div>
               </div>
             </div>
