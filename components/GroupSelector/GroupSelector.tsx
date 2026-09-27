@@ -103,8 +103,8 @@ export default function GroupSelector() {
   };
 
   const gsOptions = Array.from({ length: gsCount }, (_, i) => i + 1);
-  const gcOptions = Array.from({ length: gsCount * 2 }, (_, i) => i + 1);
-  const gkOptions = isClinical ? Array.from({ length: gsCount * 4 }, (_, i) => i + 1) : [];
+  const gcOptions = localGs ? [localGs * 2 - 1, localGs * 2] : [];
+  const gkOptions = localGc ? [localGc * 2 - 1, localGc * 2] : [];
 
   return (
     <>
@@ -119,7 +119,7 @@ export default function GroupSelector() {
             </svg>
           </div>
           <div className={styles.triggerText}>
-            <span className={styles.triggerLabel}>Twoja Grupa</span>
+            <span className={styles.triggerLabel}>Wybierz grupę</span>
             <span className={styles.triggerValue}>
               GS {globalGs} • GC {globalGc}
               {isClinical && ` • GK ${globalGk}`}
@@ -157,40 +157,36 @@ export default function GroupSelector() {
                 </div>
               </div>
 
-              <div className={styles.tier}>
-                <span className={styles.tierLabel}>Grupa Ćwiczeniowa (GC)</span>
-                <div className={styles.pillsScroll} ref={gcRef}>
-                  {gcOptions.map(num => {
-                    const belongsToGs = localGs ? Math.ceil(num / 2) === localGs : true;
-                    return (
+              {localGs && (
+                <div className={styles.tier}>
+                  <span className={styles.tierLabel}>Grupa Ćwiczeniowa (GC)</span>
+                  <div className={styles.pillsScrollCentered}>
+                    {gcOptions.map(num => (
                       <button
                         key={`gc-${num}`}
-                        className={`${styles.pill} ${num === localGc ? styles.active : ''} ${!belongsToGs ? styles.dimmed : ''}`}
+                        className={`${styles.pill} ${num === localGc ? styles.active : ''}`}
                         onClick={() => handleGcChange(num)}
                       >
                         GC {num}
                       </button>
-                    );
-                  })}
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
 
-              {isClinical && (
+              {isClinical && localGc && (
                 <div className={styles.tier}>
                   <span className={styles.tierLabel}>Grupa Kliniczna (GK)</span>
-                  <div className={styles.pillsScroll} ref={gkRef}>
-                    {gkOptions.map(num => {
-                      const belongsToGc = localGc ? Math.ceil(num / 2) === localGc : true;
-                      return (
-                        <button
-                          key={`gk-${num}`}
-                          className={`${styles.pill} ${num === localGk ? styles.active : ''} ${!belongsToGc ? styles.dimmed : ''}`}
-                          onClick={() => handleGkChange(num)}
-                        >
-                          GK {num}
-                        </button>
-                      );
-                    })}
+                  <div className={styles.pillsScrollCentered}>
+                    {gkOptions.map(num => (
+                      <button
+                        key={`gk-${num}`}
+                        className={`${styles.pill} ${num === localGk ? styles.active : ''}`}
+                        onClick={() => handleGkChange(num)}
+                      >
+                        GK {num}
+                      </button>
+                    ))}
                   </div>
                 </div>
               )}

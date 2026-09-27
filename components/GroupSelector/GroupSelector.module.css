@@ -183,6 +183,14 @@
   }
 }
 
+.pillsScrollCentered {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  padding-bottom: 8px;
+  flex-wrap: wrap;
+}
+
 .pillsScroll::-webkit-scrollbar {
   display: none;
 }
