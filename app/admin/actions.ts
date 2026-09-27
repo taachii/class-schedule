@@ -162,3 +162,109 @@ export async function verifyPasswordAction(password: string) {
   const auth = await verifyAdminPassword(password);
   return auth.isValid;
 }
+
+// --- PROFESSORS MANAGEMENT ---
+
+export async function getProfessors() {
+  const supabaseAdmin = getSupabaseAdmin();
+  const { data, error } = await supabaseAdmin.from('professors').select('*').order('last_name', { ascending: true });
+  if (error) return { success: false, error: error.message };
+  return { success: true, data };
+}
+
+export async function addProfessor(professor: any, password: string) {
+  const auth = await verifyAdminPassword(password);
+  if (!auth.isValid || (auth.role?.type !== 'master' && auth.role?.type !== 'admin')) {
+    return { success: false, error: 'Brak uprawnień do zarządzania bazą profesorów' };
+  }
+  const supabaseAdmin = getSupabaseAdmin();
+  const { data, error } = await supabaseAdmin.from('professors').insert(professor).select();
+  if (error) return { success: false, error: error.message };
+  return { success: true, data };
+}
+
+export async function updateProfessor(id: string, professor: any, password: string) {
+  const auth = await verifyAdminPassword(password);
+  if (!auth.isValid || (auth.role?.type !== 'master' && auth.role?.type !== 'admin')) {
+    return { success: false, error: 'Brak uprawnień do edycji bazy profesorów' };
+  }
+  const supabaseAdmin = getSupabaseAdmin();
+  const { data, error } = await supabaseAdmin.from('professors').update(professor).eq('id', id).select();
+  if (error) return { success: false, error: error.message };
+  return { success: true, data };
+}
+
+export async function deleteProfessor(id: string, password: string) {
+  const auth = await verifyAdminPassword(password);
+  if (!auth.isValid || (auth.role?.type !== 'master' && auth.role?.type !== 'admin')) {
+    return { success: false, error: 'Brak uprawnień do usunięcia profesora' };
+  }
+  const supabaseAdmin = getSupabaseAdmin();
+  const { error } = await supabaseAdmin.from('professors').delete().eq('id', id);
+  if (error) return { success: false, error: error.message };
+  return { success: true };
+}
+
+// --- SUBJECT GROUP DEFAULTS ---
+
+export async function getSubjectDefaults(subjectKey: string, semesterId: number) {
+  const supabaseAdmin = getSupabaseAdmin();
+  const { data, error } = await supabaseAdmin
+    .from('subject_group_defaults')
+    .select('*')
+    .eq('subject_key', subjectKey)
+    .eq('semester_id', semesterId);
+  if (error) return { success: false, error: error.message };
+  return { success: true, data };
+}
+
+export async function saveSubjectDefault(payload: { subject_key: string, semester_id: number, group_key: string, professor_id: string | null }, password: string) {
+  const auth = await verifyAdminPassword(password);
+  if (!auth.isValid) return { success: false, error: 'Nieprawidłowe hasło' };
+
+  // Sprawdzanie uprawnień moderatora
+  if (auth.role?.type === 'moderator' && auth.role.group) {
+    const modGs = auth.role.group;
+    const modGsNum = parseInt(modGs.replace(/[^0-9]/g, ''));
+    const g = payload.group_key;
+    
+    const allowedGc1 = `GC${modGsNum * 2 - 1}`;
+    const allowedGc2 = `GC${modGsNum * 2}`;
+    const allowedGk1 = `GK${modGsNum * 4 - 3}`;
+    const allowedGk2 = `GK${modGsNum * 4 - 2}`;
+    const allowedGk3 = `GK${modGsNum * 4 - 1}`;
+    const allowedGk4 = `GK${modGsNum * 4}`;
+
+    if (g !== modGs && g !== allowedGc1 && g !== allowedGc2 && g !== allowedGk1 && g !== allowedGk2 && g !== allowedGk3 && g !== allowedGk4) {
+      return { success: false, error: 'Nie masz uprawnień do przypisywania prowadzącego dla tej grupy.' };
+    }
+  }
+
+  const supabaseAdmin = getSupabaseAdmin();
+  
+  if (!payload.professor_id) {
+    // Delete if no professor
+    const { error } = await supabaseAdmin
+      .from('subject_group_defaults')
+      .delete()
+      .eq('subject_key', payload.subject_key)
+      .eq('semester_id', payload.semester_id)
+      .eq('group_key', payload.group_key);
+    if (error) return { success: false, error: error.message };
+    return { success: true };
+  }
+
+  // Upsert
+  const { data, error } = await supabaseAdmin
+    .from('subject_group_defaults')
+    .upsert({
+      subject_key: payload.subject_key,
+      semester_id: payload.semester_id,
+      group_key: payload.group_key,
+      professor_id: payload.professor_id
+    }, { onConflict: 'subject_key,semester_id,group_key' })
+    .select();
+
+  if (error) return { success: false, error: error.message };
+  return { success: true, data };
+}

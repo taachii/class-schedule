@@ -5,6 +5,8 @@ import { useScheduleStore } from '@/store/scheduleStore';
 import InfoModal from '../InfoModal/InfoModal';
 import ExportModal from '../ExportModal/ExportModal';
 import ModeratorsModal from '../ModeratorsModal/ModeratorsModal';
+import ProfessorsModal from '../ProfessorsModal/ProfessorsModal';
+import SubjectDefaultsModal from '../SubjectDefaultsModal/SubjectDefaultsModal';
 import { useRouter } from 'next/navigation';
 import styles from './Header.module.css';
 
@@ -15,6 +17,8 @@ export default function Header() {
   const [isInfoOpen, setIsInfoOpen] = useState(false);
   const [isExportOpen, setIsExportOpen] = useState(false);
   const [isModsOpen, setIsModsOpen] = useState(false);
+  const [isProfessorsOpen, setIsProfessorsOpen] = useState(false);
+  const [isSubjectsOpen, setIsSubjectsOpen] = useState(false);
 
   const activeSemester = semesters.find(s => s.id === activeSemesterId);
 
@@ -96,12 +100,12 @@ export default function Header() {
           </div>
 
           <div className={styles.right}>
-            {(adminRole?.type === 'master' || adminRole?.type === 'admin') && (
+            {adminRole && (
               <button
                 className={styles.backBtn}
-                onClick={() => setIsModsOpen(true)}
-                aria-label="Zarządzaj moderatorami"
-                title="Zarządzaj moderatorami"
+                onClick={() => setIsSubjectsOpen(true)}
+                aria-label="Przypisz prowadzących"
+                title="Przypisz prowadzących"
                 style={{ marginRight: '12px' }}
               >
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="url(#backGrad)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
@@ -111,6 +115,36 @@ export default function Header() {
                   <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
                 </svg>
               </button>
+            )}
+            {(adminRole?.type === 'master' || adminRole?.type === 'admin') && (
+              <>
+                <button
+                  className={styles.backBtn}
+                  onClick={() => setIsProfessorsOpen(true)}
+                  aria-label="Baza prowadzących"
+                  title="Baza prowadzących"
+                  style={{ marginRight: '12px' }}
+                >
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="url(#backGrad)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                  </svg>
+                </button>
+                <button
+                  className={styles.backBtn}
+                  onClick={() => setIsModsOpen(true)}
+                  aria-label="Zarządzaj moderatorami"
+                  title="Zarządzaj moderatorami"
+                  style={{ marginRight: '12px' }}
+                >
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="url(#backGrad)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                  </svg>
+                </button>
+              </>
             )}
             {!adminRole && (
               <button
@@ -147,6 +181,8 @@ export default function Header() {
       {isInfoOpen && <InfoModal onClose={() => setIsInfoOpen(false)} />}
       {isExportOpen && <ExportModal onClose={() => setIsExportOpen(false)} />}
       {isModsOpen && <ModeratorsModal onClose={() => setIsModsOpen(false)} />}
+      {isProfessorsOpen && <ProfessorsModal onClose={() => setIsProfessorsOpen(false)} />}
+      {isSubjectsOpen && <SubjectDefaultsModal onClose={() => setIsSubjectsOpen(false)} />}
     </>
   );
 }

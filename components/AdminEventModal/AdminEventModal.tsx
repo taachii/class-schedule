@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useScheduleStore } from '@/store/scheduleStore';
 import type { EnrichedEvent } from '@/types/schedule';
-import { addEventAction, updateEventAction, deleteEventAction } from '@/app/admin/actions';
+import { addEventAction, updateEventAction, deleteEventAction, getProfessors } from '@/app/admin/actions';
 import styles from './AdminEventModal.module.css';
 
 interface Props {
@@ -17,10 +17,15 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
   const { semesters, subjects, eventTypes, adminPassword, activeSemesterId, adminRole } = useScheduleStore();
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState<{type: 'success' | 'error', message: string} | null>(null);
+  const [professors, setProfessors] = useState<any[]>([]);
   
   const isEditing = !!initialEvent;
 
   useEffect(() => {
+    getProfessors().then(res => {
+      if (res.success && res.data) setProfessors(res.data);
+    });
+
     window.history.pushState({ isModal: 'admin' }, '');
     
     const handlePopState = () => {
@@ -321,8 +326,15 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
               <input type="text" name="location" value={formData.location} onChange={handleChange} className={styles.input} placeholder={defaultLocation} />
             </div>
             <div>
-              <label className={styles.label}>Prowadzący</label>
-              <input type="text" name="professor" value={formData.professor} onChange={handleChange} className={styles.input} placeholder="Imię i nazwisko prowadzącego" />
+              <label className={styles.label}>Niestandardowy prowadzący (nadpisuje domyślnego)</label>
+              <select name="professor" value={formData.professor} onChange={handleChange} className={styles.input}>
+                <option value="">-- Domyślny dla grupy z ustawień --</option>
+                {professors.map((p: any) => (
+                  <option key={p.id} value={p.id}>
+                    {p.academic_title} {p.first_name} {p.last_name}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
 
