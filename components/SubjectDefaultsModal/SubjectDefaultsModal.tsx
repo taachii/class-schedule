@@ -140,6 +140,8 @@ export default function SubjectDefaultsModal({ onClose }: SubjectDefaultsModalPr
                 <div className={styles.table}>
                   {allGroups.map(g => {
                     const disabled = isGroupDisabled(g);
+                    if (disabled && adminRole?.type === 'moderator') return null;
+                    
                     const currentDef = defaults.find(d => d.group_key === g);
                     
                     return (
