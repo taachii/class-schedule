@@ -138,6 +138,7 @@ export const useScheduleStore = create<ScheduleStore>()(
         lastUpdated,
         enrichedEvents,
         activeSubjectKeys: new Set(subjects.map(s => s.key)),
+        activeEventTypes: new Set(eventTypes.map(t => t.code)),
         currentYear: snapYear,
         currentMonth: snapMonth,
         isLoading: false,
