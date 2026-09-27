@@ -77,10 +77,10 @@
   color-scheme: light;
   
   /* Surface */
-  --bg-base:        #f0f4f8;
+  --bg-base:        #e6eaf0;
   --bg-surface:     #ffffff;
   --bg-elevated:    #ffffff;
-  --bg-overlay:     #e8ecf1;
+  --bg-overlay:     #dce2e8;
 
   /* Borders */
   --border:         rgba(0, 0, 0, 0.1);
