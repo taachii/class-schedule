@@ -163,7 +163,18 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
     if (isEditing && initialEvent) {
       res = await updateEventAction(initialEvent.id, { ...basePayload, date: dates[0] }, adminPassword);
     } else {
-      const payloads = dates.map(d => ({ ...basePayload, date: d }));
+      const payloads: any[] = [];
+      const allSelectedGroups = [...seminarGroups, ...exerciseGroups, ...clinicalGroups];
+      
+      dates.forEach(d => {
+        if (allSelectedGroups.length === 0) {
+          payloads.push({ ...basePayload, date: d, target_groups: [] });
+        } else {
+          allSelectedGroups.forEach(g => {
+            payloads.push({ ...basePayload, date: d, target_groups: [g] });
+          });
+        }
+      });
       res = await addEventAction(payloads, adminPassword);
     }
 
