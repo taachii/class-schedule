@@ -82,7 +82,7 @@ export default function DailyTimelineModal({ dateStr, events, onClose }: DailyTi
       }));
       bodyRef.current.scrollTop = Math.max(0, firstStart - 20);
     }
-  });
+  }, []);
 
   const formatDate = (iso: string) => {
     const d = new Date(iso + 'T00:00:00');
