@@ -67,7 +67,7 @@ function enrichEvents(
     const subject = subjectMap.get(ev.subject_key) ?? (ev.subject as Subject);
     
     let resolvedLocation = ev.override_location ?? subject?.location ?? '';
-    const resolvedProfessors: { group: string; professor: string }[] = [];
+    const resolvedProfessors: { group: string; professor: string; email?: string }[] = [];
 
     // Find which of our active groups are targeted by this event
     const intersectingGroups = ev.target_groups.filter(g => activeGroups.includes(g));
@@ -75,7 +75,7 @@ function enrichEvents(
     if (ev.override_professor_id) {
       const p = profMap.get(ev.override_professor_id);
       if (p) {
-        resolvedProfessors.push({ group: 'Wszystkie', professor: `${p.academic_title || ''} ${p.first_name} ${p.last_name}`.trim() });
+        resolvedProfessors.push({ group: 'Wszystkie', professor: `${p.academic_title || ''} ${p.first_name} ${p.last_name}`.trim(), email: p.email || undefined });
       }
     } else {
       // Loop over the specific active groups that intersect with the event
@@ -84,7 +84,7 @@ function enrichEvents(
         if (def && def.professor_id) {
           const p = profMap.get(def.professor_id);
           if (p) {
-            resolvedProfessors.push({ group, professor: `${p.academic_title || ''} ${p.first_name} ${p.last_name}`.trim() });
+            resolvedProfessors.push({ group, professor: `${p.academic_title || ''} ${p.first_name} ${p.last_name}`.trim(), email: p.email || undefined });
           }
         }
 

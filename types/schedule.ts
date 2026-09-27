@@ -71,7 +71,7 @@ export interface EnrichedEvent extends ScheduleEvent {
   resolvedLocation: string;
   timeStartShort: string; // 'HH:MM'
   timeEndShort: string;   // 'HH:MM'
-  resolvedProfessors?: { group: string; professor: string }[]; // Lista prowadzących dla grup
+  resolvedProfessors?: { group: string; professor: string; email?: string }[]; // Lista prowadzących dla grup
 }
 
 // Group identifier used in tabs
