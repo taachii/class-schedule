@@ -6,12 +6,11 @@ import type { Subject, Semester, ScheduleEvent, EventType } from '@/types/schedu
  */
 export async function fetchSubjects(semesterId: number): Promise<Subject[]> {
   const { data, error } = await supabase
-    .from('subject_semesters')
-    .select('subjects(*)')
-    .eq('semester_id', semesterId);
+    .from('subjects')
+    .select('*');
 
   if (error) throw error;
-  return (data ?? []).map((row: any) => row.subjects as Subject);
+  return data ?? [];
 }
 
 /**
