@@ -19,6 +19,7 @@ export default function Header() {
   const [isModsOpen, setIsModsOpen] = useState(false);
   const [isProfessorsOpen, setIsProfessorsOpen] = useState(false);
   const [isSubjectsOpen, setIsSubjectsOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const activeSemester = semesters.find(s => s.id === activeSemesterId);
 
@@ -99,31 +100,58 @@ export default function Header() {
             </div>
           </div>
 
-          <div className={styles.right}>
-            {adminRole && (
-              <button
-                className={styles.backBtn}
-                onClick={() => setIsSubjectsOpen(true)}
-                aria-label="Przypisz prowadzących"
-                title="Przypisz prowadzących"
-                style={{ marginRight: '12px' }}
-              >
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="url(#backGrad)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                  <circle cx="9" cy="7" r="4"></circle>
-                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                  <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                </svg>
-              </button>
-            )}
-            {(adminRole?.type === 'master' || adminRole?.type === 'admin') && (
-              <>
+          <div className={styles.right} style={{ position: 'relative' }}>
+            {/* Desktop Actions */}
+            <div className={styles.desktopActions}>
+              {adminRole && (
                 <button
                   className={styles.backBtn}
-                  onClick={() => setIsProfessorsOpen(true)}
-                  aria-label="Baza prowadzących"
-                  title="Baza prowadzących"
-                  style={{ marginRight: '12px' }}
+                  onClick={() => setIsSubjectsOpen(true)}
+                  aria-label="Przypisz prowadzących"
+                  title="Przypisz prowadzących"
+                >
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="url(#backGrad)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                  </svg>
+                </button>
+              )}
+              {(adminRole?.type === 'master' || adminRole?.type === 'admin') && (
+                <>
+                  <button
+                    className={styles.backBtn}
+                    onClick={() => setIsProfessorsOpen(true)}
+                    aria-label="Baza prowadzących"
+                    title="Baza prowadzących"
+                  >
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="url(#backGrad)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                      <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                      <line x1="16" y1="2" x2="16" y2="6"></line>
+                      <line x1="8" y1="2" x2="8" y2="6"></line>
+                      <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                  </button>
+                  <button
+                    className={styles.backBtn}
+                    onClick={() => setIsModsOpen(true)}
+                    aria-label="Zarządzaj moderatorami"
+                    title="Zarządzaj moderatorami"
+                  >
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="url(#backGrad)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                      <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                  </button>
+                </>
+              )}
+              {!adminRole && (
+                <button
+                  className={styles.backBtn}
+                  onClick={() => setIsExportOpen(true)}
+                  aria-label="Subskrybuj kalendarz"
+                  title="Subskrybuj kalendarz"
                 >
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="url(#backGrad)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                     <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
@@ -132,49 +160,105 @@ export default function Header() {
                     <line x1="3" y1="10" x2="21" y2="10"></line>
                   </svg>
                 </button>
-                <button
-                  className={styles.backBtn}
-                  onClick={() => setIsModsOpen(true)}
-                  aria-label="Zarządzaj moderatorami"
-                  title="Zarządzaj moderatorami"
-                  style={{ marginRight: '12px' }}
-                >
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="url(#backGrad)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                    <circle cx="12" cy="7" r="4"></circle>
-                  </svg>
-                </button>
-              </>
-            )}
-            {!adminRole && (
+              )}
+              
               <button
                 className={styles.backBtn}
-                onClick={() => setIsExportOpen(true)}
-                aria-label="Subskrybuj kalendarz"
-                title="Subskrybuj kalendarz"
+                onClick={() => setIsInfoOpen(true)}
+                aria-label="Informacje o roku akademickim"
+                title="Organizacja roku akademickiego"
               >
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="url(#backGrad)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                  <line x1="16" y1="2" x2="16" y2="6"></line>
-                  <line x1="8" y1="2" x2="8" y2="6"></line>
-                  <line x1="3" y1="10" x2="21" y2="10"></line>
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="16" x2="12" y2="12"></line>
+                  <line x1="12" y1="8" x2="12.01" y2="8"></line>
                 </svg>
               </button>
-            )}
-            
-            <button
-              className={styles.backBtn}
-              onClick={() => setIsInfoOpen(true)}
-              aria-label="Informacje o roku akademickim"
-              title="Organizacja roku akademickiego"
-              style={{ marginLeft: '12px' }}
+            </div>
+
+            {/* Mobile Hamburger Button */}
+            <button 
+              className={styles.hamburgerBtn}
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              aria-label="Otwórz menu"
             >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="url(#backGrad)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="12" r="10"></circle>
-                <line x1="12" y1="16" x2="12" y2="12"></line>
-                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
               </svg>
             </button>
+
+            {/* Mobile Dropdown Menu */}
+            {isMenuOpen && (
+              <div className={styles.mobileMenu}>
+                {adminRole && (
+                  <button
+                    className={styles.menuItem}
+                    onClick={() => { setIsSubjectsOpen(true); setIsMenuOpen(false); }}
+                  >
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="url(#backGrad)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                      <circle cx="9" cy="7" r="4"></circle>
+                      <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                      <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+                    Przypisz prowadzących
+                  </button>
+                )}
+                {(adminRole?.type === 'master' || adminRole?.type === 'admin') && (
+                  <>
+                    <button
+                      className={styles.menuItem}
+                      onClick={() => { setIsProfessorsOpen(true); setIsMenuOpen(false); }}
+                    >
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="url(#backGrad)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                      </svg>
+                      Baza prowadzących
+                    </button>
+                    <button
+                      className={styles.menuItem}
+                      onClick={() => { setIsModsOpen(true); setIsMenuOpen(false); }}
+                    >
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="url(#backGrad)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                      </svg>
+                      Zarządzaj moderatorami
+                    </button>
+                  </>
+                )}
+                {!adminRole && (
+                  <button
+                    className={styles.menuItem}
+                    onClick={() => { setIsExportOpen(true); setIsMenuOpen(false); }}
+                  >
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="url(#backGrad)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                      <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                      <line x1="16" y1="2" x2="16" y2="6"></line>
+                      <line x1="8" y1="2" x2="8" y2="6"></line>
+                      <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                    Subskrybuj kalendarz
+                  </button>
+                )}
+                <button
+                  className={styles.menuItem}
+                  onClick={() => { setIsInfoOpen(true); setIsMenuOpen(false); }}
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="url(#backGrad)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                  </svg>
+                  Organizacja roku
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </header>
