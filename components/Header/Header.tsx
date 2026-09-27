@@ -118,7 +118,7 @@ export default function Header() {
                   </svg>
                 </button>
               )}
-              {(adminRole?.type === 'master' || adminRole?.type === 'admin') && (
+              {adminRole?.type === 'master' && (
                 <>
                   <button
                     className={styles.backBtn}
@@ -206,7 +206,7 @@ export default function Header() {
                     Przypisz prowadzących
                   </button>
                 )}
-                {(adminRole?.type === 'master' || adminRole?.type === 'admin') && (
+                {adminRole?.type === 'master' && (
                   <>
                     <button
                       className={styles.menuItem}

@@ -45,21 +45,8 @@ export async function POST(request: Request) {
       .eq('pass_key', password)
       .single();
 
-    if (!authData || (authData.role !== 'master' && authData.role !== 'admin')) {
-      return NextResponse.json({ error: 'Unauthorized. Only Master or Admin can generate codes.' }, { status: 403 });
-    }
-
-    // If it's an admin, verify they are modifying a moderator from their year
-    if (authData.role === 'admin') {
-      const { data: targetMod } = await supabaseAdmin
-        .from('admin_keys')
-        .select('assigned_year, role')
-        .eq('id', id)
-        .single();
-      
-      if (!targetMod || targetMod.assigned_year !== authData.assigned_year || targetMod.role === 'admin') {
-         return NextResponse.json({ error: 'Unauthorized. You can only modify group moderators for your assigned year.' }, { status: 403 });
-      }
+    if (!authData || authData.role !== 'master') {
+      return NextResponse.json({ error: 'Unauthorized. Only Master can generate codes.' }, { status: 403 });
     }
 
     const { error } = await supabaseAdmin
