@@ -274,7 +274,9 @@
   transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
-.dayClickable:hover {
-  background-color: var(--bg-elevated);
-  border-color: var(--brand-end);
+@media (hover: hover) {
+  .dayClickable:hover {
+    background-color: var(--bg-elevated);
+    border-color: var(--brand-end);
+  }
 }

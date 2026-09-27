@@ -264,6 +264,9 @@ export default function DailyTimelineModal({ dateStr, events, onClose }: DailyTi
                         width: `${colWidth - 1}%`,
                         '--progress': isLive ? `${progress}%` : '0%',
                       } as React.CSSProperties}
+                      onClick={(e) => {
+                        e.currentTarget.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                      }}
                     >
                       <div className={styles.eventInner}>
                         <div className={styles.eventTop}>
