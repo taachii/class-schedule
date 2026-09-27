@@ -224,30 +224,7 @@
   border-color: var(--border-strong);
 }
 
-.modalFooter {
-  padding: 20px 24px;
-  border-top: 1px solid var(--border-subtle);
-  background: var(--bg-elevated);
-}
 
-.saveBtn {
-  width: 100%;
-  padding: 14px;
-  border-radius: var(--radius-lg);
-  background: linear-gradient(135deg, var(--brand-start), var(--brand-end));
-  color: white;
-  font-size: 1.05rem;
-  font-weight: 600;
-  border: none;
-  cursor: pointer;
-  transition: var(--transition);
-  box-shadow: 0 4px 16px var(--accent-glow);
-}
-
-.saveBtn:hover {
-  opacity: 0.95;
-  transform: translateY(-2px);
-}
 
 /* --- ANIMATIONS --- */
 @keyframes fadeIn {
