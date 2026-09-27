@@ -46,8 +46,8 @@ export default function SubjectDefaultsModal({ onClose }: SubjectDefaultsModalPr
       getSubjectDefaults(subjKey, activeSemesterId!)
     ]);
 
-    if (profRes.success) setProfessors(profRes.data);
-    if (defRes.success) setDefaults(defRes.data);
+    if (profRes.success) setProfessors(profRes.data || []);
+    if (defRes.success) setDefaults(defRes.data || []);
     
     setLoading(false);
   };
