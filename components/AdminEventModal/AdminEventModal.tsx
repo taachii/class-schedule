@@ -45,7 +45,7 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
   const [formData, setFormData] = useState({
     semester_id: initialEvent ? initialEvent.semester_id.toString() : (activeSemesterId?.toString() || (semesters[0]?.id.toString() ?? '')),
     subject_key: initialEvent ? initialEvent.subject_key : (subjects[0]?.key ?? ''),
-    type: initialEvent ? initialEvent.type : 'W',
+    type: initialEvent ? initialEvent.type : (adminRole?.type === 'moderator' ? 'S' : 'W'),
     time_start: initialEvent ? initialEvent.time_start.slice(0, 5) : '08:00',
     time_end: initialEvent ? initialEvent.time_end.slice(0, 5) : '09:30',
     location: initialEvent?.override_location || '',
