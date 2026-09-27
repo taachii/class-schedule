@@ -79,9 +79,11 @@
   background: var(--highlight-hover);
 }
 
-.chip:hover {
-  transform: translateY(-1px);
-  filter: brightness(1.15);
+@media (hover: hover) {
+  .chip:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.15);
+  }
 }
 
 .iconBtn {
@@ -98,9 +100,11 @@
   flex-shrink: 0;
 }
 
-.iconBtn:hover {
-  background: var(--highlight-bg);
-  color: var(--text-primary);
+@media (hover: hover) {
+  .iconBtn:hover {
+    background: var(--highlight-bg);
+    color: var(--text-primary);
+  }
 }
 
 .activeIcon {
