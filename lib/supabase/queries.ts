@@ -7,7 +7,8 @@ import type { Subject, Semester, ScheduleEvent, EventType } from '@/types/schedu
 export async function fetchSubjects(semesterId: number): Promise<Subject[]> {
   const { data, error } = await supabase
     .from('subjects')
-    .select('*');
+    .select('*, subject_semesters!inner(*)')
+    .eq('subject_semesters.semester_id', semesterId);
 
   if (error) throw error;
   return data ?? [];
