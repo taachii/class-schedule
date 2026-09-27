@@ -90,10 +90,26 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
 
   const isGroupDisabled = (g: string) => {
     if (g.startsWith('GK') && !isClinical) return true;
-    if (adminRole?.type === 'moderator' && g === 'GW') return true;
     if (formData.type === 'W') return g !== 'GW';
     if (formData.type === 'S') return g === 'GW' || g.startsWith('GC') || g.startsWith('GK');
     if (formData.type === 'C' || formData.type === 'CSM') return g === 'GW' || g.startsWith('GS');
+    
+    if (adminRole?.type === 'moderator' && adminRole.group) {
+      if (g === 'GW') return true;
+      const modGs = adminRole.group;
+      const modGsNum = parseInt(modGs.replace(/[^0-9]/g, ''));
+      const allowedGc1 = `GC${modGsNum * 2 - 1}`;
+      const allowedGc2 = `GC${modGsNum * 2}`;
+      const allowedGk1 = `GK${modGsNum * 4 - 3}`;
+      const allowedGk2 = `GK${modGsNum * 4 - 2}`;
+      const allowedGk3 = `GK${modGsNum * 4 - 1}`;
+      const allowedGk4 = `GK${modGsNum * 4}`;
+
+      if (g !== modGs && g !== allowedGc1 && g !== allowedGc2 && g !== allowedGk1 && g !== allowedGk2 && g !== allowedGk3 && g !== allowedGk4) {
+        return true;
+      }
+    }
+    
     return false;
   };
 
