@@ -14,6 +14,7 @@ function hexToRgba(hex: string, alpha: number): string {
 
 export default function SubjectFilters() {
   const { subjects, eventTypes, activeSubjectKeys, activeEventTypes, toggleSubject, resetSubjectFilters, clearSubjectFilters, toggleEventType, resetEventTypeFilters, clearEventTypeFilters } = useScheduleStore();
+  const [isMobileModalOpen, setIsMobileModalOpen] = useState(false);
 
   if (!subjects.length) return null;
 
@@ -22,8 +23,6 @@ export default function SubjectFilters() {
 
   const allEventTypesVisible = activeEventTypes.size === eventTypes.length;
   const noEventTypesVisible = activeEventTypes.size === 0;
-
-  const [isMobileModalOpen, setIsMobileModalOpen] = useState(false);
 
   return (
     <>
