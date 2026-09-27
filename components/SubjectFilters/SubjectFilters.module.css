@@ -13,7 +13,6 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  flex-wrap: wrap;
 }
 
 .label {
@@ -22,10 +21,17 @@
 
 .chips {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 6px;
-  flex-wrap: wrap;
   flex: 1;
+  overflow-x: auto;
+  white-space: nowrap;
+  padding-bottom: 4px;
+  scrollbar-width: none; /* Firefox */
+}
+
+.chips::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
 }
 
 .chip {
@@ -40,6 +46,7 @@
   border: 1.5px solid transparent;
   transition: all var(--transition);
   font-family: inherit;
+  flex-shrink: 0;
   
   background: var(--highlight-bg) !important;
   color: var(--text-muted) !important;
@@ -117,23 +124,18 @@
 
 @media (max-width: 768px) {
   .filterBar {
-    margin: 16px auto;
-    width: calc(100% - 24px);
-    padding: 12px 16px;
+    margin: 12px auto;
+    width: calc(100% - 16px);
+    padding: 10px 12px;
   }
   .inner {
-    gap: 8px;
+    gap: 6px;
   }
   .chips {
-    order: 1;
-    width: 100%;
-    flex: none;
-    margin-bottom: 4px;
+    gap: 4px;
   }
-  .reset {
-    order: 2;
-    flex: 1;
-    text-align: center;
-    justify-content: center;
+  .chip {
+    font-size: 0.7rem;
+    padding: 4px 8px 4px 6px;
   }
 }
