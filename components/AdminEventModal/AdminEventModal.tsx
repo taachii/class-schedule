@@ -43,9 +43,9 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
     type: initialEvent ? initialEvent.type : 'W',
     time_start: initialEvent ? initialEvent.time_start.slice(0, 5) : '08:00',
     time_end: initialEvent ? initialEvent.time_end.slice(0, 5) : '09:30',
-    location: initialEvent?.location || '',
+    location: initialEvent?.override_location || '',
     department: initialEvent?.department || '',
-    professor: initialEvent?.professor || '',
+    professor: initialEvent?.override_professor_id || '',
     notes: initialEvent?.notes || '',
     exam_term: initialEvent?.exam_term || '',
     assessment_type: initialEvent?.assessment_type || '',
@@ -55,8 +55,8 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
     initialEvent ? [initialEvent.date] : [initialDate || new Date().toISOString().split('T')[0]]
   );
 
-  const [seminarGroups, setSeminarGroups] = useState<string[]>(initialEvent?.seminar_groups || []);
-  const [exerciseGroups, setExerciseGroups] = useState<string[]>(initialEvent?.exercise_groups || []);
+  const [seminarGroups, setSeminarGroups] = useState<string[]>(initialEvent?.target_groups?.filter(g => g.startsWith('GS') || g === 'GW') || []);
+  const [exerciseGroups, setExerciseGroups] = useState<string[]>(initialEvent?.target_groups?.filter(g => g.startsWith('GC')) || []);
 
   const activeSemester = semesters.find(s => s.id === (parseInt(formData.semester_id) || activeSemesterId));
   const gsCount = activeSemester?.gs_count ?? 12;
@@ -129,14 +129,16 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
 
     const basePayload = {
       ...formData,
-      location: formData.location || (formData.type === 'W' ? 'MS Teams - online' : null),
+      override_location: formData.location || (formData.type === 'W' ? 'MS Teams - online' : null),
+      override_professor_id: formData.professor || null,
       semester_id: parseInt(formData.semester_id),
-      seminar_groups: seminarGroups,
-      exercise_groups: exerciseGroups,
+      target_groups: [...seminarGroups, ...exerciseGroups],
       exam_term: formData.type === 'E' ? (formData.exam_term || null) : null,
       assessment_type: formData.type !== 'E' ? (formData.assessment_type || null) : null,
       notes: formData.notes || null,
     };
+    delete (basePayload as any).location;
+    delete (basePayload as any).professor;
 
     let res;
     if (isEditing && initialEvent) {

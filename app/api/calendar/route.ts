@@ -11,13 +11,14 @@ dayjs.extend(timezone);
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const group = searchParams.get('group');
+  const groupsStr = searchParams.get('groups');
   const yearStr = searchParams.get('year');
 
-  if (!group || !yearStr) {
-    return new Response('Brakujące parametry: group, year', { status: 400 });
+  if (!groupsStr || !yearStr) {
+    return new Response('Brakujące parametry: groups, year', { status: 400 });
   }
 
+  const targetGroups = groupsStr.split(',');
   const yearNumber = parseInt(yearStr, 10);
 
   try {
@@ -31,31 +32,15 @@ export async function GET(request: Request) {
 
     const semesterIds = semesters.map(s => s.id);
 
-    // 2. Fetch events matching the group and those semesters
-    const isLectureGroup = group === 'GW';
-    
+    // 2. Fetch events matching the groups and those semesters
     let query = supabase
       .from('events')
       .select(`
         *,
         subject:subjects(*)
       `)
-      .in('semester_id', semesterIds);
-
-    if (isLectureGroup) {
-      query = query.contains('seminar_groups', ['GW']);
-    } else {
-      const gsNumber = parseInt(group.replace('GS', ''));
-      if (!isNaN(gsNumber)) {
-        const gc1 = `GC${gsNumber * 2 - 1}`;
-        const gc2 = `GC${gsNumber * 2}`;
-        query = query.or(
-          `seminar_groups.cs.{"GW"},seminar_groups.cs.{"${group}"},exercise_groups.cs.{"${gc1}"},exercise_groups.cs.{"${gc2}"}`
-        );
-      } else {
-        query = query.or(`seminar_groups.cs.{"GW"},seminar_groups.cs.{"${group}"}`);
-      }
-    }
+      .in('semester_id', semesterIds)
+      .overlaps('target_groups', targetGroups);
 
     const { data: eventsData, error: evError } = await query;
     if (evError) throw evError;
@@ -64,14 +49,14 @@ export async function GET(request: Request) {
 
     // 3. Generate ICS
     const cal = ical({
-      name: `WNMZ Zabrze - Rok ${yearNumber} - Grupa ${group}`,
+      name: `WNMZ Zabrze - Rok ${yearNumber} - Grupa ${targetGroups[targetGroups.length - 1]}`,
       timezone: 'Europe/Warsaw'
     });
 
     for (const ev of events) {
       const subject = ev.subject as unknown as Subject;
-      const location = ev.location || subject?.location || 'Brak sali';
-      const professor = ev.professor ? `\n👨‍🏫 Prowadzący: ${ev.professor}` : '';
+      const location = ev.override_location || subject?.location || 'Brak sali';
+      const professor = ''; // TODO: Resolve professors from target_groups in ICS
       const notes = ev.notes ? `\n📝 Uwagi: ${ev.notes}` : '';
       const department = ev.department || subject?.department ? `\n🏢 Zakład/Katedra: ${ev.department || subject?.department}` : '';
 
@@ -94,7 +79,7 @@ export async function GET(request: Request) {
     return new Response(cal.toString(), {
       headers: {
         'Content-Type': 'text/calendar; charset=utf-8',
-        'Content-Disposition': `attachment; filename="plan_${group.toLowerCase()}_rok${yearNumber}.ics"`,
+        'Content-Disposition': `attachment; filename="plan_${targetGroups[targetGroups.length - 1].toLowerCase()}_rok${yearNumber}.ics"`,
         'Cache-Control': 'no-cache, no-store, must-revalidate',
       },
     });

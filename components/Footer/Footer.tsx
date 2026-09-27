@@ -3,7 +3,7 @@ import ThemeToggle from '../ThemeToggle/ThemeToggle';
 import styles from './Footer.module.css';
 
 export default function Footer() {
-  const { lastUpdated, activeGroup } = useScheduleStore();
+  const { lastUpdated, activeGroups } = useScheduleStore();
 
   const formatDate = (isoDate: string) => {
     const d = new Date(isoDate);
@@ -56,7 +56,7 @@ export default function Footer() {
               <circle cx="12" cy="12" r="10"></circle>
               <polyline points="12 6 12 12 16 14"></polyline>
             </svg>
-            <span>Ostatnia aktualizacja dla {activeGroup}</span>
+            <span>Ostatnia aktualizacja dla grupy {activeGroups[activeGroups.length - 1]}</span>
           </div>
           <div className={styles.updateTime}>
             {lastUpdated ? formatDate(lastUpdated) : 'Brak danych'}
