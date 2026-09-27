@@ -14,7 +14,6 @@ export default function GroupTabs() {
     label: `${gsPrefix} ${i + 1}`,
     isSpecial: false
   }));
-  GROUPS.push({ key: 'GW', label: 'GW', isSpecial: true });
 
   return (
     <nav className={styles.nav} aria-label="Grupy dziekańskie">
