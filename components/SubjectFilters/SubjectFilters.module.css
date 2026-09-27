@@ -115,29 +115,130 @@
   align-items: center;
 }
 
+.mobileToggleWrapper {
+  display: none;
+}
+
 @media (max-width: 768px) {
+  .mobileToggleWrapper {
+    display: flex;
+    justify-content: center;
+    margin: 0 0 16px 0;
+  }
+  
+  .mobileToggleBtn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+    transition: all var(--transition);
+  }
+
+  .mobileToggleBtn:active {
+    transform: scale(0.97);
+  }
+
   .filterBar {
-    margin: 12px auto;
-    width: calc(100% - 16px);
-    padding: 10px 12px;
+    display: none;
+    flex-direction: column;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    margin: 0;
+    border: none;
+    border-radius: 24px 24px 0 0;
+    padding: 24px;
+    padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+    z-index: 1000;
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.15);
+    animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   }
+
+  .filterBar.modalOpen {
+    display: flex;
+  }
+
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 999;
+    backdrop-filter: blur(3px);
+    animation: fadeIn 0.3s ease forwards;
+  }
+
+  .modalHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    width: 100%;
+  }
+
+  .modalTitle {
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin: 0;
+    color: var(--text-primary);
+  }
+
+  .closeBtn {
+    background: var(--highlight-bg);
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .closeBtn:active {
+    background: var(--border);
+  }
+
   .inner {
-    gap: 6px;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: space-between;
   }
+  
   .chips {
-    gap: 4px;
-    flex-wrap: nowrap;
+    gap: 8px;
+    flex-wrap: wrap;
+    white-space: normal;
+    overflow-x: visible;
     justify-content: flex-start;
-    overflow-x: auto;
-    white-space: nowrap;
-    padding-bottom: 4px;
-    scrollbar-width: none; /* Firefox */
   }
-  .chips::-webkit-scrollbar {
-    display: none; /* Safari and Chrome */
-  }
+  
   .chip {
-    font-size: 0.7rem;
-    padding: 4px 8px 4px 6px;
+    font-size: 0.8rem;
+    padding: 6px 12px;
+  }
+
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
   }
 }

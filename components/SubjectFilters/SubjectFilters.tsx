@@ -1,7 +1,8 @@
 'use client';
 
+import { useState } from 'react';
 import { useScheduleStore } from '@/store/scheduleStore';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, Filter, X } from 'lucide-react';
 import styles from './SubjectFilters.module.css';
 
 function hexToRgba(hex: string, alpha: number): string {
@@ -22,9 +23,29 @@ export default function SubjectFilters() {
   const allEventTypesVisible = activeEventTypes.size === eventTypes.length;
   const noEventTypesVisible = activeEventTypes.size === 0;
 
+  const [isMobileModalOpen, setIsMobileModalOpen] = useState(false);
+
   return (
-    <div className={styles.filterBar}>
-      {/* Przedmioty */}
+    <>
+      <div className={styles.mobileToggleWrapper}>
+        <button className={styles.mobileToggleBtn} onClick={() => setIsMobileModalOpen(true)}>
+          <Filter size={16} /> Filtruj plan zajęć
+        </button>
+      </div>
+
+      {isMobileModalOpen && <div className={styles.overlay} onClick={() => setIsMobileModalOpen(false)} />}
+
+      <div className={`${styles.filterBar} ${isMobileModalOpen ? styles.modalOpen : ''}`}>
+        {isMobileModalOpen && (
+          <div className={styles.modalHeader}>
+            <h3 className={styles.modalTitle}>Filtruj plan zajęć</h3>
+            <button className={styles.closeBtn} onClick={() => setIsMobileModalOpen(false)}>
+              <X size={20} />
+            </button>
+          </div>
+        )}
+
+        {/* Przedmioty */}
       <div className={styles.inner}>
         <button className={`${styles.iconBtn} ${noSubjectsVisible ? styles.activeIcon : ''}`} onClick={clearSubjectFilters} title="Ukryj przedmioty">
           <EyeOff size={18} />
@@ -82,6 +103,6 @@ export default function SubjectFilters() {
           <Eye size={18} />
         </button>
       </div>
-    </div>
+    </>
   );
 }
