@@ -44,7 +44,6 @@ export interface SubjectGroupDefault {
   semester_id: number;
   group_key: string;
   professor_id: string | null;
-  location: string | null;
 }
 
 export interface ScheduleEvent {

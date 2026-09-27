@@ -87,9 +87,7 @@ function enrichEvents(
             resolvedProfessors.push({ group, professor: `${p.academic_title || ''} ${p.first_name} ${p.last_name}`.trim() });
           }
         }
-        if (def && def.location && !ev.override_location) {
-           resolvedLocation = def.location;
-        }
+
       }
     }
 
