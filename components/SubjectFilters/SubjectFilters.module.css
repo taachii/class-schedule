@@ -21,17 +21,10 @@
 
 .chips {
   display: flex;
-  justify-content: flex-start;
+  justify-content: center;
   gap: 6px;
   flex: 1;
-  overflow-x: auto;
-  white-space: nowrap;
-  padding-bottom: 4px;
-  scrollbar-width: none; /* Firefox */
-}
-
-.chips::-webkit-scrollbar {
-  display: none; /* Safari and Chrome */
+  flex-wrap: wrap;
 }
 
 .chip {
@@ -133,6 +126,15 @@
   }
   .chips {
     gap: 4px;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    overflow-x: auto;
+    white-space: nowrap;
+    padding-bottom: 4px;
+    scrollbar-width: none; /* Firefox */
+  }
+  .chips::-webkit-scrollbar {
+    display: none; /* Safari and Chrome */
   }
   .chip {
     font-size: 0.7rem;
