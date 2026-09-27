@@ -161,6 +161,14 @@
   gap: 4px;
 }
 
+.eventChipAdmin:hover {
+  transform: translateY(-1px);
+  background: color-mix(in srgb, var(--ev-color) 25%, transparent);
+  box-shadow: 0 4px 10px color-mix(in srgb, var(--ev-color) 30%, transparent);
+  border-left-width: 4px;
+  z-index: 10;
+}
+
 .chipTime {
   flex-shrink: 0;
 }
