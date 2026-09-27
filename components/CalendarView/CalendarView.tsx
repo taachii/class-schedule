@@ -198,7 +198,7 @@ export default function CalendarView({ onEventClick }: CalendarViewProps) {
             return (
               <div
                 key={ev.id}
-                className={`${styles.eventChip} ${isLive ? styles.eventLive : ''} ${isExam ? styles.eventExam : ''}`}
+                className={`${styles.eventChip} ${isLive ? styles.eventLive : ''} ${isExam ? styles.eventExam : ''} ${isAdmin ? styles.eventChipAdmin : ''}`}
                 style={{ '--ev-color': ev.subject.color } as React.CSSProperties}
                 title={tooltip}
                 onClick={(e) => {
