@@ -57,32 +57,39 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
 
   const [seminarGroups, setSeminarGroups] = useState<string[]>(initialEvent?.target_groups?.filter(g => g.startsWith('GS') || g === 'GW') || []);
   const [exerciseGroups, setExerciseGroups] = useState<string[]>(initialEvent?.target_groups?.filter(g => g.startsWith('GC')) || []);
+  const [clinicalGroups, setClinicalGroups] = useState<string[]>(initialEvent?.target_groups?.filter(g => g.startsWith('GK')) || []);
 
   const activeSemester = semesters.find(s => s.id === (parseInt(formData.semester_id) || activeSemesterId));
+  const isClinical = activeSemester && activeSemester.year_number >= 3;
   const gsCount = activeSemester?.gs_count ?? 12;
   const gcCount = gsCount * 2;
+  const gkCount = gsCount * 4;
   const gsPrefix = activeSemester?.gs_prefix ?? 'GS';
   const gcPrefix = activeSemester?.gc_prefix ?? 'GC';
 
   const gsList = ['GW', ...Array.from({length: gsCount}, (_, i) => `${gsPrefix}${i+1}`)];
   const gcList = Array.from({length: gcCount}, (_, i) => `${gcPrefix}${i+1}`);
+  const gkList = Array.from({length: gkCount}, (_, i) => `GK${i+1}`);
 
   useEffect(() => {
     if (formData.type === 'W') {
       setSeminarGroups(['GW']);
       setExerciseGroups([]);
+      setClinicalGroups([]);
     } else if (formData.type === 'S') {
       setSeminarGroups(prev => prev.filter(g => g !== 'GW'));
       setExerciseGroups([]);
+      setClinicalGroups([]);
     } else if (formData.type === 'C' || formData.type === 'CSM') {
       setSeminarGroups([]);
     }
   }, [formData.type]);
 
   const isGroupDisabled = (g: string) => {
+    if (g.startsWith('GK') && !isClinical) return true;
     if (adminRole?.type === 'moderator' && g === 'GW') return true;
     if (formData.type === 'W') return g !== 'GW';
-    if (formData.type === 'S') return g === 'GW' || g.startsWith('GC');
+    if (formData.type === 'S') return g === 'GW' || g.startsWith('GC') || g.startsWith('GK');
     if (formData.type === 'C' || formData.type === 'CSM') return g === 'GW' || g.startsWith('GS');
     return false;
   };
@@ -115,10 +122,19 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
       const allowedGc1 = `${gcPrefix}${modGsNum * 2 - 1}`;
       const allowedGc2 = `${gcPrefix}${modGsNum * 2}`;
       
+      const allowedGk1 = `GK${modGsNum * 4 - 3}`;
+      const allowedGk2 = `GK${modGsNum * 4 - 2}`;
+      const allowedGk3 = `GK${modGsNum * 4 - 1}`;
+      const allowedGk4 = `GK${modGsNum * 4}`;
+      
       const hasAccess = 
         seminarGroups.includes(modGs) || 
         exerciseGroups.includes(allowedGc1) || 
-        exerciseGroups.includes(allowedGc2);
+        exerciseGroups.includes(allowedGc2) ||
+        clinicalGroups.includes(allowedGk1) ||
+        clinicalGroups.includes(allowedGk2) ||
+        clinicalGroups.includes(allowedGk3) ||
+        clinicalGroups.includes(allowedGk4);
 
       if (!hasAccess) {
         setLoading(false);
@@ -132,7 +148,7 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
       override_location: formData.location || (formData.type === 'W' ? 'MS Teams - online' : null),
       override_professor_id: formData.professor || null,
       semester_id: parseInt(formData.semester_id),
-      target_groups: [...seminarGroups, ...exerciseGroups],
+      target_groups: [...seminarGroups, ...exerciseGroups, ...clinicalGroups],
       exam_term: formData.type === 'E' ? (formData.exam_term || null) : null,
       assessment_type: formData.type !== 'E' ? (formData.assessment_type || null) : null,
       notes: formData.notes || null,
@@ -272,6 +288,21 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
               return (
                 <label key={g} className={`${styles.checkboxItem} ${disabled ? styles.disabled : ''}`}>
                   <input type="checkbox" checked={exerciseGroups.includes(g)} onChange={() => handleGroupToggle(g, exerciseGroups, setExerciseGroups, 4)} disabled={disabled} /> {g}
+                </label>
+              );
+            })}
+          </div>
+
+          <label className={styles.label}>
+            Grupy Kliniczne 
+            {!isClinical && <span style={{fontSize: '0.8rem', color: 'var(--text-muted)', marginLeft: '8px', fontWeight: 'normal'}}>(Zajęcia kliniczne od 3 roku)</span>}
+          </label>
+          <div className={styles.checkboxGrid}>
+            {gkList.map(g => {
+              const disabled = isGroupDisabled(g);
+              return (
+                <label key={g} className={`${styles.checkboxItem} ${disabled ? styles.disabled : ''}`}>
+                  <input type="checkbox" checked={clinicalGroups.includes(g)} onChange={() => handleGroupToggle(g, clinicalGroups, setClinicalGroups, 8)} disabled={disabled} /> {g}
                 </label>
               );
             })}

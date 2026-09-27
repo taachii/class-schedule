@@ -24,13 +24,20 @@ async function touchGroups(supabaseAdmin: any, semesterId: number, targetGroups:
   if (targetGroups) {
     targetGroups.forEach(g => {
       groupsToTouch.add(g);
-      if (g.startsWith('GC')) {
-        const num = parseInt(g.replace(/[^0-9]/g, ''));
-        if (!isNaN(num)) {
-          const gsNum = Math.ceil(num / 2);
-          const prefix = g.replace(/[0-9]/g, '').replace('C', 'S');
-          groupsToTouch.add(`${prefix}${gsNum}`);
-        }
+      
+      let num = parseInt(g.replace(/[^0-9]/g, ''));
+      if (isNaN(num)) return;
+      
+      if (g.startsWith('GK')) {
+        const gcNum = Math.ceil(num / 2);
+        const gsNum = Math.ceil(gcNum / 2);
+        const prefix = g.replace(/[0-9]/g, '').replace('K', '');
+        groupsToTouch.add(`${prefix}C${gcNum}`);
+        groupsToTouch.add(`${prefix}S${gsNum}`);
+      } else if (g.startsWith('GC')) {
+        const gsNum = Math.ceil(num / 2);
+        const prefix = g.replace(/[0-9]/g, '').replace('C', 'S');
+        groupsToTouch.add(`${prefix}${gsNum}`);
       }
     });
   }
