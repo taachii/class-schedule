@@ -115,7 +115,7 @@ export default function SubjectDefaultsModal({ onClose }: SubjectDefaultsModalPr
         <div className={styles.header}>
           <div>
             <h2>Przypisz prowadzących</h2>
-            {selectedSubject && <p className={styles.subtitle}>{selectedSubject.name}</p>}
+            {selectedSubject && <p className={styles.subtitle}>{selectedSubject.label}</p>}
           </div>
           <button className={styles.closeBtn} onClick={onClose}>✕</button>
         </div>
@@ -128,7 +128,7 @@ export default function SubjectDefaultsModal({ onClose }: SubjectDefaultsModalPr
               <p style={{marginBottom: 10, color: 'var(--text-secondary)'}}>Wybierz przedmiot z listy:</p>
               {subjects.map((s: any) => (
                 <button key={s.key} className={styles.subjectBtn} onClick={() => setSelectedSubject(s)}>
-                  {s.name}
+                  {s.label}
                 </button>
               ))}
             </div>
