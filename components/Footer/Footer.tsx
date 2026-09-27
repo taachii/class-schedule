@@ -52,11 +52,14 @@ export default function Footer() {
         {/* Środek - Aktualizacja */}
         <div className={styles.center}>
           <div className={styles.updateBadge}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="12" cy="12" r="10"></circle>
-              <polyline points="12 6 12 12 16 14"></polyline>
-            </svg>
-            <span>Ostatnia aktualizacja dla grupy {activeGroups[activeGroups.length - 1]}</span>
+            <div className={styles.updateBadgeTitle}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+              <span>Ostatnia aktualizacja</span>
+            </div>
+            <span className={styles.updateBadgeGroup}>dla grupy {activeGroups[activeGroups.length - 1]}</span>
           </div>
           <div className={styles.updateTime}>
             {lastUpdated ? formatDate(lastUpdated) : 'Brak danych'}

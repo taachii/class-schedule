@@ -77,8 +77,9 @@
 
 .updateBadge {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 6px;
+  gap: 2px;
   font-size: 0.8rem;
   color: var(--text-secondary);
   text-transform: uppercase;
@@ -86,7 +87,17 @@
   font-weight: 600;
 }
 
-.updateBadge svg {
+.updateBadgeTitle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.updateBadgeGroup {
+  color: var(--text-muted);
+}
+
+.updateBadgeTitle svg {
   width: 14px;
   height: 14px;
   color: var(--text-muted);
