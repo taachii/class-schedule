@@ -36,7 +36,7 @@ interface CalendarViewProps {
 export default function CalendarView({ onEventClick }: CalendarViewProps) {
   const pathname = usePathname();
   const isDebug = pathname === '/debug';
-  const { enrichedEvents, activeSubjectKeys, currentYear, currentMonth, setMonth, adminRole, initialize, semesters, activeSemesterId, debugTime, setDebugTime } = useScheduleStore();
+  const { enrichedEvents, activeSubjectKeys, activeEventTypes, currentYear, currentMonth, setMonth, adminRole, initialize, semesters, activeSemesterId, debugTime, setDebugTime } = useScheduleStore();
   const isAdmin = !!adminRole;
   const [selectedEvent, setSelectedEvent] = useState<EnrichedEvent | null>(null);
   const [adminAddDate, setAdminAddDate] = useState<string | null>(null);
@@ -53,7 +53,7 @@ export default function CalendarView({ onEventClick }: CalendarViewProps) {
     return () => clearInterval(timer);
   }, [debugTime]);
 
-  const filtered = enrichedEvents.filter(ev => activeSubjectKeys.has(ev.subject_key));
+  const filtered = enrichedEvents.filter(ev => activeSubjectKeys.has(ev.subject_key) && activeEventTypes.has(ev.type));
   const activeSemester = semesters.find(s => s.id === activeSemesterId);
 
   const academicYearLabel = activeSemester?.academic_year_label || '';
