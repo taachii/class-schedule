@@ -90,9 +90,9 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
 
   const isGroupDisabled = (g: string) => {
     if (g.startsWith('GK') && !isClinical) return true;
-    if (formData.type === 'W') return g !== 'GW';
-    if (formData.type === 'S') return g === 'GW' || g.startsWith('GC') || g.startsWith('GK');
-    if (formData.type === 'C' || formData.type === 'CSM') return g === 'GW' || g.startsWith('GS');
+    if (formData.type === 'W' && g !== 'GW') return true;
+    if (formData.type === 'S' && (g === 'GW' || g.startsWith('GC') || g.startsWith('GK'))) return true;
+    if ((formData.type === 'C' || formData.type === 'CSM') && (g === 'GW' || g.startsWith('GS'))) return true;
     
     if (adminRole?.type === 'moderator' && adminRole.group) {
       if (g === 'GW') return true;
