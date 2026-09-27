@@ -1,51 +1,193 @@
-.container {
+/* --- TRIGGER BUTTON --- */
+.triggerContainer {
+  display: flex;
+  justify-content: center;
+  padding: 12px 16px;
+  background: var(--bg-base);
+  position: sticky;
+  top: 72px; /* Right below the header */
+  z-index: 30;
+}
+
+.triggerBtn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-xl);
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+  max-width: 400px;
+  width: 100%;
+}
+
+.triggerBtn:hover {
+  background: var(--highlight-hover);
+  border-color: var(--brand-start);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px var(--accent-glow);
+}
+
+.triggerIconWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--brand-start), var(--brand-end));
+  color: white;
+  flex-shrink: 0;
+}
+
+.triggerText {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding: 16px 20px;
-  background: var(--header-glass);
-  backdrop-filter: blur(12px);
+  align-items: flex-start;
+  flex: 1;
+}
+
+.triggerLabel {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+}
+
+.triggerValue {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.chevron {
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* --- MODAL --- */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--overlay-bg);
+  backdrop-filter: blur(8px);
+  z-index: 9999;
+  display: flex;
+  align-items: flex-end; /* Mobile friendly - anchors to bottom */
+  justify-content: center;
+  animation: fadeIn 0.2s ease-out forwards;
+}
+
+.modalContent {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-strong);
+  width: 100%;
+  max-width: 500px;
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@media (min-width: 768px) {
+  .modalOverlay {
+    align-items: center;
+  }
+  .modalContent {
+    border-radius: var(--radius-xl);
+    animation: scaleIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
   border-bottom: 1px solid var(--border-subtle);
-  position: sticky;
-  top: 72px; /* right below header */
-  z-index: 40;
+}
+
+.modalHeader h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.closeBtn {
+  background: var(--highlight-bg);
+  border: 1px solid var(--border-subtle);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.closeBtn:hover {
+  background: var(--highlight-hover);
+  color: var(--text-primary);
+}
+
+.modalBody {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-height: 60vh;
+  overflow-y: auto;
 }
 
 .tier {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 12px;
 }
 
 .tierLabel {
-  font-size: 0.75rem;
+  font-size: 0.85rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--text-muted);
-  margin-left: 4px;
 }
 
 .pillsScroll {
   display: flex;
-  gap: 8px;
+  gap: 10px;
   overflow-x: auto;
-  padding-bottom: 6px;
-  scrollbar-width: none; /* Firefox */
+  padding-bottom: 8px;
+  scrollbar-width: none;
 }
 
 .pillsScroll::-webkit-scrollbar {
-  display: none; /* Chrome/Safari */
+  display: none;
 }
 
 .pill {
   flex: 0 0 auto;
-  padding: 8px 16px;
+  padding: 10px 18px;
   border-radius: var(--radius-lg);
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   font-weight: 500;
   border: 1px solid var(--border-strong);
-  background: var(--bg-surface);
+  background: var(--bg-base);
   color: var(--text-secondary);
   cursor: pointer;
   transition: all 0.2s ease;
@@ -65,7 +207,7 @@
 }
 
 .pill.dimmed {
-  opacity: 0.4;
+  opacity: 0.35;
   background: transparent;
   border-color: var(--border-subtle);
 }
@@ -75,19 +217,43 @@
   border-color: var(--border-strong);
 }
 
-/* Light mode adjustments via global classes or just inheritance */
-[data-theme='light'] .pill.active {
-  box-shadow: 0 4px 12px rgba(79, 142, 247, 0.3);
+.modalFooter {
+  padding: 20px 24px;
+  border-top: 1px solid var(--border-subtle);
+  background: var(--bg-elevated);
 }
 
-@media (max-width: 768px) {
-  .container {
-    padding: 12px 16px;
-    gap: 8px;
-  }
-  
-  .pill {
-    padding: 6px 14px;
-    font-size: 0.85rem;
-  }
+.saveBtn {
+  width: 100%;
+  padding: 14px;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, var(--brand-start), var(--brand-end));
+  color: white;
+  font-size: 1.05rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: var(--transition);
+  box-shadow: 0 4px 16px var(--accent-glow);
+}
+
+.saveBtn:hover {
+  opacity: 0.95;
+  transform: translateY(-2px);
+}
+
+/* --- ANIMATIONS --- */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+@keyframes scaleIn {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
 }

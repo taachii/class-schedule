@@ -1,9 +1,10 @@
 import { useScheduleStore } from '@/store/scheduleStore';
 import styles from './GroupSelector.module.css';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export default function GroupSelector() {
   const { activeGroups, setActiveGroups, semesters, activeSemesterId } = useScheduleStore();
+  const [isOpen, setIsOpen] = useState(false);
   
   const activeSemester = semesters.find(s => s.id === activeSemesterId);
   const isClinical = activeSemester && activeSemester.year_number >= 3;
@@ -19,28 +20,34 @@ export default function GroupSelector() {
   const gcRef = useRef<HTMLDivElement>(null);
   const gkRef = useRef<HTMLDivElement>(null);
 
-  // Auto-scroll to selected items on mount
+  // Auto-scroll to selected items when modal opens
   useEffect(() => {
-    const scrollCenter = (container: HTMLElement | null) => {
-      if (!container) return;
-      const activeEl = container.querySelector(`.${styles.active}`) as HTMLElement;
-      if (activeEl) {
-        container.scrollTo({
-          left: activeEl.offsetLeft - container.offsetWidth / 2 + activeEl.offsetWidth / 2,
-          behavior: 'smooth'
-        });
-      }
-    };
-    scrollCenter(gsRef.current);
-    scrollCenter(gcRef.current);
-    if (isClinical) scrollCenter(gkRef.current);
-  }, [currentGs, currentGc, currentGk, isClinical]);
+    if (!isOpen) return;
+    
+    // Slight delay to allow modal render before scrolling
+    const timeout = setTimeout(() => {
+      const scrollCenter = (container: HTMLElement | null) => {
+        if (!container) return;
+        const activeEl = container.querySelector(`.${styles.active}`) as HTMLElement;
+        if (activeEl) {
+          container.scrollTo({
+            left: activeEl.offsetLeft - container.offsetWidth / 2 + activeEl.offsetWidth / 2,
+            behavior: 'smooth'
+          });
+        }
+      };
+      scrollCenter(gsRef.current);
+      scrollCenter(gcRef.current);
+      if (isClinical) scrollCenter(gkRef.current);
+    }, 50);
+    
+    return () => clearTimeout(timeout);
+  }, [isOpen, currentGs, currentGc, currentGk, isClinical]);
 
   const handleGsChange = (val: number) => {
     let newGc = currentGc;
     let newGk = currentGk;
     
-    // Auto-select first GC in this GS if current GC doesn't belong to it
     if (newGc !== 2 * val - 1 && newGc !== 2 * val) {
       newGc = 2 * val - 1;
       if (isClinical) newGk = 2 * newGc - 1;
@@ -53,7 +60,6 @@ export default function GroupSelector() {
     const newGs = Math.ceil(val / 2);
     let newGk = currentGk;
     
-    // Auto-select first GK in this GC if current GK doesn't belong to it
     if (isClinical && newGk !== null && (newGk !== 2 * val - 1 && newGk !== 2 * val)) {
       newGk = 2 * val - 1;
     }
@@ -73,65 +79,108 @@ export default function GroupSelector() {
     setActiveGroups(tree);
   };
 
-  // Generate arrays for rendering
   const gsOptions = Array.from({ length: gsCount }, (_, i) => i + 1);
   const gcOptions = Array.from({ length: gsCount * 2 }, (_, i) => i + 1);
   const gkOptions = isClinical ? Array.from({ length: gsCount * 4 }, (_, i) => i + 1) : [];
 
   return (
-    <div className={styles.container}>
-      <div className={styles.tier}>
-        <span className={styles.tierLabel}>Grupa Seminaryjna (GS)</span>
-        <div className={styles.pillsScroll} ref={gsRef}>
-          {gsOptions.map(num => (
-            <button
-              key={`gs-${num}`}
-              className={`${styles.pill} ${num === currentGs ? styles.active : ''}`}
-              onClick={() => handleGsChange(num)}
-            >
-              GS {num}
-            </button>
-          ))}
-        </div>
+    <>
+      <div className={styles.triggerContainer}>
+        <button className={styles.triggerBtn} onClick={() => setIsOpen(true)}>
+          <div className={styles.triggerIconWrapper}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+          </div>
+          <div className={styles.triggerText}>
+            <span className={styles.triggerLabel}>Twoja Grupa</span>
+            <span className={styles.triggerValue}>
+              GS {currentGs} • GC {currentGc}
+              {isClinical && ` • GK ${currentGk}`}
+            </span>
+          </div>
+          <div className={styles.chevron}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </div>
+        </button>
       </div>
 
-      <div className={styles.tier}>
-        <span className={styles.tierLabel}>Grupa Ćwiczeniowa (GC)</span>
-        <div className={styles.pillsScroll} ref={gcRef}>
-          {gcOptions.map(num => {
-            const belongsToGs = Math.ceil(num / 2) === currentGs;
-            return (
-              <button
-                key={`gc-${num}`}
-                className={`${styles.pill} ${num === currentGc ? styles.active : ''} ${!belongsToGs ? styles.dimmed : ''}`}
-                onClick={() => handleGcChange(num)}
-              >
-                GC {num}
+      {isOpen && (
+        <div className={styles.modalOverlay} onClick={() => setIsOpen(false)}>
+          <div className={styles.modalContent} onClick={e => e.stopPropagation()}>
+            <div className={styles.modalHeader}>
+              <h3>Ustawienia grupy</h3>
+              <button className={styles.closeBtn} onClick={() => setIsOpen(false)}>✕</button>
+            </div>
+            
+            <div className={styles.modalBody}>
+              <div className={styles.tier}>
+                <span className={styles.tierLabel}>Grupa Seminaryjna (GS)</span>
+                <div className={styles.pillsScroll} ref={gsRef}>
+                  {gsOptions.map(num => (
+                    <button
+                      key={`gs-${num}`}
+                      className={`${styles.pill} ${num === currentGs ? styles.active : ''}`}
+                      onClick={() => handleGsChange(num)}
+                    >
+                      GS {num}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className={styles.tier}>
+                <span className={styles.tierLabel}>Grupa Ćwiczeniowa (GC)</span>
+                <div className={styles.pillsScroll} ref={gcRef}>
+                  {gcOptions.map(num => {
+                    const belongsToGs = Math.ceil(num / 2) === currentGs;
+                    return (
+                      <button
+                        key={`gc-${num}`}
+                        className={`${styles.pill} ${num === currentGc ? styles.active : ''} ${!belongsToGs ? styles.dimmed : ''}`}
+                        onClick={() => handleGcChange(num)}
+                      >
+                        GC {num}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {isClinical && (
+                <div className={styles.tier}>
+                  <span className={styles.tierLabel}>Grupa Kliniczna (GK)</span>
+                  <div className={styles.pillsScroll} ref={gkRef}>
+                    {gkOptions.map(num => {
+                      const belongsToGc = Math.ceil(num / 2) === currentGc;
+                      return (
+                        <button
+                          key={`gk-${num}`}
+                          className={`${styles.pill} ${num === currentGk ? styles.active : ''} ${!belongsToGc ? styles.dimmed : ''}`}
+                          onClick={() => handleGkChange(num)}
+                        >
+                          GK {num}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className={styles.modalFooter}>
+              <button className={styles.saveBtn} onClick={() => setIsOpen(false)}>
+                Zatwierdź
               </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {isClinical && (
-        <div className={styles.tier}>
-          <span className={styles.tierLabel}>Grupa Kliniczna (GK)</span>
-          <div className={styles.pillsScroll} ref={gkRef}>
-            {gkOptions.map(num => {
-              const belongsToGc = Math.ceil(num / 2) === currentGc;
-              return (
-                <button
-                  key={`gk-${num}`}
-                  className={`${styles.pill} ${num === currentGk ? styles.active : ''} ${!belongsToGc ? styles.dimmed : ''}`}
-                  onClick={() => handleGkChange(num)}
-                >
-                  GK {num}
-                </button>
-              );
-            })}
+            </div>
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }
