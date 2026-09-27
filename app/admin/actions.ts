@@ -60,9 +60,9 @@ export async function addEventAction(eventData: any, password: string) {
   }
 
   const eventsToCheck = Array.isArray(eventData) ? eventData : [eventData];
-  const hasExams = eventsToCheck.some(ev => ev.type === 'E');
+  const hasExams = eventsToCheck.some(ev => ev.type === 'E' || ev.type === 'W');
   if (hasExams && auth.role === 'moderator') {
-    return { success: false, error: 'Tylko starosta może dodawać egzaminy.' };
+    return { success: false, error: 'Tylko starosta może dodawać egzaminy i wykłady.' };
   }
 
   const key = process.env.SUPABASE_SERVICE_KEY;
@@ -106,8 +106,8 @@ export async function deleteEventAction(id: string, password: string) {
   // Fetch event first to know which groups to touch
   const { data: eventToDel } = await supabaseAdmin.from('events').select('*').eq('id', id).single();
   
-  if (eventToDel && eventToDel.type === 'E' && auth.role === 'moderator') {
-    return { success: false, error: 'Tylko starosta może usuwać egzaminy.' };
+  if (eventToDel && (eventToDel.type === 'E' || eventToDel.type === 'W') && auth.role === 'moderator') {
+    return { success: false, error: 'Tylko starosta może usuwać egzaminy i wykłady.' };
   }
 
   const { error } = await supabaseAdmin.from('events').delete().eq('id', id);
@@ -130,8 +130,8 @@ export async function updateEventAction(id: string, eventData: any, password: st
     return { success: false, error: 'Nieprawidłowe hasło administratora.' };
   }
 
-  if (eventData.type === 'E' && auth.role === 'moderator') {
-    return { success: false, error: 'Tylko starosta może edytować egzaminy.' };
+  if ((eventData.type === 'E' || eventData.type === 'W') && auth.role === 'moderator') {
+    return { success: false, error: 'Tylko starosta może edytować egzaminy i wykłady.' };
   }
 
   const formatTime = (t: string) => (t.length === 5 ? `${t}:00` : t);

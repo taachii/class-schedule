@@ -230,7 +230,7 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
               <label className={styles.label}>Typ zajęć</label>
               <select name="type" value={formData.type} onChange={handleChange} className={styles.select}>
                 {eventTypes.map(t => {
-                  if (t.code === 'E' && adminRole?.type === 'moderator') return null;
+                  if ((t.code === 'E' || t.code === 'W') && adminRole?.type === 'moderator') return null;
                   return <option key={t.code} value={t.code}>{t.label}</option>;
                 })}
               </select>
