@@ -296,20 +296,23 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
             })}
           </div>
 
-          <label className={styles.label}>
-            Grupy Kliniczne 
-            {!isClinical && <span style={{fontSize: '0.8rem', color: 'var(--text-muted)', marginLeft: '8px', fontWeight: 'normal'}}>(Zajęcia kliniczne od 3 roku)</span>}
-          </label>
-          <div className={styles.checkboxGrid}>
-            {gkList.map(g => {
-              const disabled = isGroupDisabled(g);
-              return (
-                <label key={g} className={`${styles.checkboxItem} ${disabled ? styles.disabled : ''}`}>
-                  <input type="checkbox" checked={clinicalGroups.includes(g)} onChange={() => handleGroupToggle(g, clinicalGroups, setClinicalGroups, 8)} disabled={disabled} /> {g}
-                </label>
-              );
-            })}
-          </div>
+          {isClinical && (
+            <>
+              <label className={styles.label}>
+                Grupy Kliniczne 
+              </label>
+              <div className={styles.checkboxGrid}>
+                {gkList.map(g => {
+                  const disabled = isGroupDisabled(g);
+                  return (
+                    <label key={g} className={`${styles.checkboxItem} ${disabled ? styles.disabled : ''}`}>
+                      <input type="checkbox" checked={clinicalGroups.includes(g)} onChange={() => handleGroupToggle(g, clinicalGroups, setClinicalGroups, 8)} disabled={disabled} /> {g}
+                    </label>
+                  );
+                })}
+              </div>
+            </>
+          )}
 
           <div className={styles.row}>
             <div>
