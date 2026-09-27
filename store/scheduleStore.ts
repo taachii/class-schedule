@@ -18,6 +18,7 @@ interface ScheduleStore {
   currentYear: number;
   currentMonth: number; // 0-indexed (0 = January)
   activeSubjectKeys: Set<string>;
+  activeEventTypes: Set<string>;
 
   // ── Event data ───────────────────────────────────────────────
   events: ScheduleEvent[];
@@ -36,6 +37,9 @@ interface ScheduleStore {
   toggleSubject: (key: string) => void;
   resetSubjectFilters: () => void;
   clearSubjectFilters: () => void;
+  toggleEventType: (typeCode: string) => void;
+  resetEventTypeFilters: () => void;
+  clearEventTypeFilters: () => void;
   setActiveSemester: (semesterId: number) => void;
 
   // ── Admin ────────────────────────────────────────────────────
@@ -199,6 +203,7 @@ export const useScheduleStore = create<ScheduleStore>()(
         lastUpdated,
         enrichedEvents,
         activeSubjectKeys: new Set(subjects.map(s => s.key)),
+        activeEventTypes: new Set(eventTypes.map(t => t.code)),
         currentYear: snapYear,
         currentMonth: snapMonth,
         isLoading: false,
@@ -223,6 +228,21 @@ export const useScheduleStore = create<ScheduleStore>()(
 
   clearSubjectFilters: () => set({
     activeSubjectKeys: new Set(),
+  }),
+
+  toggleEventType: (typeCode) => set(state => {
+    const next = new Set(state.activeEventTypes);
+    if (next.has(typeCode)) next.delete(typeCode);
+    else next.add(typeCode);
+    return { activeEventTypes: next };
+  }),
+
+  resetEventTypeFilters: () => set(state => ({
+    activeEventTypes: new Set(state.eventTypes.map(t => t.code)),
+  })),
+
+  clearEventTypeFilters: () => set({
+    activeEventTypes: new Set(),
   }),
 
   // ── Admin ────────────────────────────────────────────────────
