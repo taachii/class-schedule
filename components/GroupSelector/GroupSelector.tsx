@@ -1,146 +1,137 @@
-import { useState, useEffect } from 'react';
 import { useScheduleStore } from '@/store/scheduleStore';
 import styles from './GroupSelector.module.css';
+import { useEffect, useRef } from 'react';
 
 export default function GroupSelector() {
   const { activeGroups, setActiveGroups, semesters, activeSemesterId } = useScheduleStore();
-  const [isOpen, setIsOpen] = useState(false);
-
+  
   const activeSemester = semesters.find(s => s.id === activeSemesterId);
   const isClinical = activeSemester && activeSemester.year_number >= 3;
   const gsCount = activeSemester?.gs_count ?? 12;
 
-  // Derive initial state from activeGroups array
-  // We look for patterns like 'GS1', 'GC2', 'GK3'
-  const initGs = activeGroups.find(g => g.startsWith('GS'))?.replace('GS', '') || '1';
-  const initGc = activeGroups.find(g => g.startsWith('GC'))?.replace('GC', '') || '1';
-  const initGk = activeGroups.find(g => g.startsWith('GK'))?.replace('GK', '') || '1';
+  // Extract current selections
+  const currentGs = parseInt(activeGroups.find(g => g.startsWith('GS'))?.replace('GS', '') || '1');
+  const currentGc = parseInt(activeGroups.find(g => g.startsWith('GC'))?.replace('GC', '') || '1');
+  const currentGk = isClinical ? parseInt(activeGroups.find(g => g.startsWith('GK'))?.replace('GK', '') || '1') : null;
 
-  const [gs, setGs] = useState(parseInt(initGs));
-  const [gc, setGc] = useState(parseInt(initGc));
-  const [gk, setGk] = useState(isClinical ? parseInt(initGk) : null);
+  // Refs for auto-scrolling
+  const gsRef = useRef<HTMLDivElement>(null);
+  const gcRef = useRef<HTMLDivElement>(null);
+  const gkRef = useRef<HTMLDivElement>(null);
 
-  // Synchronize internal state if external activeGroups changes
+  // Auto-scroll to selected items on mount
   useEffect(() => {
-    setGs(parseInt(activeGroups.find(g => g.startsWith('GS'))?.replace('GS', '') || '1'));
-    setGc(parseInt(activeGroups.find(g => g.startsWith('GC'))?.replace('GC', '') || '1'));
-    if (isClinical) {
-      setGk(parseInt(activeGroups.find(g => g.startsWith('GK'))?.replace('GK', '') || '1'));
-    } else {
-      setGk(null);
-    }
-  }, [activeGroups, isClinical]);
+    const scrollCenter = (container: HTMLElement | null) => {
+      if (!container) return;
+      const activeEl = container.querySelector(`.${styles.active}`) as HTMLElement;
+      if (activeEl) {
+        container.scrollTo({
+          left: activeEl.offsetLeft - container.offsetWidth / 2 + activeEl.offsetWidth / 2,
+          behavior: 'smooth'
+        });
+      }
+    };
+    scrollCenter(gsRef.current);
+    scrollCenter(gcRef.current);
+    if (isClinical) scrollCenter(gkRef.current);
+  }, [currentGs, currentGc, currentGk, isClinical]);
 
   const handleGsChange = (val: number) => {
-    setGs(val);
-    if (gc !== 2 * val - 1 && gc !== 2 * val) {
-      const newGc = 2 * val - 1;
-      setGc(newGc);
-      if (gk !== null) setGk(2 * newGc - 1);
+    let newGc = currentGc;
+    let newGk = currentGk;
+    
+    // Auto-select first GC in this GS if current GC doesn't belong to it
+    if (newGc !== 2 * val - 1 && newGc !== 2 * val) {
+      newGc = 2 * val - 1;
+      if (isClinical) newGk = 2 * newGc - 1;
     }
+    
+    save(val, newGc, newGk);
   };
 
   const handleGcChange = (val: number) => {
-    setGc(val);
-    setGs(Math.ceil(val / 2));
-    if (gk !== null && (gk !== 2 * val - 1 && gk !== 2 * val)) {
-      setGk(2 * val - 1);
+    const newGs = Math.ceil(val / 2);
+    let newGk = currentGk;
+    
+    // Auto-select first GK in this GC if current GK doesn't belong to it
+    if (isClinical && newGk !== null && (newGk !== 2 * val - 1 && newGk !== 2 * val)) {
+      newGk = 2 * val - 1;
     }
+    
+    save(newGs, val, newGk);
   };
 
   const handleGkChange = (val: number) => {
-    setGk(val);
     const newGc = Math.ceil(val / 2);
-    setGc(newGc);
-    setGs(Math.ceil(newGc / 2));
+    const newGs = Math.ceil(newGc / 2);
+    save(newGs, newGc, val);
   };
 
-  const handleSave = () => {
+  const save = (gs: number, gc: number, gk: number | null) => {
     const tree = ['GW', `GS${gs}`, `GC${gc}`];
     if (gk !== null) tree.push(`GK${gk}`);
     setActiveGroups(tree);
-    setIsOpen(false);
   };
 
-  // Generate options
+  // Generate arrays for rendering
   const gsOptions = Array.from({ length: gsCount }, (_, i) => i + 1);
-  const gcOptions = [2 * gs - 1, 2 * gs];
-  const gkOptions = gc ? [2 * gc - 1, 2 * gc] : [];
-
-  // Find leaf group name to display on button
-  const leafGroup = gk !== null ? `GK${gk}` : `GC${gc}`;
+  const gcOptions = Array.from({ length: gsCount * 2 }, (_, i) => i + 1);
+  const gkOptions = isClinical ? Array.from({ length: gsCount * 4 }, (_, i) => i + 1) : [];
 
   return (
-    <>
-      <div className={styles.wrapper}>
-        <button className={styles.triggerButton} onClick={() => setIsOpen(true)}>
-          <span className={styles.icon}>⚙️</span> Moja Grupa: <strong>{leafGroup}</strong>
-        </button>
+    <div className={styles.container}>
+      <div className={styles.tier}>
+        <span className={styles.tierLabel}>Grupa Seminaryjna (GS)</span>
+        <div className={styles.pillsScroll} ref={gsRef}>
+          {gsOptions.map(num => (
+            <button
+              key={`gs-${num}`}
+              className={`${styles.pill} ${num === currentGs ? styles.active : ''}`}
+              onClick={() => handleGsChange(num)}
+            >
+              GS {num}
+            </button>
+          ))}
+        </div>
       </div>
 
-      {isOpen && (
-        <div className={styles.modalOverlay} onClick={() => setIsOpen(false)}>
-          <div className={styles.modalContent} onClick={e => e.stopPropagation()}>
-            <div className={styles.modalHeader}>
-              <h3>Preferencje wyświetlania</h3>
-              <button className={styles.closeBtn} onClick={() => setIsOpen(false)}>×</button>
-            </div>
-            
-            <div className={styles.modalBody}>
-              <p className={styles.helpText}>Wybierz swoją grupę. Pozostałe poziomy zaktualizują się automatycznie.</p>
-              
-              <div className={styles.formGroup}>
-                <label>Grupa Seminaryjna (GS)</label>
-                <select value={gs} onChange={e => handleGsChange(parseInt(e.target.value))}>
-                  {gsOptions.map(num => (
-                    <option key={num} value={num}>GS {num}</option>
-                  ))}
-                </select>
-              </div>
+      <div className={styles.tier}>
+        <span className={styles.tierLabel}>Grupa Ćwiczeniowa (GC)</span>
+        <div className={styles.pillsScroll} ref={gcRef}>
+          {gcOptions.map(num => {
+            const belongsToGs = Math.ceil(num / 2) === currentGs;
+            return (
+              <button
+                key={`gc-${num}`}
+                className={`${styles.pill} ${num === currentGc ? styles.active : ''} ${!belongsToGs ? styles.dimmed : ''}`}
+                onClick={() => handleGcChange(num)}
+              >
+                GC {num}
+              </button>
+            );
+          })}
+        </div>
+      </div>
 
-              <div className={styles.formGroup}>
-                <label>Grupa Ćwiczeniowa (GC)</label>
-                <select value={gc} onChange={e => handleGcChange(parseInt(e.target.value))}>
-                  {gcOptions.map(num => (
-                    <option key={num} value={num}>GC {num}</option>
-                  ))}
-                </select>
-                <div className={styles.altSelect}>
-                  <small>Albo wybierz ręcznie spośród wszystkich:</small>
-                  <select value={gc} onChange={e => handleGcChange(parseInt(e.target.value))} className={styles.smallSelect}>
-                    {Array.from({ length: gsCount * 2 }, (_, i) => i + 1).map(num => (
-                      <option key={num} value={num}>GC {num}</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              {isClinical && (
-                <div className={styles.formGroup}>
-                  <label>Grupa Kliniczna (GK)</label>
-                  <select value={gk!} onChange={e => handleGkChange(parseInt(e.target.value))}>
-                    {gkOptions.map(num => (
-                      <option key={num} value={num}>GK {num}</option>
-                    ))}
-                  </select>
-                  <div className={styles.altSelect}>
-                    <small>Albo wybierz ręcznie spośród wszystkich:</small>
-                    <select value={gk!} onChange={e => handleGkChange(parseInt(e.target.value))} className={styles.smallSelect}>
-                      {Array.from({ length: gsCount * 4 }, (_, i) => i + 1).map(num => (
-                        <option key={num} value={num}>GK {num}</option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            <div className={styles.modalFooter}>
-              <button className={styles.saveBtn} onClick={handleSave}>Zatwierdź grupę</button>
-            </div>
+      {isClinical && (
+        <div className={styles.tier}>
+          <span className={styles.tierLabel}>Grupa Kliniczna (GK)</span>
+          <div className={styles.pillsScroll} ref={gkRef}>
+            {gkOptions.map(num => {
+              const belongsToGc = Math.ceil(num / 2) === currentGc;
+              return (
+                <button
+                  key={`gk-${num}`}
+                  className={`${styles.pill} ${num === currentGk ? styles.active : ''} ${!belongsToGc ? styles.dimmed : ''}`}
+                  onClick={() => handleGkChange(num)}
+                >
+                  GK {num}
+                </button>
+              );
+            })}
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 }
