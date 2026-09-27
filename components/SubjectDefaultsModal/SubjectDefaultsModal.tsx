@@ -22,14 +22,11 @@ export default function SubjectDefaultsModal({ onClose }: SubjectDefaultsModalPr
   const gcCount = gsCount * 2;
   const gkCount = gsCount * 4;
 
-  const gsPrefix = activeSemester?.gs_prefix ?? 'GS';
-  const gcPrefix = activeSemester?.gc_prefix ?? 'GC';
-
   // Build the list of all possible target groups
   const allGroups = [
     'GW',
-    ...Array.from({length: gsCount}, (_, i) => `${gsPrefix}${i+1}`),
-    ...Array.from({length: gcCount}, (_, i) => `${gcPrefix}${i+1}`),
+    ...Array.from({length: gsCount}, (_, i) => `GS${i+1}`),
+    ...Array.from({length: gcCount}, (_, i) => `GC${i+1}`),
     ...(isClinical ? Array.from({length: gkCount}, (_, i) => `GK${i+1}`) : [])
   ];
 
@@ -58,8 +55,8 @@ export default function SubjectDefaultsModal({ onClose }: SubjectDefaultsModalPr
       if (g === 'GW') return true;
       const modGs = adminRole.group;
       const modGsNum = parseInt(modGs.replace(/[^0-9]/g, ''));
-      const allowedGc1 = `${gcPrefix}${modGsNum * 2 - 1}`;
-      const allowedGc2 = `${gcPrefix}${modGsNum * 2}`;
+      const allowedGc1 = `GC${modGsNum * 2 - 1}`;
+      const allowedGc2 = `GC${modGsNum * 2}`;
       const allowedGk1 = `GK${modGsNum * 4 - 3}`;
       const allowedGk2 = `GK${modGsNum * 4 - 2}`;
       const allowedGk3 = `GK${modGsNum * 4 - 1}`;

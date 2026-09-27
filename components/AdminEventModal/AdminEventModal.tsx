@@ -69,11 +69,9 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
   const gsCount = activeSemester?.gs_count ?? 12;
   const gcCount = gsCount * 2;
   const gkCount = gsCount * 4;
-  const gsPrefix = activeSemester?.gs_prefix ?? 'GS';
-  const gcPrefix = activeSemester?.gc_prefix ?? 'GC';
 
-  const gsList = ['GW', ...Array.from({length: gsCount}, (_, i) => `${gsPrefix}${i+1}`)];
-  const gcList = Array.from({length: gcCount}, (_, i) => `${gcPrefix}${i+1}`);
+  const gsList = ['GW', ...Array.from({length: gsCount}, (_, i) => `GS${i+1}`)];
+  const gcList = Array.from({length: gcCount}, (_, i) => `GC${i+1}`);
   const gkList = Array.from({length: gkCount}, (_, i) => `GK${i+1}`);
 
   useEffect(() => {
@@ -124,8 +122,8 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
       // e.g. 'GS3' -> match 'GS3', or 'GC5', 'GC6'
       const modGs = adminRole.group;
       const modGsNum = parseInt(modGs.replace(/[^0-9]/g, ''));
-      const allowedGc1 = `${gcPrefix}${modGsNum * 2 - 1}`;
-      const allowedGc2 = `${gcPrefix}${modGsNum * 2}`;
+      const allowedGc1 = `GC${modGsNum * 2 - 1}`;
+      const allowedGc2 = `GC${modGsNum * 2}`;
       
       const allowedGk1 = `GK${modGsNum * 4 - 3}`;
       const allowedGk2 = `GK${modGsNum * 4 - 2}`;
