@@ -7,8 +7,8 @@ export default function manifest(): MetadataRoute.Manifest {
     description: 'Harmonogram zajęć dla kierunku lekarskiego SUM Zabrze',
     start_url: '/',
     display: 'standalone',
-    background_color: '#0d0f14',
-    theme_color: '#0d0f14',
+    background_color: '#f0f4f8',
+    theme_color: '#f0f4f8',
     orientation: 'portrait-primary',
     icons: [
       {
