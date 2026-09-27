@@ -25,6 +25,7 @@ export default function SubjectDefaultsModal({ onClose }: SubjectDefaultsModalPr
   // Build the list of all possible target groups
   const allGroups = [
     'GW',
+    ...Array.from({length: gsCount}, (_, i) => `GS${i+1}`),
     ...Array.from({length: gcCount}, (_, i) => `GC${i+1}`),
     ...(isClinical ? Array.from({length: gkCount}, (_, i) => `GK${i+1}`) : [])
   ];
