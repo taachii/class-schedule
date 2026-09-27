@@ -1,6 +1,7 @@
 'use client';
 
 import { useScheduleStore } from '@/store/scheduleStore';
+import { Eye, EyeOff } from 'lucide-react';
 import styles from './SubjectFilters.module.css';
 
 function hexToRgba(hex: string, alpha: number): string {
@@ -19,8 +20,8 @@ export default function SubjectFilters() {
     <div className={styles.filterBar}>
       {/* Przedmioty */}
       <div className={styles.inner}>
-        <button className={styles.reset} onClick={clearSubjectFilters}>
-          Ukryj przedmioty
+        <button className={styles.iconBtn} onClick={clearSubjectFilters} title="Ukryj przedmioty">
+          <EyeOff size={18} />
         </button>
         <div className={styles.chips} role="group" aria-label="Filtry przedmiotów">
           {subjects.map(s => {
@@ -41,21 +42,20 @@ export default function SubjectFilters() {
             );
           })}
         </div>
-        <button className={styles.reset} onClick={resetSubjectFilters}>
-          Pokaż przedmioty
+        <button className={styles.iconBtn} onClick={resetSubjectFilters} title="Pokaż przedmioty">
+          <Eye size={18} />
         </button>
       </div>
 
       {/* Typy zajęć */}
       <div className={styles.inner} style={{ marginTop: '12px', paddingTop: '12px', borderTop: '1px solid var(--border-subtle)' }}>
-        <button className={styles.reset} onClick={clearEventTypeFilters}>
-          Ukryj typy
+        <button className={styles.iconBtn} onClick={clearEventTypeFilters} title="Ukryj typy">
+          <EyeOff size={18} />
         </button>
         <div className={styles.chips} role="group" aria-label="Filtry typów zajęć">
           {eventTypes.map(t => {
             const isActive = activeEventTypes.has(t.code);
-            // Wyjątek: dla egzaminów chcemy mocno czerwony akcent, dla reszty uniwersalny (np. szary/niebieski)
-            const color = t.code === 'E' ? '#dc2626' : '#64748b'; 
+            const color = '#64748b'; 
             return (
               <button
                 key={t.code}
@@ -72,8 +72,8 @@ export default function SubjectFilters() {
             );
           })}
         </div>
-        <button className={styles.reset} onClick={resetEventTypeFilters}>
-          Pokaż typy
+        <button className={styles.iconBtn} onClick={resetEventTypeFilters} title="Pokaż typy">
+          <Eye size={18} />
         </button>
       </div>
     </div>

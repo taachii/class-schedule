@@ -84,21 +84,22 @@
   filter: brightness(1.15);
 }
 
-.reset {
-  padding: 4px 14px;
-  border-radius: 20px;
-  border: 1px solid var(--border);
+.iconBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border-radius: 50%;
+  border: 1px solid transparent;
   background: transparent;
   color: var(--text-muted);
-  font-size: 0.78rem;
-  font-family: var(--font-sans);
   cursor: pointer;
   transition: all var(--transition);
-  white-space: nowrap;
+  flex-shrink: 0;
 }
 
-.reset:hover {
-  border-color: var(--text-muted);
+.iconBtn:hover {
+  background: var(--highlight-bg);
   color: var(--text-primary);
 }
 
