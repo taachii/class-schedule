@@ -6,12 +6,27 @@ import styles from './ThemeToggle.module.css';
 
 export default function ThemeToggle() {
   const [mounted, setMounted] = useState(false);
-  const { theme, setTheme } = useTheme();
+  const { theme, setTheme, resolvedTheme } = useTheme();
 
   // Prevent hydration mismatch
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  // Update theme-color meta tag for PWA/Mobile browsers
+  useEffect(() => {
+    if (!mounted) return;
+    
+    let meta = document.querySelector('meta[name="theme-color"]');
+    if (!meta) {
+      meta = document.createElement('meta');
+      meta.setAttribute('name', 'theme-color');
+      document.head.appendChild(meta);
+    }
+    
+    const color = resolvedTheme === 'dark' ? '#0f172a' : '#f0f4f8';
+    meta.setAttribute('content', color);
+  }, [resolvedTheme, mounted]);
 
   if (!mounted) {
     return <div className={styles.placeholder} />;
