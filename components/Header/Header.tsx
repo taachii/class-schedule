@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useScheduleStore } from '@/store/scheduleStore';
 import InfoModal from '../InfoModal/InfoModal';
 import ExportModal from '../ExportModal/ExportModal';
@@ -22,6 +22,23 @@ export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const activeSemester = semesters.find(s => s.id === activeSemesterId);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setIsMenuOpen(false);
+      }
+    }
+    if (isMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isMenuOpen]);
 
   useEffect(() => {
     let newTitle = "Plan Zajęć";
@@ -100,7 +117,7 @@ export default function Header() {
             </div>
           </div>
 
-          <div className={styles.right}>
+          <div className={styles.right} ref={menuRef}>
             {/* Desktop Actions */}
             <div className={styles.desktopActions}>
               {adminRole && (
