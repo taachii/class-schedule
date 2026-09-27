@@ -103,6 +103,7 @@ export default function SubjectFilters() {
           <Eye size={18} />
         </button>
       </div>
-    </>
-  );
+    </div>
+  </>
+);
 }
