@@ -13,11 +13,17 @@
   flex-shrink: 0;
 }
 
-.toggleBtn:hover {
-  color: var(--brand-end);
-  border-color: var(--brand-end);
-  background: var(--bg-overlay);
-  box-shadow: 0 0 16px rgba(124, 58, 237, 0.2);
+@media (hover: hover) {
+  .toggleBtn:hover {
+    color: var(--brand-end);
+    border-color: var(--brand-end);
+    background: var(--bg-overlay);
+    box-shadow: 0 0 16px rgba(124, 58, 237, 0.2);
+  }
+}
+
+.toggleBtn:active {
+  transform: scale(0.95);
 }
 
 .placeholder {
