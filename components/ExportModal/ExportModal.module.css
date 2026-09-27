@@ -23,7 +23,7 @@
   border: 1px solid var(--border);
   border-radius: var(--radius-xl);
   width: 100%;
-  max-width: 520px;
+  max-width: 420px;
   margin: auto;
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
@@ -217,17 +217,4 @@
 .divider::before { left: 0; }
 .divider::after { right: 0; }
 
-@media (max-width: 768px) {
-  .overlay {
-    align-items: flex-end;
-    padding: 0;
-  }
-  .card {
-    border-radius: 20px 20px 0 0;
-    max-height: 85dvh;
-  }
-  .body {
-    padding: 20px;
-    gap: 20px;
-  }
-}
+
