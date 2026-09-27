@@ -24,7 +24,7 @@ export default function ThemeToggle() {
       document.head.appendChild(meta);
     }
     
-    const color = resolvedTheme === 'dark' ? '#0d0f1a' : '#e6eaf0';
+    const color = resolvedTheme === 'dark' ? '#0d0f15' : '#f0f4f8';
     meta.setAttribute('content', color);
   }, [resolvedTheme, mounted]);
 

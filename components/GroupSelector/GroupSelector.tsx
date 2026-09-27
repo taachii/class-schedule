@@ -90,7 +90,6 @@ export default function GroupSelector() {
       setLocalGk(null);
     } else {
       save(newGs, val, null);
-      setTimeout(() => handleClose(), 200); // Close automatically
     }
   };
 
@@ -101,7 +100,6 @@ export default function GroupSelector() {
     setLocalGc(newGc);
     setLocalGk(val);
     save(newGs, newGc, val);
-    setTimeout(() => handleClose(), 200); // Close automatically
   };
 
   const gsOptions = Array.from({ length: gsCount }, (_, i) => i + 1);
