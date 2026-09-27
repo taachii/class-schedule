@@ -69,7 +69,7 @@ export default function Header() {
             
             {!adminRole && (
               <button
-                className={styles.backBtn}
+                className={`${styles.backBtn} ${styles.desktopOnlyPadlock}`}
                 style={{ marginLeft: activeYearNumber ? '12px' : '0' }}
                 onClick={() => router.push('/admin')}
                 aria-label="Panel Administratora"
@@ -176,21 +176,40 @@ export default function Header() {
               )}
             </div>
 
+            {/* Always visible mobile action for Non-Master Admin */}
+            {adminRole && adminRole.type !== 'master' && (
+              <button
+                className={`${styles.backBtn} ${styles.mobileOnlyBtn}`}
+                onClick={() => setIsSubjectsOpen(true)}
+                aria-label="Przypisz prowadzących"
+                title="Przypisz prowadzących"
+              >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="url(#backGrad)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="9" cy="7" r="4"></circle>
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+              </button>
+            )}
+
             {/* Mobile Hamburger Button */}
-            <button 
-              className={styles.hamburgerBtn}
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              aria-label="Otwórz menu"
-            >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="3" y1="12" x2="21" y2="12"></line>
-                <line x1="3" y1="6" x2="21" y2="6"></line>
-                <line x1="3" y1="18" x2="21" y2="18"></line>
-              </svg>
-            </button>
+            {(!adminRole || adminRole.type === 'master') && (
+              <button 
+                className={styles.hamburgerBtn}
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                aria-label="Otwórz menu"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="3" y1="12" x2="21" y2="12"></line>
+                  <line x1="3" y1="6" x2="21" y2="6"></line>
+                  <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+              </button>
+            )}
 
             {/* Mobile Dropdown Menu */}
-            {isMenuOpen && (
+            {isMenuOpen && (!adminRole || adminRole.type === 'master') && (
               <div className={styles.mobileMenu}>
                 {adminRole && (
                   <button
@@ -233,6 +252,16 @@ export default function Header() {
                 )}
                 {!adminRole && (
                   <>
+                    <button
+                      className={styles.menuItem}
+                      onClick={() => { router.push('/admin'); setIsMenuOpen(false); }}
+                    >
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="url(#backGrad)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                      </svg>
+                      Panel Administratora
+                    </button>
                     <button
                       className={styles.menuItem}
                       onClick={() => { setIsExportOpen(true); setIsMenuOpen(false); }}

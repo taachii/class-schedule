@@ -156,7 +156,7 @@
   gap: 12px;
 }
 
-.hamburgerBtn, .mobileMenu {
+.hamburgerBtn, .mobileMenu, .mobileOnlyBtn {
   display: none;
 }
 
@@ -201,8 +201,12 @@
     margin: 6px auto -2px;
   }
 
-  .desktopActions {
+  .desktopActions, .desktopOnlyPadlock {
     display: none;
+  }
+
+  .mobileOnlyBtn {
+    display: flex;
   }
 
   .hamburgerBtn {
