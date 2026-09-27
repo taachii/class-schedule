@@ -19,7 +19,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport = {
-  themeColor: '#0d0f14',
+  themeColor: '#f0f4f8',
   width: 'device-width',
   initialScale: 1,
   maximumScale: 1,
@@ -31,7 +31,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="pl" suppressHydrationWarning>
       <body className={inter.variable}>
-        <ThemeProvider attribute="data-theme" defaultTheme="dark" disableTransitionOnChange>
+        <ThemeProvider attribute="data-theme" defaultTheme="light" disableTransitionOnChange>
           {children}
         </ThemeProvider>
       </body>
