@@ -67,9 +67,21 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
     assessment_type: initialEvent?.assessment_type || (defaultSaved?.assessment_type || ''),
   });
 
-  const [dates, setDates] = useState<string[]>(
-    initialEvent ? [initialEvent.date] : [initialDate || new Date().toISOString().split('T')[0]]
-  );
+  const getInitialDates = () => {
+    if (initialEvent) return [initialEvent.date];
+    const baseDateStr = initialDate || new Date().toISOString().split('T')[0];
+    if (defaultSaved?.dates && Array.isArray(defaultSaved.dates) && defaultSaved.dates.length > 0) {
+      const savedDates: string[] = defaultSaved.dates;
+      const firstSaved = new Date(savedDates[0]).getTime();
+      const offsets = savedDates.map(d => new Date(d).getTime() - firstSaved);
+      
+      const baseDate = new Date(baseDateStr).getTime();
+      return offsets.map(offset => new Date(baseDate + offset).toISOString().split('T')[0]);
+    }
+    return [baseDateStr];
+  };
+
+  const [dates, setDates] = useState<string[]>(getInitialDates());
 
   const [seminarGroups, setSeminarGroups] = useState<string[]>(initialEvent?.target_groups?.filter(g => g.startsWith('GS') || g === 'GW') || defaultSaved?.seminarGroups || []);
   const [exerciseGroups, setExerciseGroups] = useState<string[]>(initialEvent?.target_groups?.filter(g => g.startsWith('GC')) || defaultSaved?.exerciseGroups || []);
@@ -213,7 +225,8 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
             ...formData,
             seminarGroups,
             exerciseGroups,
-            clinicalGroups
+            clinicalGroups,
+            dates
           }));
         } catch(e) {}
       }
