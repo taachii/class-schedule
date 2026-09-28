@@ -27,6 +27,18 @@ export default function DailyTimelineModal({ dateStr, events, onClose }: DailyTi
   const isMobile = useIsMobile();
   const [now, setNow] = useState(debugTime || new Date());
 
+  const openSubModal = (ev: EnrichedEvent) => {
+    setSelectedEvent(ev);
+    window.history.pushState({ isModal: 'timeline' }, '');
+  };
+
+  const closeSubModal = () => {
+    setSelectedEvent(null);
+    if (window.history.state?.isModal === 'timeline') {
+      window.history.back();
+    }
+  };
+
   useEffect(() => {
     if (debugTime) {
       setNow(debugTime);
@@ -45,9 +57,6 @@ export default function DailyTimelineModal({ dateStr, events, onClose }: DailyTi
 
   useEffect(() => {
     document.body.style.overflow = 'hidden';
-    
-    // Hardware back button support: push state on mount
-    window.history.pushState({ isModal: 'timeline' }, '');
     
     return () => { 
       document.body.style.overflow = ''; 
@@ -333,7 +342,7 @@ export default function DailyTimelineModal({ dateStr, events, onClose }: DailyTi
                           ) : (
                             <button 
                               className={styles.expandBtn} 
-                              onClick={(e) => { e.stopPropagation(); setSelectedEvent(ev); }}
+                              onClick={(e) => { e.stopPropagation(); openSubModal(ev); }}
                               title="Pokaż szczegóły"
                             >
                               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
@@ -356,14 +365,14 @@ export default function DailyTimelineModal({ dateStr, events, onClose }: DailyTi
 
       {/* Sub-modal for details */}
       {selectedEvent && (
-        <div className={styles.subModalOverlay} onClick={(e) => { e.stopPropagation(); setSelectedEvent(null); }}>
+        <div className={styles.subModalOverlay} onClick={(e) => { e.stopPropagation(); closeSubModal(); }}>
           <div className={styles.subModal} onClick={e => e.stopPropagation()}>
             <div className={styles.subHeader} style={{ borderLeftColor: selectedEvent.subject.color }}>
               <div>
                 <div className={styles.subTitle}>{selectedEvent.subject.label}</div>
                 <div className={styles.subTime}>{selectedEvent.timeStartShort} – {selectedEvent.timeEndShort} <span className={styles.eventDuration}>({getDurationLabel(selectedEvent)})</span></div>
               </div>
-              <button className={styles.closeBtn} onClick={() => setSelectedEvent(null)}>
+              <button className={styles.closeBtn} onClick={closeSubModal}>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
               </button>
             </div>

@@ -14,7 +14,6 @@ export default function InfoModal({ onClose }: InfoModalProps) {
   const periods = ACADEMIC_PERIODS[academicYearLabel] || [];
 
   useEffect(() => {
-    window.history.pushState({ isModal: 'info' }, '');
     const handlePopState = () => onClose();
     
     window.addEventListener('popstate', handlePopState);

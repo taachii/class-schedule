@@ -39,7 +39,6 @@ export default function ModeratorsModal({ onClose }: ModeratorsModalProps) {
   }, []);
 
   useEffect(() => {
-    window.history.pushState({ isModal: 'moderators' }, '');
     const handlePopState = () => onClose();
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);

@@ -21,6 +21,12 @@ export default function Header() {
   const [isSubjectsOpen, setIsSubjectsOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
+  const openInfo = () => { setIsMenuOpen(false); setIsInfoOpen(true); window.history.pushState({ isModal: 'info' }, ''); };
+  const openExport = () => { setIsMenuOpen(false); setIsExportOpen(true); window.history.pushState({ isModal: 'export' }, ''); };
+  const openMods = () => { setIsMenuOpen(false); setIsModsOpen(true); window.history.pushState({ isModal: 'moderators' }, ''); };
+  const openProfessors = () => { setIsMenuOpen(false); setIsProfessorsOpen(true); window.history.pushState({ isModal: 'professors' }, ''); };
+  const openSubjects = () => { setIsMenuOpen(false); setIsSubjectsOpen(true); window.history.pushState({ isModal: 'subjects' }, ''); };
+
   const activeSemester = semesters.find(s => s.id === activeSemesterId);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -156,7 +162,7 @@ export default function Header() {
                 <>
                   <button
                     className={styles.backBtn}
-                    onClick={() => setIsExportOpen(true)}
+                    onClick={openExport}
                     aria-label="Eksportuj kalendarz"
                     title="Eksportuj kalendarz"
                   >
@@ -169,7 +175,7 @@ export default function Header() {
                   </button>
                   <button
                     className={styles.backBtn}
-                    onClick={() => setIsInfoOpen(true)}
+                    onClick={openInfo}
                     aria-label="Informacje o roku akademickim"
                     title="Organizacja roku akademickiego"
                   >
@@ -187,7 +193,7 @@ export default function Header() {
             {adminRole && adminRole.type !== 'master' && (
               <button
                 className={`${styles.backBtn} ${styles.mobileOnlyBtn}`}
-                onClick={() => setIsSubjectsOpen(true)}
+                onClick={openSubjects}
                 aria-label="Przypisz prowadzących"
                 title="Przypisz prowadzących"
               >
@@ -221,7 +227,7 @@ export default function Header() {
                 {adminRole && (
                   <button
                     className={styles.menuItem}
-                    onClick={() => { setIsSubjectsOpen(true); setIsMenuOpen(false); }}
+                    onClick={openSubjects}
                   >
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="url(#backGrad)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
@@ -236,7 +242,7 @@ export default function Header() {
                   <>
                     <button
                       className={styles.menuItem}
-                      onClick={() => { setIsProfessorsOpen(true); setIsMenuOpen(false); }}
+                      onClick={openProfessors}
                     >
                       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="url(#backGrad)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                         <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
@@ -247,7 +253,7 @@ export default function Header() {
                     </button>
                     <button
                       className={styles.menuItem}
-                      onClick={() => { setIsModsOpen(true); setIsMenuOpen(false); }}
+                      onClick={openMods}
                     >
                       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="url(#backGrad)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
@@ -271,7 +277,7 @@ export default function Header() {
                     </button>
                     <button
                       className={styles.menuItem}
-                      onClick={() => { setIsExportOpen(true); setIsMenuOpen(false); }}
+                      onClick={openExport}
                     >
                       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="url(#backGrad)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                         <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
@@ -283,7 +289,7 @@ export default function Header() {
                     </button>
                     <button
                       className={styles.menuItem}
-                      onClick={() => { setIsInfoOpen(true); setIsMenuOpen(false); }}
+                      onClick={openInfo}
                     >
                       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="url(#backGrad)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                         <circle cx="12" cy="12" r="10"></circle>

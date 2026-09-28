@@ -43,6 +43,10 @@ export default function CalendarView({ onEventClick }: CalendarViewProps) {
   const [timelineDate, setTimelineDate] = useState<string | null>(null);
   const [now, setNow] = useState(debugTime || new Date());
   
+  const openAdminAdd = (dateStr: string) => { setAdminAddDate(dateStr); window.history.pushState({ isModal: 'admin' }, ''); };
+  const openTimeline = (dateStr: string) => { setTimelineDate(dateStr); window.history.pushState({ isModal: 'timeline' }, ''); };
+  const openAdminEvent = (ev: EnrichedEvent) => { setSelectedEvent(ev); window.history.pushState({ isModal: 'admin' }, ''); };
+  
   const touchStartRef = useRef<number | null>(null);
   const touchEndRef = useRef<number | null>(null);
   const minSwipeDistance = 50;
@@ -191,9 +195,9 @@ export default function CalendarView({ onEventClick }: CalendarViewProps) {
         ].filter(Boolean).join(' ')}
         onClick={() => {
           if (isAdmin) {
-            setAdminAddDate(dateStr);
+            openAdminAdd(dateStr);
           } else {
-            setTimelineDate(dateStr);
+            openTimeline(dateStr);
           }
         }}
       >
@@ -229,7 +233,7 @@ export default function CalendarView({ onEventClick }: CalendarViewProps) {
                 onClick={(e) => {
                   if (isAdmin) {
                     e.stopPropagation();
-                    setSelectedEvent(ev);
+                    openAdminEvent(ev);
                   }
                 }}
               >

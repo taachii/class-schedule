@@ -25,7 +25,6 @@ export default function ProfessorsModal({ onClose }: { onClose: () => void }) {
   }, []);
 
   useEffect(() => {
-    window.history.pushState({ isModal: 'professors' }, '');
     const handlePopState = () => onClose();
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);

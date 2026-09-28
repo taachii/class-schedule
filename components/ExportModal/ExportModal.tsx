@@ -12,7 +12,6 @@ export default function ExportModal({ onClose }: ExportModalProps) {
   const groupLabel = filteredGroups.length > 0 ? filteredGroups.join(' • ') : 'Wszystkie grupy';
   
   useEffect(() => {
-    window.history.pushState({ isModal: 'export' }, '');
     const handlePopState = () => onClose();
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);

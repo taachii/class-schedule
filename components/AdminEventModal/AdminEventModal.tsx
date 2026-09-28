@@ -25,8 +25,6 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
     getProfessors().then(res => {
       if (res.success && res.data) setProfessors(res.data);
     });
-
-    window.history.pushState({ isModal: 'admin' }, '');
     
     const handlePopState = () => {
       onClose();
@@ -200,6 +198,9 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
     if (res.success) {
       setStatus({ type: 'success', message: 'Zapisano pomyślnie!' });
       onSuccess();
+      if (window.history.state?.isModal === 'admin') {
+        window.history.back();
+      }
     } else {
       setStatus({ type: 'error', message: res.error || 'Wystąpił błąd' });
     }
