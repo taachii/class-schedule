@@ -1,0 +1,186 @@
+.printOnly {
+  display: none;
+}
+
+@media print {
+  /* Hide all generic elements outside this print view */
+  :global(body > *:not(#__next)) {
+    display: none !important;
+  }
+  :global(main > *:not(.printOnlyContainer)), :global(nav), :global(header) {
+    display: none !important;
+  }
+  
+  :global(body) {
+    margin: 0;
+    padding: 0;
+    background: white;
+    color: black;
+  }
+
+  .printOnly {
+    display: block !important;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: white;
+    z-index: 9999;
+  }
+
+  @page {
+    size: A4 landscape;
+    margin: 10mm;
+  }
+
+  .page {
+    width: 100%;
+    height: 100vh; /* A4 height approx */
+    page-break-after: always;
+    font-family: var(--font-sans);
+    padding-bottom: 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .page:last-child {
+    page-break-after: auto;
+  }
+
+  .title {
+    font-size: 14pt;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 10px;
+    color: black;
+  }
+
+  .subtitle {
+    font-size: 10pt;
+    text-align: center;
+    margin-bottom: 15px;
+    color: #333;
+  }
+
+  /* 7 columns: Hours, Mon, Tue, Wed, Thu, Fri, Hours */
+  .grid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 80px repeat(5, 1fr) 80px;
+    grid-template-rows: auto 1fr;
+    border-top: 2px solid black;
+    border-left: 2px solid black;
+    font-size: 8pt;
+  }
+
+  .headerCell {
+    font-weight: 700;
+    text-align: center;
+    padding: 6px 2px;
+    border-right: 2px solid black;
+    border-bottom: 2px solid black;
+    background-color: #f3f4f6 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .bodyRow {
+    display: contents;
+  }
+
+  .hourColumn {
+    border-right: 2px solid black;
+    border-bottom: 2px solid black;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .hourCell {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid #ccc;
+    box-sizing: border-box;
+    font-weight: 600;
+  }
+  .hourCell:last-child {
+    border-bottom: none;
+  }
+
+  .dayColumn {
+    border-right: 2px solid black;
+    border-bottom: 2px solid black;
+    position: relative;
+    background: white;
+  }
+
+  /* Background lines mapping to hourCell height */
+  .gridLines {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .gridLine {
+    flex: 1;
+    border-bottom: 1px solid #ddd;
+    box-sizing: border-box;
+  }
+  .gridLine:last-child {
+    border-bottom: none;
+  }
+
+  /* Events absolute positioning */
+  .eventBlock {
+    position: absolute;
+    left: 1px;
+    border: 1.5px solid black;
+    padding: 2px 4px;
+    box-sizing: border-box;
+    overflow: hidden;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: black !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .eventTime {
+    font-weight: 700;
+    font-size: 6.5pt;
+    margin-bottom: 1px;
+  }
+
+  .eventName {
+    font-weight: 700;
+    font-size: 7pt;
+    line-height: 1.1;
+    margin-bottom: 1px;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .eventMeta {
+    font-size: 6pt;
+    line-height: 1.1;
+  }
+
+  .eventBadge {
+    display: inline-block;
+    padding: 1px 3px;
+    border: 1px solid black;
+    border-radius: 2px;
+    font-weight: 700;
+    font-size: 6pt;
+    margin-top: 2px;
+  }
+}

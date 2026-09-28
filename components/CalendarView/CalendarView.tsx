@@ -7,6 +7,7 @@ import { ACADEMIC_PERIODS, PeriodType } from '@/config/academicPeriods';
 import type { EnrichedEvent } from '@/types/schedule';
 import AdminEventModal from '../AdminEventModal/AdminEventModal';
 import DailyTimelineModal from '../DailyTimelineModal/DailyTimelineModal';
+import PdfExportView from '../PdfExportView/PdfExportView';
 import styles from './CalendarView.module.css';
 
 const MONTH_NAMES_PL = [
@@ -376,6 +377,8 @@ export default function CalendarView({ onEventClick }: CalendarViewProps) {
           </div>
         </div>
       )}
+      
+      <PdfExportView />
     </div>
   );
 }
