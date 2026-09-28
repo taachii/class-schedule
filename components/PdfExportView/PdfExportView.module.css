@@ -4,10 +4,7 @@
 
 @media print {
   /* Hide all generic elements outside this print view */
-  :global(body > *:not(#__next)) {
-    display: none !important;
-  }
-  :global(.hideOnPrint), :global(nav), :global(header) {
+  :global(.hideOnPrint) {
     display: none !important;
   }
   
