@@ -26,6 +26,8 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
       if (res.success && res.data) setProfessors(res.data);
     });
     
+    window.history.pushState({ isModal: 'admin' }, '');
+
     const handlePopState = () => {
       onClose();
     };

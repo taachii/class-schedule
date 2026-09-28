@@ -57,6 +57,7 @@ export default function DailyTimelineModal({ dateStr, events, onClose }: DailyTi
 
   useEffect(() => {
     document.body.style.overflow = 'hidden';
+    window.history.pushState({ isModal: 'timeline' }, '');
     
     return () => { 
       document.body.style.overflow = ''; 

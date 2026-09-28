@@ -43,9 +43,9 @@ export default function CalendarView({ onEventClick }: CalendarViewProps) {
   const [timelineDate, setTimelineDate] = useState<string | null>(null);
   const [now, setNow] = useState(debugTime || new Date());
   
-  const openAdminAdd = (dateStr: string) => { setAdminAddDate(dateStr); window.history.pushState({ isModal: 'admin' }, ''); };
-  const openTimeline = (dateStr: string) => { setTimelineDate(dateStr); window.history.pushState({ isModal: 'timeline' }, ''); };
-  const openAdminEvent = (ev: EnrichedEvent) => { setSelectedEvent(ev); window.history.pushState({ isModal: 'admin' }, ''); };
+  const openAdminAdd = (dateStr: string) => { setAdminAddDate(dateStr); };
+  const openTimeline = (dateStr: string) => { setTimelineDate(dateStr); };
+  const openAdminEvent = (ev: EnrichedEvent) => { setSelectedEvent(ev); };
   
   const touchStartRef = useRef<number | null>(null);
   const touchEndRef = useRef<number | null>(null);

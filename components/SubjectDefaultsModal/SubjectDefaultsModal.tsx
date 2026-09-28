@@ -37,6 +37,10 @@ export default function SubjectDefaultsModal({ onClose }: SubjectDefaultsModalPr
   }, [selectedSubject]);
 
   useEffect(() => {
+    window.history.pushState({ isModal: 'subjects' }, '');
+  }, []);
+
+  useEffect(() => {
     const handlePopState = () => onClose();
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);

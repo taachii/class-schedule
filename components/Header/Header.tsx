@@ -21,11 +21,11 @@ export default function Header() {
   const [isSubjectsOpen, setIsSubjectsOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const openInfo = () => { setIsMenuOpen(false); setIsInfoOpen(true); window.history.pushState({ isModal: 'info' }, ''); };
-  const openExport = () => { setIsMenuOpen(false); setIsExportOpen(true); window.history.pushState({ isModal: 'export' }, ''); };
-  const openMods = () => { setIsMenuOpen(false); setIsModsOpen(true); window.history.pushState({ isModal: 'moderators' }, ''); };
-  const openProfessors = () => { setIsMenuOpen(false); setIsProfessorsOpen(true); window.history.pushState({ isModal: 'professors' }, ''); };
-  const openSubjects = () => { setIsMenuOpen(false); setIsSubjectsOpen(true); window.history.pushState({ isModal: 'subjects' }, ''); };
+  const openInfo = () => { setIsMenuOpen(false); setIsInfoOpen(true); };
+  const openExport = () => { setIsMenuOpen(false); setIsExportOpen(true); };
+  const openMods = () => { setIsMenuOpen(false); setIsModsOpen(true); };
+  const openProfessors = () => { setIsMenuOpen(false); setIsProfessorsOpen(true); };
+  const openSubjects = () => { setIsMenuOpen(false); setIsSubjectsOpen(true); };
 
   const activeSemester = semesters.find(s => s.id === activeSemesterId);
   const menuRef = useRef<HTMLDivElement>(null);
