@@ -24,7 +24,7 @@ export default function SchedulePage() {
 
   useEffect(() => {
     if (activeYearNumber === null) {
-      document.title = 'Plan Zajęć – I Rok Lekarski | SUM Zabrze 2026/2027';
+      document.title = 'Plan WNMZ';
       return;
     }
 

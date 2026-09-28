@@ -40,17 +40,7 @@ export default function Header() {
     };
   }, [isMenuOpen]);
 
-  useEffect(() => {
-    let newTitle = "Plan Zajęć";
-    if (activeYearNumber) {
-      newTitle += " | Kierunek lekarski";
-      if (activeSemester) {
-        const yearRoman = ['I', 'II', 'III', 'IV', 'V', 'VI'][activeYearNumber - 1] || activeYearNumber;
-        newTitle += ` | ${yearRoman} Rok - ${activeSemester.label}`;
-      }
-    }
-    document.title = newTitle;
-  }, [activeYearNumber, activeSemester]);
+
 
   return (
     <>
