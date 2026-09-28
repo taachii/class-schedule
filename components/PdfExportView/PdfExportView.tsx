@@ -92,7 +92,19 @@ export default function PdfExportView() {
   const monthName = new Date(currentYear, currentMonth).toLocaleDateString('pl-PL', { month: 'long', year: 'numeric' });
   const filteredGroups = activeGroups.filter(g => g !== 'GW');
   const groupsStr = filteredGroups.length > 0 ? filteredGroups.join(', ') : 'Wszystkie grupy';
-  const titleStr = `Plan zajęć - ${groupsStr} - ${monthName.charAt(0).toUpperCase() + monthName.slice(1)}`;
+  const monthCapitalized = monthName.charAt(0).toUpperCase() + monthName.slice(1);
+  const titleStr = `Plan zajęć - ${groupsStr} - ${monthCapitalized}`;
+
+  const safeGroups = filteredGroups.length > 0 ? filteredGroups.join('_').replace(/[^a-zA-Z0-9_]/g, '') : 'Wszystkie';
+  const semester = semesters.find(s => s.id === activeSemesterId);
+  const semShort = semester?.label.toLowerCase().includes('letni') ? 'SL' : 'SZ';
+  const programStr = 'Lek';
+  const pdfFilename = `Plan_${programStr}_R${activeYearNumber}_${semShort}_${safeGroups}_${monthCapitalized}`.replace(/\s+/g, '_');
+
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('pl-PL', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  const timeStr = now.toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' });
+  const exportTime = `${dateStr}, ${timeStr}`;
 
   return (
     <div className={`${styles.printOnly} printOnlyContainer`}>
@@ -108,6 +120,10 @@ export default function PdfExportView() {
 
         return (
           <div key={wIdx} className={styles.page}>
+            <div className={styles.topMeta}>
+              <div className={styles.metaLeft}>Wyeksportowano: {exportTime}</div>
+              <div className={styles.metaCenter}>{pdfFilename}.pdf</div>
+            </div>
             <div className={styles.title}>{titleStr}</div>
             <div className={styles.subtitle}>
               Tydzień {wIdx + 1}: {week.find(d => d !== null)?.dateStr} - {week.slice().reverse().find(d => d !== null)?.dateStr}

@@ -27,7 +27,7 @@
 
   @page {
     size: A4 landscape;
-    margin: 10mm;
+    margin: 0;
   }
 
   .page {
@@ -35,14 +35,34 @@
     height: 100vh; /* A4 height approx */
     page-break-after: always;
     font-family: var(--font-sans);
-    padding-bottom: 20px;
+    padding: 10mm 10mm 20px 10mm;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
+    position: relative;
   }
 
   .page:last-child {
     page-break-after: auto;
+  }
+
+  .topMeta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: #666;
+    margin-bottom: 15px;
+    font-family: monospace;
+    position: relative;
+  }
+  .metaLeft {
+    text-align: left;
+  }
+  .metaCenter {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    font-weight: 500;
   }
 
   .title {
