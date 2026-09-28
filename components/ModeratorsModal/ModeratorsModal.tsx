@@ -140,11 +140,7 @@ export default function ModeratorsModal({ onClose }: ModeratorsModalProps) {
       <div className={styles.card} onClick={e => e.stopPropagation()}>
         <div className={styles.header}>
           <h3 className={styles.title}>Zarządzanie Moderatorami</h3>
-          <button className={styles.closeBtn} onClick={handleClose}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M18 6L6 18M6 6l12 12" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </button>
+          <button className={styles.closeBtn} onClick={handleClose}>✕</button>
         </div>
 
         <div className={styles.body}>
