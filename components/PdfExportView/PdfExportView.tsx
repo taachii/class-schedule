@@ -10,7 +10,7 @@ function toIso(year: number, month: number, day: number) {
 }
 
 export default function PdfExportView() {
-  const { currentYear, currentMonth, enrichedEvents, activeGroups, eventTypes } = useScheduleStore();
+  const { currentYear, currentMonth, enrichedEvents, activeGroups, eventTypes, semesters, activeSemesterId, activeYearNumber } = useScheduleStore();
 
   const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
   
