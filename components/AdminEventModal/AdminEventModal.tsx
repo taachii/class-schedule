@@ -33,13 +33,15 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
     };
     
     window.addEventListener('popstate', handlePopState);
-    return () => {
-      window.removeEventListener('popstate', handlePopState);
-      if (window.history.state?.isModal === 'admin') {
-        window.history.back();
-      }
-    };
+    return () => window.removeEventListener('popstate', handlePopState);
   }, [onClose]);
+
+  const handleClose = () => {
+    onClose();
+    if (window.history.state?.isModal === 'admin') {
+      window.history.back();
+    }
+  };
 
   // Form state
   const [formData, setFormData] = useState({
@@ -229,9 +231,9 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
     : (selectedSubject?.location || 'Brak domyślnej lokalizacji');
 
   return (
-    <div className={styles.overlay} onClick={onClose}>
+    <div className={styles.overlay} onClick={handleClose}>
       <div className={styles.card} onClick={e => e.stopPropagation()}>
-        <button className={styles.closeBtn} onClick={onClose}>✕</button>
+        <button className={styles.closeBtn} onClick={handleClose}>✕</button>
         <div className={styles.header}>
           <h2>{isEditing ? 'Edytuj zajęcia' : 'Dodaj zajęcia'}</h2>
         </div>

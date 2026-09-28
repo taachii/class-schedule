@@ -15,13 +15,15 @@ export default function ExportModal({ onClose }: ExportModalProps) {
     window.history.pushState({ isModal: 'export' }, '');
     const handlePopState = () => onClose();
     window.addEventListener('popstate', handlePopState);
-    return () => {
-      window.removeEventListener('popstate', handlePopState);
-      if (window.history.state?.isModal === 'export') {
-        window.history.back();
-      }
-    };
+    return () => window.removeEventListener('popstate', handlePopState);
   }, [onClose]);
+
+  const handleClose = () => {
+    onClose();
+    if (window.history.state?.isModal === 'export') {
+      window.history.back();
+    }
+  };
 
   if (!activeYearNumber) {
     return null;
@@ -36,7 +38,7 @@ export default function ExportModal({ onClose }: ExportModalProps) {
   const webcalUrl = fullApiUrl.replace(/^https?:\/\//, 'webcal://');
 
   const handlePrint = () => {
-    onClose();
+    handleClose();
     setTimeout(() => {
       const originalTitle = document.title;
       const monthName = new Date(currentYear, currentMonth).toLocaleDateString('pl-PL', { month: 'long', year: 'numeric' });
@@ -62,9 +64,9 @@ export default function ExportModal({ onClose }: ExportModalProps) {
   };
 
   return (
-    <div className={styles.overlay} onClick={onClose}>
+    <div className={styles.overlay} onClick={handleClose}>
       <div className={styles.card} onClick={e => e.stopPropagation()}>
-        <button className={styles.closeBtn} onClick={onClose}>✕</button>
+        <button className={styles.closeBtn} onClick={handleClose}>✕</button>
         <div className={styles.header}>
           <h2>Wyeksportuj plan</h2>
           <p className={styles.subtitle}>Grupy: {groupLabel} • Rok {activeYearNumber}</p>

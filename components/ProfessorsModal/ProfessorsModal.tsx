@@ -24,6 +24,20 @@ export default function ProfessorsModal({ onClose }: { onClose: () => void }) {
     fetchProfessors();
   }, []);
 
+  useEffect(() => {
+    window.history.pushState({ isModal: 'professors' }, '');
+    const handlePopState = () => onClose();
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [onClose]);
+
+  const handleClose = () => {
+    onClose();
+    if (window.history.state?.isModal === 'professors') {
+      window.history.back();
+    }
+  };
+
   const fetchProfessors = async () => {
     setLoading(true);
     const res = await getProfessors();
@@ -89,11 +103,11 @@ export default function ProfessorsModal({ onClose }: { onClose: () => void }) {
   };
 
   return (
-    <div className={styles.overlay} onClick={onClose}>
+    <div className={styles.overlay} onClick={handleClose}>
       <div className={styles.modal} onClick={e => e.stopPropagation()}>
         <div className={styles.header}>
           <h2>Baza Prowadzących</h2>
-          <button className={styles.closeBtn} onClick={onClose}>✕</button>
+          <button className={styles.closeBtn} onClick={handleClose}>✕</button>
         </div>
 
         <div className={styles.content}>

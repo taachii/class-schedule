@@ -36,6 +36,20 @@ export default function SubjectDefaultsModal({ onClose }: SubjectDefaultsModalPr
     }
   }, [selectedSubject]);
 
+  useEffect(() => {
+    window.history.pushState({ isModal: 'subjects' }, '');
+    const handlePopState = () => onClose();
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [onClose]);
+
+  const handleClose = () => {
+    onClose();
+    if (window.history.state?.isModal === 'subjects') {
+      window.history.back();
+    }
+  };
+
   const fetchData = async (subjKey: string) => {
     setLoading(true);
     const [profRes, defRes] = await Promise.all([
@@ -107,14 +121,14 @@ export default function SubjectDefaultsModal({ onClose }: SubjectDefaultsModalPr
   };
 
   return (
-    <div className={styles.overlay} onClick={onClose}>
+    <div className={styles.overlay} onClick={handleClose}>
       <div className={styles.modal} onClick={e => e.stopPropagation()}>
         <div className={styles.header}>
           <div>
             <h2>Przypisz prowadzących</h2>
             {selectedSubject && <p className={styles.subtitle}>{selectedSubject.label}</p>}
           </div>
-          <button className={styles.closeBtn} onClick={onClose}>✕</button>
+          <button className={styles.closeBtn} onClick={handleClose}>✕</button>
         </div>
 
         <div className={styles.content}>

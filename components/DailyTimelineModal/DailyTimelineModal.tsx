@@ -51,11 +51,15 @@ export default function DailyTimelineModal({ dateStr, events, onClose }: DailyTi
     
     return () => { 
       document.body.style.overflow = ''; 
-      if (window.history.state?.isModal === 'timeline') {
-        window.history.back();
-      }
     };
   }, []);
+
+  const handleClose = () => {
+    onClose();
+    if (window.history.state?.isModal === 'timeline') {
+      window.history.back();
+    }
+  };
 
   useEffect(() => {
     const handlePopState = () => {

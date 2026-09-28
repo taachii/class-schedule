@@ -18,13 +18,15 @@ export default function InfoModal({ onClose }: InfoModalProps) {
     const handlePopState = () => onClose();
     
     window.addEventListener('popstate', handlePopState);
-    return () => {
-      window.removeEventListener('popstate', handlePopState);
-      if (window.history.state?.isModal === 'info') {
-        window.history.back();
-      }
-    };
+    return () => window.removeEventListener('popstate', handlePopState);
   }, [onClose]);
+
+  const handleClose = () => {
+    onClose();
+    if (window.history.state?.isModal === 'info') {
+      window.history.back();
+    }
+  };
 
   const semesterPeriods = periods
     .filter(p => p.semester === activeSemester?.semester_no || p.semester === 'both')
@@ -51,9 +53,9 @@ export default function InfoModal({ onClose }: InfoModalProps) {
   };
 
   return (
-    <div className={styles.overlay} onClick={onClose}>
+    <div className={styles.overlay} onClick={handleClose}>
       <div className={styles.card} onClick={e => e.stopPropagation()}>
-        <button className={styles.closeBtn} onClick={onClose}>✕</button>
+        <button className={styles.closeBtn} onClick={handleClose}>✕</button>
         <div className={styles.header}>
           <h2>Organizacja Roku</h2>
           <p className={styles.subtitle}>{activeSemester?.label}</p>

@@ -38,6 +38,20 @@ export default function ModeratorsModal({ onClose }: ModeratorsModalProps) {
       .catch(() => setLoading(false));
   }, []);
 
+  useEffect(() => {
+    window.history.pushState({ isModal: 'moderators' }, '');
+    const handlePopState = () => onClose();
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [onClose]);
+
+  const handleClose = () => {
+    onClose();
+    if (window.history.state?.isModal === 'moderators') {
+      window.history.back();
+    }
+  };
+
   const generateComplexString = (length: number) => {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
     let result = '';
@@ -119,11 +133,11 @@ export default function ModeratorsModal({ onClose }: ModeratorsModalProps) {
   );
 
   return (
-    <div className={styles.overlay} onClick={onClose}>
+    <div className={styles.overlay} onClick={handleClose}>
       <div className={styles.card} onClick={e => e.stopPropagation()}>
         <div className={styles.header}>
           <h3 className={styles.title}>Zarządzanie Moderatorami</h3>
-          <button className={styles.closeBtn} onClick={onClose}>
+          <button className={styles.closeBtn} onClick={handleClose}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M18 6L6 18M6 6l12 12" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
