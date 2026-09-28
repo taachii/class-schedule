@@ -50,7 +50,12 @@ export default function SubjectFilters() {
           <EyeOff size={18} />
         </button>
         <div className={styles.chips} role="group" aria-label="Filtry przedmiotów">
-          {[...subjects].sort((a, b) => a.short_label.localeCompare(b.short_label, undefined, { numeric: true })).map(s => {
+          {[...subjects].map((s, i) => ({ ...s, _origIndex: i })).sort((a, b) => {
+            const isFA = a.short_label.match(/^F\d+/);
+            const isFB = b.short_label.match(/^F\d+/);
+            if (isFA && isFB) return a.short_label.localeCompare(b.short_label, undefined, { numeric: true });
+            return a._origIndex - b._origIndex;
+          }).map(s => {
             const isActive = activeSubjectKeys.has(s.key);
             return (
               <button
