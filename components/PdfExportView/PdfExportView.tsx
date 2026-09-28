@@ -90,7 +90,9 @@ export default function PdfExportView() {
   const getTypeLabel = (code: string) => eventTypes.find(t => t.code === code)?.label ?? code;
 
   const monthName = new Date(currentYear, currentMonth).toLocaleDateString('pl-PL', { month: 'long', year: 'numeric' });
-  const titleStr = `Plan zajęć - ${activeGroups.join(', ')} - ${monthName.charAt(0).toUpperCase() + monthName.slice(1)}`;
+  const filteredGroups = activeGroups.filter(g => g !== 'GW');
+  const groupsStr = filteredGroups.length > 0 ? filteredGroups.join(', ') : 'Wszystkie grupy';
+  const titleStr = `Plan zajęć - ${groupsStr} - ${monthName.charAt(0).toUpperCase() + monthName.slice(1)}`;
 
   return (
     <div className={`${styles.printOnly} printOnlyContainer`}>

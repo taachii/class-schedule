@@ -137,6 +137,7 @@
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   font-weight: 600;
+  font-size: 0.9rem;
   text-decoration: none;
   cursor: pointer;
   transition: all 0.2s;
