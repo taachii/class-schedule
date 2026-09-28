@@ -7,7 +7,7 @@ interface ExportModalProps {
 }
 
 export default function ExportModal({ onClose }: ExportModalProps) {
-  const { activeGroups, activeYearNumber } = useScheduleStore();
+  const { activeGroups, activeYearNumber, currentYear, currentMonth } = useScheduleStore();
   const leafGroup = activeGroups.length > 0 ? activeGroups[activeGroups.length - 1] : 'Wszystkie';
   
   useEffect(() => {
@@ -33,6 +33,27 @@ export default function ExportModal({ onClose }: ExportModalProps) {
   
   // WebCal URL (replaces https:// with webcal://)
   const webcalUrl = fullApiUrl.replace(/^https?:\/\//, 'webcal://');
+
+  const handlePrint = () => {
+    onClose();
+    setTimeout(() => {
+      const originalTitle = document.title;
+      const monthName = new Date(currentYear, currentMonth).toLocaleDateString('pl-PL', { month: 'long', year: 'numeric' });
+      const monthCapitalized = monthName.charAt(0).toUpperCase() + monthName.slice(1);
+      const safeGroups = activeGroups.join('_').replace(/[^a-zA-Z0-9_]/g, '');
+      const newTitle = `Plan_Zajec_${safeGroups}_${monthCapitalized}`.replace(/\s+/g, '_');
+      
+      document.title = newTitle;
+      window.print();
+      
+      const resetTitle = () => {
+        document.title = originalTitle;
+        window.removeEventListener('afterprint', resetTitle);
+      };
+      window.addEventListener('afterprint', resetTitle);
+      setTimeout(resetTitle, 3000);
+    }, 100);
+  };
 
   return (
     <div className={styles.overlay} onClick={onClose}>
@@ -83,7 +104,7 @@ export default function ExportModal({ onClose }: ExportModalProps) {
             <h3>📄 Wydruk / PDF</h3>
             <p>Możesz wygenerować i wydrukować plan z obecnego miesiąca (1 tydzień na 1 stronę A4) za pomocą opcji w przeglądarce.</p>
             <div style={{ display: 'flex', gap: 10 }}>
-              <button onClick={() => { onClose(); setTimeout(() => window.print(), 100); }} className={styles.secondaryBtn} style={{ flex: 1, backgroundColor: '#4f8ef7', color: 'white', border: 'none' }}>
+              <button onClick={handlePrint} className={styles.secondaryBtn} style={{ flex: 1, backgroundColor: '#4f8ef7', color: 'white', border: 'none' }}>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginRight: 8, verticalAlign: 'middle' }}><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
                 Drukuj bieżący miesiąc
               </button>
