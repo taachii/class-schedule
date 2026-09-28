@@ -22,38 +22,29 @@ export default function SchedulePage() {
     }
   }, [initialize, activeYearNumber]);
 
-  useEffect(() => {
-    const updateTitle = () => {
-      if (activeYearNumber === null) {
-        document.title = 'Plan WNMZ';
-        return;
-      }
-
-      const yearLabel = ROMAN_NUMERALS[activeYearNumber - 1] || activeYearNumber;
-      const semester = semesters.find(s => s.id === activeSemesterId);
-      const semText = semester ? `| ${semester.label}` : '';
-      const filteredGroups = activeGroups.filter(g => g !== 'GW');
-      const groupText = filteredGroups.length > 0 ? `| ${filteredGroups.join(', ')}` : '| Wszystkie grupy';
-
-      document.title = `Plan Zajęć | Lekarski | ${yearLabel} Rok ${semText} ${groupText}`;
-    };
-
-    updateTitle();
-
-    const handlePopState = () => {
-      setTimeout(updateTitle, 10);
-    };
-
-    window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
-  }, [activeYearNumber, activeSemesterId, activeGroups, semesters]);
+  // Wyliczanie tytułu
+  let pageTitle = 'Plan WNMZ';
+  if (activeYearNumber !== null) {
+    const yearLabel = ROMAN_NUMERALS[activeYearNumber - 1] || activeYearNumber;
+    const semester = semesters.find(s => s.id === activeSemesterId);
+    const semText = semester ? `| ${semester.label}` : '';
+    const filteredGroups = activeGroups.filter(g => g !== 'GW');
+    const groupText = filteredGroups.length > 0 ? `| ${filteredGroups.join(', ')}` : '| Wszystkie grupy';
+    pageTitle = `Plan Zajęć | Lekarski | ${yearLabel} Rok ${semText} ${groupText}`;
+  }
 
   if (activeYearNumber === null) {
-    return <HomeSelector />;
+    return (
+      <>
+        <title>{pageTitle}</title>
+        <HomeSelector />
+      </>
+    );
   }
 
   return (
     <>
+      <title>{pageTitle}</title>
       <div className="hideOnPrint">
         <Header />
         <GroupSelector />
