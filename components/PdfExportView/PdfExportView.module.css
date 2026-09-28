@@ -125,16 +125,24 @@
     flex: 1;
     border-bottom: 1px solid #ddd;
     box-sizing: border-box;
+    position: relative;
   }
   .gridLine:last-child {
     border-bottom: none;
+  }
+  .quarterLine {
+    position: absolute;
+    left: 0;
+    right: 0;
+    border-top: 1px dotted #e5e5e5;
   }
 
   /* Events absolute positioning */
   .eventBlock {
     position: absolute;
-    left: 1px;
-    border: 1.5px solid black;
+    border-left: 4px solid var(--ev-color) !important;
+    background: color-mix(in srgb, var(--ev-color) 18%, transparent) !important;
+    border-radius: 4px;
     padding: 2px 4px;
     box-sizing: border-box;
     overflow: hidden;

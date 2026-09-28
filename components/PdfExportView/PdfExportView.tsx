@@ -79,12 +79,11 @@ export default function PdfExportView() {
     const colWidth = 100 / totalCols;
 
     return {
-      top: `${topPercent}%`,
-      height: `${heightPercent}%`,
-      left: `${col * colWidth}%`,
-      width: `${colWidth}%`,
-      '--ev-color': ev.subject?.color || '#eee',
-      backgroundColor: ev.subject?.color || '#eee'
+      top: `calc(${topPercent}% + 1px)`,
+      height: `calc(${heightPercent}% - 2px)`,
+      left: `calc(${col * colWidth}% + 2px)`,
+      width: `calc(${colWidth}% - 4px)`,
+      '--ev-color': ev.subject?.color || '#3b82f6',
     } as React.CSSProperties;
   };
 
@@ -174,7 +173,11 @@ export default function PdfExportView() {
                       {/* Background grid lines */}
                       <div className={styles.gridLines}>
                         {hoursList.map(h => (
-                          <div key={h} className={styles.gridLine}></div>
+                          <div key={h} className={styles.gridLine}>
+                            <div className={styles.quarterLine} style={{ top: '25%' }}></div>
+                            <div className={styles.quarterLine} style={{ top: '50%' }}></div>
+                            <div className={styles.quarterLine} style={{ top: '75%' }}></div>
+                          </div>
                         ))}
                       </div>
 
