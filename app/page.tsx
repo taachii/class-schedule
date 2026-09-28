@@ -11,14 +11,30 @@ import HomeSelector from '@/components/HomeSelector/HomeSelector';
 import Footer from '@/components/Footer/Footer';
 import PdfExportView from '@/components/PdfExportView/PdfExportView';
 
+const ROMAN_NUMERALS = ['I', 'II', 'III', 'IV', 'V', 'VI'];
+
 export default function SchedulePage() {
-  const { activeYearNumber, initialize, isLoading, error } = useScheduleStore();
+  const { activeYearNumber, activeSemesterId, activeGroups, semesters, initialize, isLoading, error } = useScheduleStore();
 
   useEffect(() => {
     if (activeYearNumber !== null) {
       initialize();
     }
   }, [initialize, activeYearNumber]);
+
+  useEffect(() => {
+    if (activeYearNumber === null) {
+      document.title = 'Plan Zajęć – I Rok Lekarski | SUM Zabrze 2026/2027';
+      return;
+    }
+
+    const yearLabel = ROMAN_NUMERALS[activeYearNumber - 1] || activeYearNumber;
+    const semester = semesters.find(s => s.id === activeSemesterId);
+    const semText = semester ? `| ${semester.label}` : '';
+    const groupText = activeGroups.length > 0 ? `| ${activeGroups.join(', ')}` : '| Wszystkie grupy';
+
+    document.title = `Plan Zajęć | Lekarski | ${yearLabel} Rok ${semText} ${groupText}`;
+  }, [activeYearNumber, activeSemesterId, activeGroups, semesters]);
 
   if (activeYearNumber === null) {
     return <HomeSelector />;
