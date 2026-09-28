@@ -262,8 +262,9 @@ export default function CalendarView({ onEventClick }: CalendarViewProps) {
   }
 
   return (
+    <>
     <div 
-      className={styles.wrapper}
+      className={`${styles.wrapper} hideOnPrint`}
       onTouchStart={onTouchStart}
       onTouchMove={onTouchMove}
       onTouchEnd={onTouchEndHandler}
@@ -375,10 +376,9 @@ export default function CalendarView({ onEventClick }: CalendarViewProps) {
               Reset
             </button>
           </div>
-        </div>
       )}
-      
-      <PdfExportView />
     </div>
+    <PdfExportView />
+    </>
   );
 }

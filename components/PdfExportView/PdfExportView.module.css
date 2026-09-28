@@ -7,7 +7,7 @@
   :global(body > *:not(#__next)) {
     display: none !important;
   }
-  :global(main > *:not(.printOnlyContainer)), :global(nav), :global(header) {
+  :global(.hideOnPrint), :global(nav), :global(header) {
     display: none !important;
   }
   
