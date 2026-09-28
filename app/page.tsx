@@ -21,8 +21,6 @@ export default function SchedulePage() {
       initialize();
     }
   }, [initialize, activeYearNumber]);
-
-  // Wyliczanie tytułu
   let pageTitle = 'Plan WNMZ';
   if (activeYearNumber !== null) {
     const yearLabel = ROMAN_NUMERALS[activeYearNumber - 1] || activeYearNumber;
@@ -33,18 +31,25 @@ export default function SchedulePage() {
     pageTitle = `Plan Zajęć | Lekarski | ${yearLabel} Rok ${semText} ${groupText}`;
   }
 
+  useEffect(() => {
+    document.title = pageTitle;
+    
+    // Niezawodny bloker dla Next.js, który lubi nadpisywać title przy popstate / navigacji
+    const interval = setInterval(() => {
+      if (document.title !== pageTitle) {
+        document.title = pageTitle;
+      }
+    }, 50);
+
+    return () => clearInterval(interval);
+  }, [pageTitle]);
+
   if (activeYearNumber === null) {
-    return (
-      <>
-        <title>{pageTitle}</title>
-        <HomeSelector />
-      </>
-    );
+    return <HomeSelector />;
   }
 
   return (
     <>
-      <title>{pageTitle}</title>
       <div className="hideOnPrint">
         <Header />
         <GroupSelector />
