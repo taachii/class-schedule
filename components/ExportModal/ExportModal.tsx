@@ -44,9 +44,10 @@ export default function ExportModal({ onClose }: ExportModalProps) {
       
       const safeGroups = filteredGroups.length > 0 ? filteredGroups.join('_').replace(/[^a-zA-Z0-9_]/g, '') : 'Wszystkie';
       const semester = semesters.find(s => s.id === activeSemesterId);
-      const semShort = semester?.label.toLowerCase().includes('letni') ? 'Letni' : 'Zimowy';
+      const semShort = semester?.label.toLowerCase().includes('letni') ? 'SL' : 'SZ';
       
-      const newTitle = `Plan_Lekarski_Rok${activeYearNumber}_${semShort}_${safeGroups}_${monthCapitalized}`.replace(/\s+/g, '_');
+      const programStr = 'Lek'; // TODO: Update to LekDent or Rat when dynamic program selection is added
+      const newTitle = `Plan_${programStr}_R${activeYearNumber}_${semShort}_${safeGroups}_${monthCapitalized}`.replace(/\s+/g, '_');
       
       document.title = newTitle;
       window.print();
