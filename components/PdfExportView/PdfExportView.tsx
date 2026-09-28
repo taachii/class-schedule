@@ -134,7 +134,7 @@ export default function PdfExportView() {
               <div className={styles.headerCell}>Godzina</div>
               {DOW_NAMES.map((name, i) => (
                 <div key={i} className={styles.headerCell}>
-                  {name} {week[i] ? `(${week[i]!.day}.${String(currentMonth + 1).padStart(2, '0')})` : ''}
+                  {name} {week[i] ? `(${String(week[i]!.day).padStart(2, '0')}.${String(currentMonth + 1).padStart(2, '0')})` : ''}
                 </div>
               ))}
               <div className={styles.headerCell}>Godzina</div>
