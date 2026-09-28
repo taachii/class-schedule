@@ -43,28 +43,37 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
     }
   };
 
+  const defaultSaved = (() => {
+    if (initialEvent || typeof window === 'undefined') return null;
+    try {
+      const saved = localStorage.getItem('adminLastAddedEvent');
+      if (saved) return JSON.parse(saved);
+    } catch(e) {}
+    return null;
+  })();
+
   // Form state
   const [formData, setFormData] = useState({
-    semester_id: initialEvent ? initialEvent.semester_id.toString() : (activeSemesterId?.toString() || (semesters[0]?.id.toString() ?? '')),
-    subject_key: initialEvent ? initialEvent.subject_key : (subjects[0]?.key ?? ''),
-    type: initialEvent ? initialEvent.type : (adminRole?.type === 'moderator' ? 'S' : 'W'),
-    time_start: initialEvent ? initialEvent.time_start.slice(0, 5) : '08:00',
-    time_end: initialEvent ? initialEvent.time_end.slice(0, 5) : '09:30',
-    location: initialEvent?.override_location || '',
-    department: initialEvent?.department || '',
-    professor: initialEvent?.override_professor_id || '',
-    notes: initialEvent?.notes || '',
-    exam_term: initialEvent?.exam_term || '',
-    assessment_type: initialEvent?.assessment_type || '',
+    semester_id: initialEvent ? initialEvent.semester_id.toString() : (defaultSaved?.semester_id || activeSemesterId?.toString() || (semesters[0]?.id.toString() ?? '')),
+    subject_key: initialEvent ? initialEvent.subject_key : (defaultSaved?.subject_key || subjects[0]?.key ?? ''),
+    type: initialEvent ? initialEvent.type : (defaultSaved?.type || (adminRole?.type === 'moderator' ? 'S' : 'W')),
+    time_start: initialEvent ? initialEvent.time_start.slice(0, 5) : (defaultSaved?.time_start || '08:00'),
+    time_end: initialEvent ? initialEvent.time_end.slice(0, 5) : (defaultSaved?.time_end || '09:30'),
+    location: initialEvent?.override_location || (defaultSaved?.location || ''),
+    department: initialEvent?.department || (defaultSaved?.department || ''),
+    professor: initialEvent?.override_professor_id || (defaultSaved?.professor || ''),
+    notes: initialEvent?.notes || (defaultSaved?.notes || ''),
+    exam_term: initialEvent?.exam_term || (defaultSaved?.exam_term || ''),
+    assessment_type: initialEvent?.assessment_type || (defaultSaved?.assessment_type || ''),
   });
 
   const [dates, setDates] = useState<string[]>(
     initialEvent ? [initialEvent.date] : [initialDate || new Date().toISOString().split('T')[0]]
   );
 
-  const [seminarGroups, setSeminarGroups] = useState<string[]>(initialEvent?.target_groups?.filter(g => g.startsWith('GS') || g === 'GW') || []);
-  const [exerciseGroups, setExerciseGroups] = useState<string[]>(initialEvent?.target_groups?.filter(g => g.startsWith('GC')) || []);
-  const [clinicalGroups, setClinicalGroups] = useState<string[]>(initialEvent?.target_groups?.filter(g => g.startsWith('GK')) || []);
+  const [seminarGroups, setSeminarGroups] = useState<string[]>(initialEvent?.target_groups?.filter(g => g.startsWith('GS') || g === 'GW') || defaultSaved?.seminarGroups || []);
+  const [exerciseGroups, setExerciseGroups] = useState<string[]>(initialEvent?.target_groups?.filter(g => g.startsWith('GC')) || defaultSaved?.exerciseGroups || []);
+  const [clinicalGroups, setClinicalGroups] = useState<string[]>(initialEvent?.target_groups?.filter(g => g.startsWith('GK')) || defaultSaved?.clinicalGroups || []);
 
   const activeSemester = semesters.find(s => s.id === (parseInt(formData.semester_id) || activeSemesterId));
   const isClinical = activeSemester && activeSemester.year_number >= 3;
@@ -198,6 +207,16 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
 
     setLoading(false);
     if (res.success) {
+      if (!isEditing) {
+        try {
+          localStorage.setItem('adminLastAddedEvent', JSON.stringify({
+            ...formData,
+            seminarGroups,
+            exerciseGroups,
+            clinicalGroups
+          }));
+        } catch(e) {}
+      }
       setStatus({ type: 'success', message: 'Zapisano pomyślnie!' });
       onSuccess();
       if (window.history.state?.isModal === 'admin') {
