@@ -31,7 +31,8 @@ export default function SchedulePage() {
     const yearLabel = ROMAN_NUMERALS[activeYearNumber - 1] || activeYearNumber;
     const semester = semesters.find(s => s.id === activeSemesterId);
     const semText = semester ? `| ${semester.label}` : '';
-    const groupText = activeGroups.length > 0 ? `| ${activeGroups.join(', ')}` : '| Wszystkie grupy';
+    const filteredGroups = activeGroups.filter(g => g !== 'GW');
+    const groupText = filteredGroups.length > 0 ? `| ${filteredGroups.join(', ')}` : '| Wszystkie grupy';
 
     document.title = `Plan Zajęć | Lekarski | ${yearLabel} Rok ${semText} ${groupText}`;
   }, [activeYearNumber, activeSemesterId, activeGroups, semesters]);

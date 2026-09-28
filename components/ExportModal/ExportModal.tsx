@@ -7,7 +7,7 @@ interface ExportModalProps {
 }
 
 export default function ExportModal({ onClose }: ExportModalProps) {
-  const { activeGroups, activeYearNumber, currentYear, currentMonth } = useScheduleStore();
+  const { activeGroups, activeYearNumber, currentYear, currentMonth, semesters, activeSemesterId } = useScheduleStore();
   const filteredGroups = activeGroups.filter(g => g !== 'GW');
   const groupLabel = filteredGroups.length > 0 ? filteredGroups.join(' • ') : 'Wszystkie grupy';
   
@@ -41,8 +41,12 @@ export default function ExportModal({ onClose }: ExportModalProps) {
       const originalTitle = document.title;
       const monthName = new Date(currentYear, currentMonth).toLocaleDateString('pl-PL', { month: 'long', year: 'numeric' });
       const monthCapitalized = monthName.charAt(0).toUpperCase() + monthName.slice(1);
-      const safeGroups = activeGroups.join('_').replace(/[^a-zA-Z0-9_]/g, '');
-      const newTitle = `Plan_Zajec_${safeGroups}_${monthCapitalized}`.replace(/\s+/g, '_');
+      
+      const safeGroups = filteredGroups.length > 0 ? filteredGroups.join('_').replace(/[^a-zA-Z0-9_]/g, '') : 'Wszystkie';
+      const semester = semesters.find(s => s.id === activeSemesterId);
+      const semShort = semester?.label.toLowerCase().includes('letni') ? 'Letni' : 'Zimowy';
+      
+      const newTitle = `Plan_Lekarski_Rok${activeYearNumber}_${semShort}_${safeGroups}_${monthCapitalized}`.replace(/\s+/g, '_');
       
       document.title = newTitle;
       window.print();
