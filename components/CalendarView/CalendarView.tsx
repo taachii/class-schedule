@@ -376,8 +376,10 @@ export default function CalendarView({ onEventClick }: CalendarViewProps) {
               Reset
             </button>
           </div>
+        </div>
       )}
     </div>
+    
     <PdfExportView />
     </>
   );
