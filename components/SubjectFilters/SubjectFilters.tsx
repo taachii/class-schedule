@@ -54,6 +54,8 @@ export default function SubjectFilters() {
             const isFA = a.short_label.match(/^F\d+/);
             const isFB = b.short_label.match(/^F\d+/);
             if (isFA && isFB) return a.short_label.localeCompare(b.short_label, undefined, { numeric: true });
+            if (isFA && !isFB) return 1;
+            if (!isFA && isFB) return -1;
             return a._origIndex - b._origIndex;
           }).map(s => {
             const isActive = activeSubjectKeys.has(s.key);
