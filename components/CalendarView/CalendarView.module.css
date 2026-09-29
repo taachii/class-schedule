@@ -28,10 +28,12 @@
   justify-content: center;
 }
 
-.navBtn:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-  background: var(--accent-glow);
+@media (hover: hover) {
+  .navBtn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-glow);
+  }
 }
 
 .monthTitle {
