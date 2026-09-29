@@ -47,31 +47,6 @@ export default function CalendarView({ onEventClick }: CalendarViewProps) {
   const openTimeline = (dateStr: string) => { setTimelineDate(dateStr); };
   const openAdminEvent = (ev: EnrichedEvent) => { setSelectedEvent(ev); };
   
-  const touchStartRef = useRef<number | null>(null);
-  const touchEndRef = useRef<number | null>(null);
-  const minSwipeDistance = 50;
-
-  const onTouchStart = (e: React.TouchEvent) => {
-    touchEndRef.current = null;
-    touchStartRef.current = e.targetTouches[0].clientX;
-  };
-
-  const onTouchMove = (e: React.TouchEvent) => {
-    touchEndRef.current = e.targetTouches[0].clientX;
-  };
-
-  const onTouchEndHandler = () => {
-    if (touchStartRef.current === null || touchEndRef.current === null) return;
-    const distance = touchStartRef.current - touchEndRef.current;
-    
-    if (distance > minSwipeDistance && !isNextDisabled) {
-      nextMonth();
-    }
-    if (distance < -minSwipeDistance && !isPrevDisabled) {
-      prevMonth();
-    }
-  };
-
   useEffect(() => {
     if (debugTime) {
       setNow(debugTime);
@@ -265,12 +240,7 @@ export default function CalendarView({ onEventClick }: CalendarViewProps) {
   }
 
   return (
-    <div 
-      className={styles.wrapper}
-      onTouchStart={onTouchStart}
-      onTouchMove={onTouchMove}
-      onTouchEnd={onTouchEndHandler}
-    >
+    <div className={styles.wrapper}>
       {/* Navigation */}
       <div className={styles.nav}>
         <button 
