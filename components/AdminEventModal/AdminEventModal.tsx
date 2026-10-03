@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useScheduleStore } from '@/store/scheduleStore';
 import type { EnrichedEvent } from '@/types/schedule';
 import { addEventAction, updateEventAction, deleteEventAction, getProfessors } from '@/app/admin/actions';
+import { Copy } from 'lucide-react';
 import styles from './AdminEventModal.module.css';
 
 interface Props {
@@ -289,8 +290,9 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
         </div>
         
         {!isEditing && defaultSaved && (
-          <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'flex-end' }}>
-            <button type="button" onClick={handleLoadPrevious} className={styles.secondaryBtn} style={{ fontSize: '0.85rem', padding: '6px 12px' }}>
+          <div className={styles.loadPreviousWrapper}>
+            <button type="button" onClick={handleLoadPrevious} className={styles.loadPreviousBtn} title="Wypełnij formularz danymi z poprzedniego dodania">
+              <Copy />
               Wypełnij z poprzedniego dodania
             </button>
           </div>
