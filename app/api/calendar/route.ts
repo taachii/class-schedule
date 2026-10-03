@@ -60,9 +60,10 @@ export async function GET(request: Request) {
       const notes = ev.notes ? `\n📝 Uwagi: ${ev.notes}` : '';
       const department = ev.department || subject?.department ? `\n🏢 Zakład/Katedra: ${ev.department || subject?.department}` : '';
 
-      // Parse time specifically in Warsaw timezone to avoid Vercel UTC issues
-      const start = dayjs.tz(`${ev.date}T${ev.time_start}`, 'Europe/Warsaw').toDate();
-      const end = dayjs.tz(`${ev.date}T${ev.time_end}`, 'Europe/Warsaw').toDate();
+      // Pass dayjs objects directly to ical-generator so it preserves the timezone
+      // instead of converting to native Date (which loses timezone and uses server UTC)
+      const start = dayjs.tz(`${ev.date}T${ev.time_start}`, 'Europe/Warsaw');
+      const end = dayjs.tz(`${ev.date}T${ev.time_end}`, 'Europe/Warsaw');
 
       cal.createEvent({
         start: start,
