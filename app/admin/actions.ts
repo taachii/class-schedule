@@ -222,7 +222,7 @@ export async function getProfessors() {
 
 export async function addProfessor(professor: any, password: string) {
   const auth = await verifyAdminPassword(password);
-  if (!auth.isValid || auth.role !== 'master') {
+  if (!auth.isValid || (auth.role !== 'master' && auth.role !== 'admin')) {
     return { success: false, error: 'Brak uprawnień do zarządzania bazą profesorów' };
   }
   const supabaseAdmin = getSupabaseAdmin();
@@ -233,7 +233,7 @@ export async function addProfessor(professor: any, password: string) {
 
 export async function updateProfessor(id: string, professor: any, password: string) {
   const auth = await verifyAdminPassword(password);
-  if (!auth.isValid || auth.role !== 'master') {
+  if (!auth.isValid || (auth.role !== 'master' && auth.role !== 'admin')) {
     return { success: false, error: 'Brak uprawnień do edycji bazy profesorów' };
   }
   const supabaseAdmin = getSupabaseAdmin();
@@ -244,7 +244,7 @@ export async function updateProfessor(id: string, professor: any, password: stri
 
 export async function deleteProfessor(id: string, password: string) {
   const auth = await verifyAdminPassword(password);
-  if (!auth.isValid || auth.role !== 'master') {
+  if (!auth.isValid || (auth.role !== 'master' && auth.role !== 'admin')) {
     return { success: false, error: 'Brak uprawnień do usunięcia profesora' };
   }
   const supabaseAdmin = getSupabaseAdmin();

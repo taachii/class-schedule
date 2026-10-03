@@ -131,8 +131,7 @@ export default function Header() {
                   </svg>
                 </button>
               )}
-              {adminRole?.type === 'master' && (
-                <>
+              {(adminRole?.type === 'master' || adminRole?.type === 'admin') && (
                   <button
                     className={styles.backBtn}
                     onClick={() => setIsProfessorsOpen(true)}
@@ -145,6 +144,8 @@ export default function Header() {
                       <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
                     </svg>
                   </button>
+              )}
+              {adminRole?.type === 'master' && (
                   <button
                     className={styles.backBtn}
                     onClick={() => setIsModsOpen(true)}
@@ -156,7 +157,6 @@ export default function Header() {
                       <circle cx="12" cy="7" r="4"></circle>
                     </svg>
                   </button>
-                </>
               )}
               {!adminRole && (
                 <>
@@ -238,8 +238,7 @@ export default function Header() {
                     Przypisz prowadzących
                   </button>
                 )}
-                {adminRole?.type === 'master' && (
-                  <>
+                {(adminRole?.type === 'master' || adminRole?.type === 'admin') && (
                     <button
                       className={styles.menuItem}
                       onClick={openProfessors}
@@ -251,6 +250,8 @@ export default function Header() {
                       </svg>
                       Baza prowadzących
                     </button>
+                )}
+                {adminRole?.type === 'master' && (
                     <button
                       className={styles.menuItem}
                       onClick={openMods}
@@ -261,7 +262,6 @@ export default function Header() {
                       </svg>
                       Zarządzaj moderatorami
                     </button>
-                  </>
                 )}
                 {!adminRole && (
                   <>
