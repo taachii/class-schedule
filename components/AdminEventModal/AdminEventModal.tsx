@@ -54,33 +54,53 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
 
   // Form state
   const [formData, setFormData] = useState({
-    semester_id: initialEvent ? initialEvent.semester_id.toString() : (defaultSaved?.semester_id || activeSemesterId?.toString() || semesters[0]?.id.toString() || ''),
-    subject_key: initialEvent ? initialEvent.subject_key : (defaultSaved?.subject_key || subjects[0]?.key || ''),
-    type: initialEvent ? initialEvent.type : (defaultSaved?.type || (adminRole?.type === 'moderator' ? 'S' : 'W')),
-    time_start: initialEvent ? initialEvent.time_start.slice(0, 5) : (defaultSaved?.time_start || '08:00'),
-    time_end: initialEvent ? initialEvent.time_end.slice(0, 5) : (defaultSaved?.time_end || '09:30'),
-    location: initialEvent?.override_location || (defaultSaved?.location || ''),
-    department: initialEvent?.department || (defaultSaved?.department || ''),
-    professor: initialEvent?.override_professor_id || (defaultSaved?.professor || ''),
-    notes: initialEvent?.notes || (defaultSaved?.notes || ''),
-    exam_term: initialEvent?.exam_term || (defaultSaved?.exam_term || ''),
-    assessment_type: initialEvent?.assessment_type || (defaultSaved?.assessment_type || ''),
+    semester_id: initialEvent ? initialEvent.semester_id.toString() : (activeSemesterId?.toString() || semesters[0]?.id.toString() || ''),
+    subject_key: initialEvent ? initialEvent.subject_key : (subjects[0]?.key || ''),
+    type: initialEvent ? initialEvent.type : (adminRole?.type === 'moderator' ? 'S' : 'W'),
+    time_start: initialEvent ? initialEvent.time_start.slice(0, 5) : '08:00',
+    time_end: initialEvent ? initialEvent.time_end.slice(0, 5) : '09:30',
+    location: initialEvent?.override_location || '',
+    department: initialEvent?.department || '',
+    professor: initialEvent?.override_professor_id || '',
+    notes: initialEvent?.notes || '',
+    exam_term: initialEvent?.exam_term || '',
+    assessment_type: initialEvent?.assessment_type || '',
   });
 
   const getInitialDates = () => {
     if (initialEvent) return [initialEvent.date];
-    if (defaultSaved?.dates && Array.isArray(defaultSaved.dates) && defaultSaved.dates.length > 0) {
-      return defaultSaved.dates;
-    }
     const baseDateStr = initialDate || new Date().toISOString().split('T')[0];
     return [baseDateStr];
   };
 
   const [dates, setDates] = useState<string[]>(getInitialDates());
 
-  const [seminarGroups, setSeminarGroups] = useState<string[]>(initialEvent?.target_groups?.filter(g => g.startsWith('GS') || g === 'GW') || defaultSaved?.seminarGroups || []);
-  const [exerciseGroups, setExerciseGroups] = useState<string[]>(initialEvent?.target_groups?.filter(g => g.startsWith('GC')) || defaultSaved?.exerciseGroups || []);
-  const [clinicalGroups, setClinicalGroups] = useState<string[]>(initialEvent?.target_groups?.filter(g => g.startsWith('GK')) || defaultSaved?.clinicalGroups || []);
+  const [seminarGroups, setSeminarGroups] = useState<string[]>(initialEvent?.target_groups?.filter(g => g.startsWith('GS') || g === 'GW') || []);
+  const [exerciseGroups, setExerciseGroups] = useState<string[]>(initialEvent?.target_groups?.filter(g => g.startsWith('GC')) || []);
+  const [clinicalGroups, setClinicalGroups] = useState<string[]>(initialEvent?.target_groups?.filter(g => g.startsWith('GK')) || []);
+
+  const handleLoadPrevious = () => {
+    if (!defaultSaved) return;
+    setFormData({
+      semester_id: defaultSaved.semester_id || activeSemesterId?.toString() || semesters[0]?.id.toString() || '',
+      subject_key: defaultSaved.subject_key || subjects[0]?.key || '',
+      type: defaultSaved.type || (adminRole?.type === 'moderator' ? 'S' : 'W'),
+      time_start: defaultSaved.time_start || '08:00',
+      time_end: defaultSaved.time_end || '09:30',
+      location: defaultSaved.location || '',
+      department: defaultSaved.department || '',
+      professor: defaultSaved.professor || '',
+      notes: defaultSaved.notes || '',
+      exam_term: defaultSaved.exam_term || '',
+      assessment_type: defaultSaved.assessment_type || '',
+    });
+    if (defaultSaved.dates && Array.isArray(defaultSaved.dates) && defaultSaved.dates.length > 0) {
+      setDates(defaultSaved.dates);
+    }
+    setSeminarGroups(defaultSaved.seminarGroups || []);
+    setExerciseGroups(defaultSaved.exerciseGroups || []);
+    setClinicalGroups(defaultSaved.clinicalGroups || []);
+  };
 
   const activeSemester = semesters.find(s => s.id === (parseInt(formData.semester_id) || activeSemesterId));
   const isClinical = activeSemester && activeSemester.year_number >= 3;
@@ -268,6 +288,14 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
           <h2>{isEditing ? 'Edytuj zajęcia' : 'Dodaj zajęcia'}</h2>
         </div>
         
+        {!isEditing && defaultSaved && (
+          <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'flex-end' }}>
+            <button type="button" onClick={handleLoadPrevious} className={styles.secondaryBtn} style={{ fontSize: '0.85rem', padding: '6px 12px' }}>
+              Wypełnij z poprzedniego dodania
+            </button>
+          </div>
+        )}
+        
         <form onSubmit={handleSubmit}>
           <div className={styles.row}>
             <div>
@@ -386,7 +414,7 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
               <input type="text" name="location" value={formData.location} onChange={handleChange} className={styles.input} placeholder={defaultLocation} />
             </div>
             <div>
-              <label className={styles.label}>Niestandardowy prowadzący (nadpisuje domyślnego)</label>
+              <label className={styles.label}>Prowadzący</label>
               <select name="professor" value={formData.professor} onChange={handleChange} className={styles.input}>
                 <option value="">-- Domyślny dla grupy z ustawień --</option>
                 {professors.map((p: any) => (
