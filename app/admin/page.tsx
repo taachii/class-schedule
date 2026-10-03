@@ -34,7 +34,17 @@ export default function AdminPage() {
           setActiveYearNumber(data.role.year);
         }
         if (data.role.group) {
-          setActiveGroups([data.role.group]);
+          if (data.role.group.startsWith('GS')) {
+            const gsNum = parseInt(data.role.group.replace('GS', ''));
+            const gcNum = gsNum * 2 - 1;
+            const groups = ['GW', data.role.group, `GC${gcNum}`];
+            if (data.role.year && data.role.year >= 3) {
+              groups.push(`GK${gcNum * 2 - 1}`);
+            }
+            setActiveGroups(groups);
+          } else {
+            setActiveGroups([data.role.group]);
+          }
         }
       } else {
         setLoginError(data.error || 'Nieprawidłowe hasło');

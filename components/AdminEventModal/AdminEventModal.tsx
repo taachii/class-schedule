@@ -4,7 +4,8 @@ import { useState, useEffect } from 'react';
 import { useScheduleStore } from '@/store/scheduleStore';
 import type { EnrichedEvent } from '@/types/schedule';
 import { addEventAction, updateEventAction, deleteEventAction, getProfessors } from '@/app/admin/actions';
-import { Copy } from 'lucide-react';
+import { Copy, Lock } from 'lucide-react';
+import { getModeratorAllowedGroups, moderatorCanTouchGroups, RESTRICTED_EVENT_TYPES } from '@/lib/permissions';
 import styles from './AdminEventModal.module.css';
 
 interface Props {
@@ -21,6 +22,19 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
   const [professors, setProfessors] = useState<any[]>([]);
   
   const isEditing = !!initialEvent;
+  const isModerator = adminRole?.type === 'moderator';
+  const moderatorAllowed = getModeratorAllowedGroups(isModerator ? adminRole?.group : null);
+
+  // Czy aktualnie zalogowany użytkownik może modyfikować edytowane zajęcia?
+  const canModify = !isEditing || !isModerator || (
+    !RESTRICTED_EVENT_TYPES.includes(initialEvent!.type) &&
+    moderatorCanTouchGroups(adminRole?.group, initialEvent!.target_groups)
+  );
+  const readOnlyReason = canModify ? null : (
+    RESTRICTED_EVENT_TYPES.includes(initialEvent!.type)
+      ? 'Wykłady i egzaminy może edytować tylko starosta roku.'
+      : 'Te zajęcia należą do innej grupy – możesz je tylko podejrzeć.'
+  );
 
   useEffect(() => {
     getProfessors().then(res => {
@@ -133,21 +147,7 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
     if (formData.type === 'S' && (g === 'GW' || g.startsWith('GC') || g.startsWith('GK'))) return true;
     if ((formData.type === 'C' || formData.type === 'CSM') && (g === 'GW' || g.startsWith('GS'))) return true;
     
-    if (adminRole?.type === 'moderator' && adminRole.group) {
-      if (g === 'GW') return true;
-      const modGs = adminRole.group;
-      const modGsNum = parseInt(modGs.replace(/[^0-9]/g, ''));
-      const allowedGc1 = `GC${modGsNum * 2 - 1}`;
-      const allowedGc2 = `GC${modGsNum * 2}`;
-      const allowedGk1 = `GK${modGsNum * 4 - 3}`;
-      const allowedGk2 = `GK${modGsNum * 4 - 2}`;
-      const allowedGk3 = `GK${modGsNum * 4 - 1}`;
-      const allowedGk4 = `GK${modGsNum * 4}`;
-
-      if (g !== modGs && g !== allowedGc1 && g !== allowedGc2 && g !== allowedGk1 && g !== allowedGk2 && g !== allowedGk3 && g !== allowedGk4) {
-        return true;
-      }
-    }
+    if (isModerator && !moderatorAllowed.has(g)) return true;
     
     return false;
   };
@@ -167,36 +167,17 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!adminPassword) return;
+    if (!adminPassword || !canModify) return;
 
     setLoading(true);
     setStatus(null);
 
-    // Validation for moderators
-    if (adminRole?.type === 'moderator' && adminRole.group) {
-      // e.g. 'GS3' -> match 'GS3', or 'GC5', 'GC6'
-      const modGs = adminRole.group;
-      const modGsNum = parseInt(modGs.replace(/[^0-9]/g, ''));
-      const allowedGc1 = `GC${modGsNum * 2 - 1}`;
-      const allowedGc2 = `GC${modGsNum * 2}`;
-      
-      const allowedGk1 = `GK${modGsNum * 4 - 3}`;
-      const allowedGk2 = `GK${modGsNum * 4 - 2}`;
-      const allowedGk3 = `GK${modGsNum * 4 - 1}`;
-      const allowedGk4 = `GK${modGsNum * 4}`;
-      
-      const hasAccess = 
-        seminarGroups.includes(modGs) || 
-        exerciseGroups.includes(allowedGc1) || 
-        exerciseGroups.includes(allowedGc2) ||
-        clinicalGroups.includes(allowedGk1) ||
-        clinicalGroups.includes(allowedGk2) ||
-        clinicalGroups.includes(allowedGk3) ||
-        clinicalGroups.includes(allowedGk4);
-
-      if (!hasAccess) {
+    // Walidacja dla moderatorów (serwer sprawdza to samo)
+    if (isModerator) {
+      const selected = [...seminarGroups, ...exerciseGroups, ...clinicalGroups];
+      if (!moderatorCanTouchGroups(adminRole?.group, selected)) {
         setLoading(false);
-        setStatus({ type: 'error', message: `Brak uprawnień. Musisz uwzględnić swoją grupę (${modGs} lub ${allowedGc1}/${allowedGc2}).` });
+        setStatus({ type: 'error', message: `Brak uprawnień. Zaznacz co najmniej jedną ze swoich grup (${Array.from(moderatorAllowed).filter(g => !g.startsWith('GK') || isClinical).join(', ')}).` });
         return;
       }
     }
@@ -257,7 +238,7 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
   };
 
   const handleDelete = async () => {
-    if (!adminPassword || !initialEvent) return;
+    if (!adminPassword || !initialEvent || !canModify) return;
     if (!confirm('Na pewno usunąć te zajęcia?')) return;
 
     setLoading(true);
@@ -286,8 +267,15 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
       <div className={styles.card} onClick={e => e.stopPropagation()}>
         <button className={styles.closeBtn} onClick={handleClose}>✕</button>
         <div className={styles.header}>
-          <h2>{isEditing ? 'Edytuj zajęcia' : 'Dodaj zajęcia'}</h2>
+          <h2>{isEditing ? (canModify ? 'Edytuj zajęcia' : 'Podgląd zajęć') : 'Dodaj zajęcia'}</h2>
         </div>
+
+        {readOnlyReason && (
+          <div className={styles.readOnlyNotice}>
+            <Lock />
+            <span>{readOnlyReason}</span>
+          </div>
+        )}
         
         {!isEditing && defaultSaved && (
           <div className={styles.loadPreviousWrapper}>
@@ -299,6 +287,7 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
         )}
         
         <form onSubmit={handleSubmit}>
+          <fieldset disabled={!canModify} className={styles.fieldset}>
           <div className={styles.row}>
             <div>
               <label className={styles.label}>Semestr</label>
@@ -464,22 +453,32 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
             </div>
           </div>
 
+          </fieldset>
+
           {status && (
             <div className={`${styles.statusMessage} ${status.type === 'success' ? styles.statusSuccess : styles.statusError}`}>
               {status.message}
             </div>
           )}
 
-          <div className={styles.actions}>
-            {isEditing && (
-              <button type="button" className={styles.deleteBtn} onClick={handleDelete} disabled={loading}>
-                Usuń
+          {canModify ? (
+            <div className={styles.actions}>
+              {isEditing && (
+                <button type="button" className={styles.deleteBtn} onClick={handleDelete} disabled={loading}>
+                  Usuń
+                </button>
+              )}
+              <button type="submit" className={styles.submitBtn} disabled={loading}>
+                {loading ? 'Zapisywanie...' : (isEditing ? 'Zapisz zmiany' : 'Dodaj zajęcia')}
               </button>
-            )}
-            <button type="submit" className={styles.submitBtn} disabled={loading}>
-              {loading ? 'Zapisywanie...' : (isEditing ? 'Zapisz zmiany' : 'Dodaj zajęcia')}
-            </button>
-          </div>
+            </div>
+          ) : (
+            <div className={styles.actions}>
+              <button type="button" className={styles.submitBtn} onClick={handleClose}>
+                Zamknij
+              </button>
+            </div>
+          )}
         </form>
       </div>
     </div>

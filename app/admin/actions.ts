@@ -1,6 +1,7 @@
 'use server';
 
 import { createClient } from '@supabase/supabase-js';
+import { moderatorCanTouchGroups, getModeratorAllowedGroups } from '@/lib/permissions';
 
 // Używamy Service Key, by ominąć RLS i mieć pewność, że wstawienie zadziała
 function getSupabaseAdmin() {
@@ -9,14 +10,24 @@ function getSupabaseAdmin() {
   return createClient(url, key);
 }
 
-async function verifyAdminPassword(password: string) {
+type AuthResult =
+  | { isValid: true; role: string; group: string | null; year: number | null }
+  | { isValid: false; role?: undefined; group?: undefined; year?: undefined };
+
+async function verifyAdminPassword(password: string): Promise<AuthResult> {
   const supabaseAdmin = getSupabaseAdmin();
-  const { data } = await supabaseAdmin.from('admin_keys').select('id, role').eq('pass_key', password).single();
+  const { data } = await supabaseAdmin
+    .from('admin_keys')
+    .select('id, role, assigned_group, assigned_year')
+    .eq('pass_key', password)
+    .single();
   if (data) {
-    return { isValid: true, role: data.role };
+    return { isValid: true, role: data.role, group: data.assigned_group ?? null, year: data.assigned_year ?? null };
   }
   return { isValid: false };
 }
+
+const NO_GROUP_PERMISSION = 'Brak uprawnień – możesz modyfikować wyłącznie zajęcia swojej grupy.';
 
 async function touchGroups(supabaseAdmin: any, semesterId: number, targetGroups: string[]) {
   const groupsToTouch = new Set<string>();
@@ -65,6 +76,13 @@ export async function addEventAction(eventData: any, password: string) {
     return { success: false, error: 'Tylko starosta może dodawać egzaminy i wykłady.' };
   }
 
+  if (auth.role === 'moderator') {
+    const allOwn = eventsToCheck.every(ev => moderatorCanTouchGroups(auth.group, ev.target_groups));
+    if (!allOwn) {
+      return { success: false, error: NO_GROUP_PERMISSION };
+    }
+  }
+
   const key = process.env.SUPABASE_SERVICE_KEY;
   if (!key) {
     return { success: false, error: 'Brak SUPABASE_SERVICE_KEY w zmiennych środowiskowych serwera.' };
@@ -106,8 +124,16 @@ export async function deleteEventAction(id: string, password: string) {
   // Fetch event first to know which groups to touch
   const { data: eventToDel } = await supabaseAdmin.from('events').select('*').eq('id', id).single();
   
-  if (eventToDel && (eventToDel.type === 'E' || eventToDel.type === 'W') && auth.role === 'moderator') {
+  if (!eventToDel) {
+    return { success: false, error: 'Nie znaleziono zajęć.' };
+  }
+
+  if ((eventToDel.type === 'E' || eventToDel.type === 'W') && auth.role === 'moderator') {
     return { success: false, error: 'Tylko starosta może usuwać egzaminy i wykłady.' };
+  }
+
+  if (auth.role === 'moderator' && !moderatorCanTouchGroups(auth.group, eventToDel.target_groups)) {
+    return { success: false, error: NO_GROUP_PERMISSION };
   }
 
   const { error } = await supabaseAdmin.from('events').delete().eq('id', id);
@@ -134,6 +160,27 @@ export async function updateEventAction(id: string, eventData: any, password: st
     return { success: false, error: 'Tylko starosta może edytować egzaminy i wykłady.' };
   }
 
+  const supabaseAdmin = getSupabaseAdmin();
+
+  // Pobieramy aktualny stan, żeby sprawdzić uprawnienia i odświeżyć także grupy sprzed zmiany
+  const { data: existing } = await supabaseAdmin.from('events').select('*').eq('id', id).single();
+  if (!existing) {
+    return { success: false, error: 'Nie znaleziono zajęć.' };
+  }
+
+  if (auth.role === 'moderator') {
+    if (existing.type === 'E' || existing.type === 'W') {
+      return { success: false, error: 'Tylko starosta może edytować egzaminy i wykłady.' };
+    }
+    // Zarówno obecne, jak i nowe grupy muszą należeć do moderatora
+    if (
+      !moderatorCanTouchGroups(auth.group, existing.target_groups) ||
+      !moderatorCanTouchGroups(auth.group, eventData.target_groups)
+    ) {
+      return { success: false, error: NO_GROUP_PERMISSION };
+    }
+  }
+
   const formatTime = (t: string) => (t.length === 5 ? `${t}:00` : t);
 
   const updatedEvent = {
@@ -142,7 +189,6 @@ export async function updateEventAction(id: string, eventData: any, password: st
     time_end: formatTime(eventData.time_end),
   };
 
-  const supabaseAdmin = getSupabaseAdmin();
   const { data, error } = await supabaseAdmin.from('events').update(updatedEvent).eq('id', id).select();
 
   if (error) {
@@ -152,7 +198,9 @@ export async function updateEventAction(id: string, eventData: any, password: st
 
   if (data && data.length > 0) {
     const ev = data[0];
-    await touchGroups(supabaseAdmin, ev.semester_id, ev.target_groups);
+    // Odświeżamy znacznik aktualizacji zarówno dla nowych, jak i poprzednich grup
+    const touched = Array.from(new Set([...(existing.target_groups || []), ...(ev.target_groups || [])]));
+    await touchGroups(supabaseAdmin, ev.semester_id, touched);
   }
 
   return { success: true, data };
@@ -223,19 +271,8 @@ export async function saveSubjectDefault(payload: { subject_key: string, semeste
   if (!auth.isValid) return { success: false, error: 'Nieprawidłowe hasło' };
 
   // Sprawdzanie uprawnień moderatora
-  if (auth.role?.type === 'moderator' && auth.role.group) {
-    const modGs = auth.role.group;
-    const modGsNum = parseInt(modGs.replace(/[^0-9]/g, ''));
-    const g = payload.group_key;
-    
-    const allowedGc1 = `GC${modGsNum * 2 - 1}`;
-    const allowedGc2 = `GC${modGsNum * 2}`;
-    const allowedGk1 = `GK${modGsNum * 4 - 3}`;
-    const allowedGk2 = `GK${modGsNum * 4 - 2}`;
-    const allowedGk3 = `GK${modGsNum * 4 - 1}`;
-    const allowedGk4 = `GK${modGsNum * 4}`;
-
-    if (g !== modGs && g !== allowedGc1 && g !== allowedGc2 && g !== allowedGk1 && g !== allowedGk2 && g !== allowedGk3 && g !== allowedGk4) {
+  if (auth.role === 'moderator') {
+    if (!getModeratorAllowedGroups(auth.group).has(payload.group_key)) {
       return { success: false, error: 'Nie masz uprawnień do przypisywania prowadzącego dla tej grupy.' };
     }
   }

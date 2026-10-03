@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useScheduleStore } from '@/store/scheduleStore';
 import { getProfessors, getSubjectDefaults, saveSubjectDefault } from '@/app/admin/actions';
+import { getModeratorAllowedGroups } from '@/lib/permissions';
 import styles from './SubjectDefaultsModal.module.css';
 
 interface SubjectDefaultsModalProps {
@@ -68,21 +69,8 @@ export default function SubjectDefaultsModal({ onClose }: SubjectDefaultsModalPr
 
   const isGroupDisabled = (g: string) => {
     if (adminRole?.type === 'master' || adminRole?.type === 'admin') return false;
-    if (adminRole?.type === 'moderator' && adminRole.group) {
-      if (g === 'GW') return true;
-      const modGs = adminRole.group;
-      const modGsNum = parseInt(modGs.replace(/[^0-9]/g, ''));
-      const allowedGc1 = `GC${modGsNum * 2 - 1}`;
-      const allowedGc2 = `GC${modGsNum * 2}`;
-      const allowedGk1 = `GK${modGsNum * 4 - 3}`;
-      const allowedGk2 = `GK${modGsNum * 4 - 2}`;
-      const allowedGk3 = `GK${modGsNum * 4 - 1}`;
-      const allowedGk4 = `GK${modGsNum * 4}`;
-
-      if (g !== modGs && g !== allowedGc1 && g !== allowedGc2 && g !== allowedGk1 && g !== allowedGk2 && g !== allowedGk3 && g !== allowedGk4) {
-        return true;
-      }
-      return false;
+    if (adminRole?.type === 'moderator') {
+      return !getModeratorAllowedGroups(adminRole.group).has(g);
     }
     return true;
   };
