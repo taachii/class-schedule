@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     title: 'Plan Zajęć – Kierunek Lekarski | SUM Zabrze',
     description: 'Zawsze aktualny harmonogram zajęć dla studentów kierunku lekarskiego na WNMZ.',
     url: '/',
-    siteName: 'Plany zajęć WNMZ',
+    siteName: 'Plan zajęć WNMZ',
     locale: 'pl_PL',
     type: 'website',
   },
@@ -53,7 +53,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
-    name: 'Plany zajęć WNMZ',
+    name: 'Plan zajęć WNMZ',
     alternateName: ['Plan WNMZ', 'Plan Zajęć SUM', 'Plan Lekarski Zabrze'],
     url: siteUrl,
     description: 'Harmonogram zajęć dla kierunku lekarskiego, WNMZ SUM Zabrze.',
