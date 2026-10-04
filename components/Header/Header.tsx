@@ -98,10 +98,11 @@ export default function Header() {
 
           <div className={styles.center}>
             <div className={styles.brandText}>
-              <h1 className={styles.title}>
+              <h1 className="sr-only">Plan Zajęć – Kierunek Lekarski | Śląski Uniwersytet Medyczny w Zabrzu</h1>
+              <div className={styles.title} aria-hidden="true">
                 <span className={styles.titleGradient}>Plan Zajęć</span>
                 {adminRole && <span style={{ color: '#ef4444' }}> Edycja</span>}
-              </h1>
+              </div>
               {activeYearNumber && (
                 <p className={styles.majorTitle}>Kierunek lekarski</p>
               )}

@@ -70,7 +70,7 @@ export default function HomeSelector() {
               <path d="M 207 50 V 66 M 199 58 H 215" strokeWidth="4" />
             </svg>
             */}
-            <h2 style={{ 
+            <p style={{ 
               fontSize: 'clamp(28px, 6vw, 42px)', 
               fontWeight: '800', 
               letterSpacing: '-0.5px',
@@ -83,11 +83,12 @@ export default function HomeSelector() {
               lineHeight: '1.2'
             }}>
               Śląski Uniwersytet Medyczny
-            </h2>
+            </p>
             <p className={styles.subtitle}>Wydział Nauk Medycznych w Zabrzu</p>
           </div>
           <div className={styles.majorSelectorWrapper}>
-            <h1 className={styles.title}>Plany zajęć dla kierunku</h1>
+            <h1 className="sr-only">Plany zajęć – Kierunek Lekarski | Śląski Uniwersytet Medyczny w Zabrzu</h1>
+            <div className={styles.title} aria-hidden="true">Plany zajęć dla kierunku</div>
             
             <div className={styles.customSelectContainer}>
               <button 
