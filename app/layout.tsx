@@ -5,7 +5,7 @@ import { ThemeProvider } from '@/components/ThemeProvider/ThemeProvider';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://plan-wnmz.vercel.app';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://planwnmz.pl';
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -37,6 +37,9 @@ export const metadata: Metadata = {
   },
   formatDetection: {
     telephone: false,
+  },
+  verification: {
+    google: '3JJojKDLvq-FJDGfrKkdqiRZnECIuuhXGZBAx5ICeyg',
   },
 };
 
