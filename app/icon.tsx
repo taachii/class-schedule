@@ -1,7 +1,7 @@
 import { ImageResponse } from 'next/og';
 
 export const runtime = 'edge';
-export const size = { width: 512, height: 512 };
+export const size = { width: 192, height: 192 };
 export const contentType = 'image/png';
 
 export default function Icon() {
@@ -20,8 +20,8 @@ export default function Icon() {
         {/* We use a scaled-up version of the SVG. The original viewBox is 0 15 230 60, meaning width 230, height 45. 
             We center it in the 512x512 box. */}
         <svg 
-          width="320" 
-          height="320" 
+          width="120" 
+          height="120" 
           viewBox="0 0 24 24" 
         >
           <defs>
