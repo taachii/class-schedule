@@ -25,6 +25,14 @@ export default function DailyTimelineModal({ dateStr, events, onClose }: DailyTi
   const { eventTypes } = useScheduleStore();
   const [selectedEvent, setSelectedEvent] = useState<EnrichedEvent | null>(null);
   const isMobile = useIsMobile();
+  const [now, setNow] = useState(new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => setNow(new Date()), 60000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
 
   // More space per minute on mobile so short events aren't crushed
   const PIXELS_PER_MINUTE = isMobile ? 2.6 : 1.8;
@@ -223,15 +231,28 @@ export default function DailyTimelineModal({ dateStr, events, onClose }: DailyTi
                   const hasAnyMeta = true; // Because we always show professor fallback
                   const showMetaInline = blockHeight >= 120;
 
+                  const [yearPart, monthPart, dayPart] = dateStr.split('-').map(Number);
+                  const evStart = new Date(yearPart, monthPart - 1, dayPart, sH, sM);
+                  const evEnd = new Date(yearPart, monthPart - 1, dayPart, eH, eM);
+                  
+                  const isLive = todayStr === dateStr && now >= evStart && now <= evEnd;
+                  let progress = 0;
+                  if (isLive) {
+                    const totalMin = (evEnd.getTime() - evStart.getTime()) / 60000;
+                    const elapsedMin = (now.getTime() - evStart.getTime()) / 60000;
+                    progress = Math.min(100, Math.max(0, (elapsedMin / totalMin) * 100));
+                  }
+
                   return (
                     <div
                       key={ev.id}
-                      className={styles.eventBlock}
+                      className={`${styles.eventBlock} ${isLive ? styles.eventBlockLive : ''}`}
                       style={{
                         ...getBlockStyle(ev),
                         left: `${col * colWidth}%`,
                         width: `${colWidth - 1}%`,
-                      }}
+                        '--progress': isLive ? `${progress}%` : '0%',
+                      } as React.CSSProperties}
                     >
                       <div className={styles.eventInner}>
                         <div className={styles.eventTop}>
@@ -290,7 +311,7 @@ export default function DailyTimelineModal({ dateStr, events, onClose }: DailyTi
               </div>
 
               {/* Current time indicator */}
-              <CurrentTimeIndicator dateStr={dateStr} minHour={minHour} pxPerMin={PIXELS_PER_MINUTE} />
+              <CurrentTimeIndicator dateStr={dateStr} minHour={minHour} pxPerMin={PIXELS_PER_MINUTE} now={now} todayStr={todayStr} />
             </div>
           )}
         </div>
@@ -350,15 +371,7 @@ export default function DailyTimelineModal({ dateStr, events, onClose }: DailyTi
   );
 }
 
-function CurrentTimeIndicator({ dateStr, minHour, pxPerMin }: { dateStr: string; minHour: number; pxPerMin: number }) {
-  const [now, setNow] = useState(new Date());
-
-  useEffect(() => {
-    const timer = setInterval(() => setNow(new Date()), 60000);
-    return () => clearInterval(timer);
-  }, []);
-
-  const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+function CurrentTimeIndicator({ dateStr, minHour, pxPerMin, now, todayStr }: { dateStr: string; minHour: number; pxPerMin: number; now: Date; todayStr: string }) {
   if (todayStr !== dateStr) return null;
 
   const minutes = (now.getHours() - minHour) * 60 + now.getMinutes();
@@ -366,8 +379,7 @@ function CurrentTimeIndicator({ dateStr, minHour, pxPerMin }: { dateStr: string;
 
   return (
     <div className={styles.nowLine} style={{ top: `${minutes * pxPerMin}px` }}>
-      <div className={styles.nowDot} />
-      <div className={styles.nowRule} />
+      <div className={styles.nowDot} title="Aktualny czas" />
     </div>
   );
 }
