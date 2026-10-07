@@ -1,0 +1,21 @@
+{
+  "name": "discord-setup",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Skrypt stawiający i utrzymujący serwer Discord rocznika (GS/GC/GK) na podstawie bazy planu zajęć.",
+  "type": "module",
+  "engines": {
+    "node": ">=18.17"
+  },
+  "scripts": {
+    "setup": "node src/cli.js setup",
+    "start-semester": "node src/cli.js start-semester",
+    "archive-year": "node src/cli.js archive-year",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.4",
+    "discord.js": "^14.16.3",
+    "dotenv": "^16.4.5"
+  }
+}

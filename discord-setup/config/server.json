@@ -1,0 +1,26 @@
+{
+  "gsCount": 12,
+  "clinicalFromYear": 3,
+  "planUrl": "https://planwnmz.pl",
+
+  "tagOverrides": {
+    "hist": "Histologia",
+    "biol": "Biologia mol.",
+    "jang": "Angielski",
+    "wf": "WF",
+    "prof": "Profesjonalizm",
+    "kpp": "KPP"
+  },
+
+  "mergeTags": {
+    "fak_*": "Fakultety"
+  },
+
+  "colors": {
+    "Admin": "#e11d48",
+    "Starosta Roku": "#f59e0b",
+    "Starosta GS": "#8b5cf6",
+    "Starosta GC": "#3b82f6",
+    "Starosta GK": "#10b981"
+  }
+}

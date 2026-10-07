@@ -11,12 +11,12 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: 'Plan Zajęć – Kierunek Lekarski | SUM Zabrze',
   description:
-    'Zawsze aktualny harmonogram zajęć, wykładów i seminariów dla studentów kierunku lekarskiego na Wydziale Nauk Medycznych w Zabrzu (Śląski Uniwersytet Medyczny).',
+    'Nieoficjalny harmonogram zajęć, wykładów i seminariów dla studentów kierunku lekarskiego na Wydziale Nauk Medycznych w Zabrzu (Śląski Uniwersytet Medyczny).',
   keywords: ['plan zajęć', 'sum', 'zabrze', 'lekarski', 'śląski uniwersytet medyczny', 'wnmz', 'harmonogram', 'studia'],
   authors: [{ name: 'Adam Chyt' }],
   openGraph: {
     title: 'Plan Zajęć – Kierunek Lekarski | SUM Zabrze',
-    description: 'Zawsze aktualny harmonogram zajęć dla studentów kierunku lekarskiego na WNMZ.',
+    description: 'Nieoficjalny harmonogram zajęć dla studentów kierunku lekarskiego na WNMZ.',
     url: '/',
     siteName: 'Plan zajęć WNMZ',
     locale: 'pl_PL',

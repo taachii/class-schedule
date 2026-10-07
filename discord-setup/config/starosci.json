@@ -1,0 +1,6 @@
+{
+  "_info": "Discord user ID starostów. Klucz: 'rok' albo nazwa grupy (GS1..GS12, GC1..GC24, GK1..GK48). Wartość: lista ID. Puste listy można usuwać.",
+  "rok": [],
+  "GS1": [],
+  "GC1": []
+}
