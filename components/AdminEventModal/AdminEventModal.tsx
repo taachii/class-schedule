@@ -128,7 +128,7 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
   const gkList = Array.from({length: gkCount}, (_, i) => `GK${i+1}`);
 
   useEffect(() => {
-    if (formData.type === 'W') {
+    if (formData.type === 'W' || formData.type === 'E') {
       setSeminarGroups(['GW']);
       setExerciseGroups([]);
       setClinicalGroups([]);
@@ -143,7 +143,7 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
 
   const isGroupDisabled = (g: string) => {
     if (g.startsWith('GK') && !isClinical) return true;
-    if (formData.type === 'W' && g !== 'GW') return true;
+    if ((formData.type === 'W' || formData.type === 'E') && g !== 'GW') return true;
     if (formData.type === 'S' && (g === 'GW' || g.startsWith('GC') || g.startsWith('GK'))) return true;
     if ((formData.type === 'C' || formData.type === 'CSM') && (g === 'GW' || g.startsWith('GS'))) return true;
     
