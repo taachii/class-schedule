@@ -200,7 +200,7 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
       subject_key: formData.subject_key || null,
       custom_title: isCustom ? formData.custom_title.trim() : null,
       override_location: formData.location || (formData.type === 'W' ? 'MS Teams - online' : null),
-      override_professor_id: formData.professor || null,
+      override_professor_id: isCustom ? null : (formData.professor || null),
       semester_id: parseInt(formData.semester_id),
       target_groups: [...seminarGroups, ...exerciseGroups, ...clinicalGroups],
       exam_term: formData.type === 'E' ? (formData.exam_term || null) : null,
@@ -429,6 +429,7 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
               <label className={styles.label}>Lokalizacja (adres)</label>
               <input type="text" name="location" value={formData.location} onChange={handleChange} className={styles.input} placeholder={defaultLocation} />
             </div>
+            {formData.type !== 'X' && (
             <div>
               <label className={styles.label}>Prowadzący</label>
               <select name="professor" value={formData.professor} onChange={handleChange} className={styles.input}>
@@ -440,6 +441,7 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
                 ))}
               </select>
             </div>
+            )}
           </div>
 
           {formData.type === 'E' ? (

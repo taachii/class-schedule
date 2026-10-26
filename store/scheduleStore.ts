@@ -106,7 +106,7 @@ function enrichEvents(
       if (p) {
         resolvedProfessors.push({ group: 'Wszystkie', professor: `${p.academic_title || ''} ${p.first_name} ${p.last_name}`.trim(), email: p.email || undefined });
       }
-    } else {
+    } else if (ev.type !== 'X') {
       // Loop over the specific active groups that intersect with the event
       for (const group of intersectingGroups) {
         const def = defaults.find(d => d.subject_key === ev.subject_key && d.semester_id === ev.semester_id && d.group_key === group);
