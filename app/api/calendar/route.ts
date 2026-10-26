@@ -69,8 +69,8 @@ export async function GET(request: Request) {
         start: start,
         end: end,
         timezone: 'Europe/Warsaw',
-        summary: `[${ev.type}] ${subject?.label || 'Zajęcia'}`,
-        description: `Zajęcia: ${subject?.label || 'Brak danych'}${department}${professor}${notes}`,
+        summary: ev.type === 'X' ? (ev.custom_title || 'Wydarzenie') : `[${ev.type}] ${subject?.label || 'Zajęcia'}`,
+        description: `${ev.type === 'X' ? 'Wydarzenie' : 'Zajęcia'}: ${ev.type === 'X' ? (ev.custom_title || 'Wydarzenie') : (subject?.label || 'Brak danych')}${department}${professor}${notes}`,
         location: location,
         url: 'https://class-schedule-wine.vercel.app'
       });

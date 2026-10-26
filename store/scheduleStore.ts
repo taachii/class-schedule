@@ -19,6 +19,7 @@ interface ScheduleStore {
   currentMonth: number; // 0-indexed (0 = January)
   activeSubjectKeys: Set<string>;
   activeEventTypes: Set<string>;
+  knownEventTypes: string[];
 
   // ── Event data ───────────────────────────────────────────────
   events: ScheduleEvent[];
@@ -53,6 +54,16 @@ interface ScheduleStore {
   setDebugTime: (d: Date | null) => void;
 }
 
+const CUSTOM_EVENT_COLOR = '#ec4899';
+
+// Event types selected = previously selected + codes the user has never seen before
+function resolveActiveEventTypes(current: Set<string>, known: string[], all: EventType[]): Set<string> {
+  if (current.size === 0) return new Set(all.map(t => t.code));
+  const next = new Set(current);
+  all.forEach(t => { if (!known.includes(t.code)) next.add(t.code); });
+  return next;
+}
+
 function enrichEvents(
   events: ScheduleEvent[], 
   subjects: Subject[],
@@ -64,7 +75,25 @@ function enrichEvents(
   const profMap = new Map(professors.map(p => [p.id, p]));
 
   return events.map(ev => {
-    const subject = subjectMap.get(ev.subject_key) ?? (ev.subject as Subject);
+    const baseSubject = (ev.subject_key ? subjectMap.get(ev.subject_key) : undefined) ?? (ev.subject as Subject | undefined) ?? null;
+    const customTitle = ev.custom_title?.trim();
+    let subject: Subject;
+    if (ev.type === 'X' || !baseSubject) {
+      // Custom event: its name replaces the subject label; no subject => neutral placeholder
+      const title = customTitle || baseSubject?.label || 'Wydarzenie';
+      subject = {
+        key: baseSubject?.key ?? '',
+        year_number: baseSubject?.year_number ?? 0,
+        label: title,
+        short_label: title,
+        color: baseSubject?.color ?? CUSTOM_EVENT_COLOR,
+        contact: baseSubject?.contact ?? null,
+        location: baseSubject?.location ?? null,
+        department: baseSubject?.department ?? null,
+      };
+    } else {
+      subject = baseSubject;
+    }
     
     let resolvedLocation = ev.override_location ?? subject?.location ?? '';
     const resolvedProfessors: { group: string; professor: string; email?: string }[] = [];
@@ -118,6 +147,7 @@ export const useScheduleStore = create<ScheduleStore>()(
   currentMonth: new Date().getMonth(),
   activeSubjectKeys: new Set(),
   activeEventTypes: new Set(),
+  knownEventTypes: [],
   events: [],
   lastUpdated: null,
   isLoading: false,
@@ -182,7 +212,8 @@ export const useScheduleStore = create<ScheduleStore>()(
         lastUpdated,
         enrichedEvents,
         activeSubjectKeys: (get().activeSemesterId === semesterId && get().activeSubjectKeys.size > 0) ? get().activeSubjectKeys : new Set(subjects.map(s => s.key)),
-        activeEventTypes: get().activeEventTypes.size > 0 ? get().activeEventTypes : new Set(eventTypes.map(t => t.code)),
+        activeEventTypes: resolveActiveEventTypes(get().activeEventTypes, get().knownEventTypes, eventTypes),
+        knownEventTypes: eventTypes.map(t => t.code),
         currentYear: snapYear,
         currentMonth: snapMonth,
         isLoading: false,
@@ -313,6 +344,7 @@ export const useScheduleStore = create<ScheduleStore>()(
     activeGroups: state.activeGroups,
     activeSubjectKeys: Array.from(state.activeSubjectKeys),
     activeEventTypes: Array.from(state.activeEventTypes),
+    knownEventTypes: state.knownEventTypes,
   }),
   merge: (persistedState: any, currentState) => ({
     ...currentState,

@@ -70,7 +70,8 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
   // Form state
   const [formData, setFormData] = useState({
     semester_id: initialEvent ? initialEvent.semester_id.toString() : (activeSemesterId?.toString() || semesters[0]?.id.toString() || ''),
-    subject_key: initialEvent ? initialEvent.subject_key : (subjects[0]?.key || ''),
+    subject_key: initialEvent ? (initialEvent.subject_key ?? '') : (subjects[0]?.key || ''),
+    custom_title: initialEvent?.custom_title || '',
     type: initialEvent ? initialEvent.type : (adminRole?.type === 'moderator' ? 'S' : 'W'),
     time_start: initialEvent ? initialEvent.time_start.slice(0, 5) : '08:00',
     time_end: initialEvent ? initialEvent.time_end.slice(0, 5) : '09:30',
@@ -98,7 +99,8 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
     if (!defaultSaved) return;
     setFormData({
       semester_id: defaultSaved.semester_id || activeSemesterId?.toString() || semesters[0]?.id.toString() || '',
-      subject_key: defaultSaved.subject_key || subjects[0]?.key || '',
+      subject_key: defaultSaved.type === 'X' ? (defaultSaved.subject_key ?? '') : (defaultSaved.subject_key || subjects[0]?.key || ''),
+      custom_title: defaultSaved.custom_title || '',
       type: defaultSaved.type || (adminRole?.type === 'moderator' ? 'S' : 'W'),
       time_start: defaultSaved.time_start || '08:00',
       time_end: defaultSaved.time_end || '09:30',
@@ -139,7 +141,11 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
     } else if (formData.type === 'C' || formData.type === 'CSM') {
       setSeminarGroups([]);
     }
-  }, [formData.type]);
+    // Only custom events may have no subject
+    if (formData.type !== 'X') {
+      setFormData(prev => prev.subject_key ? prev : { ...prev, subject_key: subjects[0]?.key || '' });
+    }
+  }, [formData.type, subjects]);
 
   const isGroupDisabled = (g: string) => {
     if (g.startsWith('GK') && !isClinical) return true;
@@ -182,14 +188,23 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
       }
     }
 
+    const isCustom = formData.type === 'X';
+    if (isCustom && !formData.custom_title.trim()) {
+      setLoading(false);
+      setStatus({ type: 'error', message: 'Podaj nazwę wydarzenia.' });
+      return;
+    }
+
     const basePayload = {
       ...formData,
+      subject_key: formData.subject_key || null,
+      custom_title: isCustom ? formData.custom_title.trim() : null,
       override_location: formData.location || (formData.type === 'W' ? 'MS Teams - online' : null),
       override_professor_id: formData.professor || null,
       semester_id: parseInt(formData.semester_id),
       target_groups: [...seminarGroups, ...exerciseGroups, ...clinicalGroups],
       exam_term: formData.type === 'E' ? (formData.exam_term || null) : null,
-      assessment_type: formData.type !== 'E' ? (formData.assessment_type || null) : null,
+      assessment_type: (formData.type !== 'E' && !isCustom) ? (formData.assessment_type || null) : null,
       notes: formData.notes || null,
     };
     delete (basePayload as any).location;
@@ -298,6 +313,7 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
             <div>
               <label className={styles.label}>Przedmiot</label>
               <select name="subject_key" value={formData.subject_key} onChange={handleChange} className={styles.select}>
+                {formData.type === 'X' && <option value="">— Brak (bez przedmiotu) —</option>}
                 {subjects.map(s => <option key={s.key} value={s.key}>{s.label}</option>)}
               </select>
             </div>
@@ -338,6 +354,15 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
               </div>
             </div>
           </div>
+
+          {formData.type === 'X' && (
+            <div className={styles.row}>
+              <div style={{ flex: 1 }}>
+                <label className={styles.label}>Nazwa wydarzenia</label>
+                <input type="text" name="custom_title" value={formData.custom_title} onChange={handleChange} className={styles.input} placeholder="np. Spotkanie integracyjne grupy" maxLength={80} required />
+              </div>
+            </div>
+          )}
 
           <div className={styles.row}>
             <div>
@@ -431,7 +456,7 @@ export default function AdminEventModal({ initialDate, initialEvent, onClose, on
                 </select>
               </div>
             </div>
-          ) : (
+          ) : formData.type === 'X' ? null : (
             <div className={styles.row}>
               <div style={{ flex: 1 }}>
                 <label className={styles.label}>Typ zaliczenia na tych zajęciach (opcjonalnie)</label>

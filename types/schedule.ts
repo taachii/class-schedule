@@ -26,7 +26,7 @@ export interface Subject {
 }
 
 export interface EventType {
-  code: string; // 'W', 'S', 'C', 'CSM', 'F'
+  code: string; // 'W', 'S', 'C', 'CSM', 'F', 'X'
   label: string; // 'Wykład', 'Seminarium'...
 }
 
@@ -48,7 +48,7 @@ export interface SubjectGroupDefault {
 
 export interface ScheduleEvent {
   id: string;
-  subject_key: string;
+  subject_key: string | null; // null only for custom events (type 'X')
   semester_id: number;
   type: string;
   target_groups: string[];    // Zamiast seminar_groups / exercise_groups
@@ -60,6 +60,7 @@ export interface ScheduleEvent {
   department: string | null;
   notes: string | null;
   exam_term?: string | null;
+  custom_title?: string | null; // event name for type 'X' (Niestandardowe)
   assessment_type?: string | null;
   // Joined fields
   subject?: Subject;

@@ -57,7 +57,7 @@ export default function CalendarView({ onEventClick }: CalendarViewProps) {
     return () => clearInterval(timer);
   }, [debugTime]);
 
-  const filtered = enrichedEvents.filter(ev => activeSubjectKeys.has(ev.subject_key) && activeEventTypes.has(ev.type));
+  const filtered = enrichedEvents.filter(ev => (!ev.subject_key || activeSubjectKeys.has(ev.subject_key)) && activeEventTypes.has(ev.type));
   const activeSemester = semesters.find(s => s.id === activeSemesterId);
 
   const academicYearLabel = activeSemester?.academic_year_label || '';
@@ -218,7 +218,7 @@ export default function CalendarView({ onEventClick }: CalendarViewProps) {
                     {isExam ? (
                       <span className={styles.examBadge}> [E]</span>
                     ) : (
-                      ` [${ev.type}]`
+                      ev.type === 'X' ? '' : ` [${ev.type}]`
                     )}
                   </span>
                   {!isExam && ev.assessment_type && (
